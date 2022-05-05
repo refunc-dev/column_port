@@ -1,0 +1,18 @@
+@charset "utf-8";
+/* ==========================================================================
+ WebFont
+============================================================================*/
+//fontFamily
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans&family=Noto+Sans+JP&family=Open+Sans:wght@400;500&family=Roboto:wght@300;500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700&family=Sen:wght@700;800&display=swap");
+$font-family: "Noto Sans", "Meiryo", "Hiragino Kaku Gothic Pro",
+  "ヒラギノ角ゴ Pro W3", sans-serif;
+$font-family-jp: "Noto Sans JP", "Meiryo", "Hiragino Kaku Gothic Pro",
+  "ヒラギノ角ゴ Pro W3", sans-serif;
+$font-family-open: "Open Sans", "Meiryo", "Hiragino Kaku Gothic Pro",
+  "ヒラギノ角ゴ Pro W3", sans-serif;
+$font-family-robo: "Roboto", "Meiryo", "Hiragino Kaku Gothic Pro",
+  "ヒラギノ角ゴ Pro W3", sans-serif;
+$font-family-sen: "Sen", "Meiryo", "Hiragino Kaku Gothic Pro",
+  "ヒラギノ角ゴ Pro W3", sans-serif;
+$font-family-copy: "Verdana", sans-serif;

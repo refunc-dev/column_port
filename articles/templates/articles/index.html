@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extraheader %}
+<link rel="stylesheet" href="{% static 'articles/css/style.css' %}">
+<title>記事一覧 - カラムポート(Column Port)</title>
+<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+<script src="{% static 'articles/js/script.js' %}"></script>
+{% endblock %}
+
+{% block main %}
+<nav class="nav">
+    <ul class="nav__list">
+        <li class="nav__item">
+            <a class="nav__title" href="">プロジェクト</a>
+            <ul class="nav__sub-list">
+                <li class="nav__sub-item">
+                    <a class="nav__sub-link" href="{% url 'project_list' %}">プロジェクト管理</a>
+                </li>
+                <li class="nav__sub-item">
+                    <a class="nav__sub-link" href="{% url 'project_new' %}">新規プロジェクト登録</a>
+                </li>
+            </ul>
+        </li>
+        <li class="nav__item">
+            <a class="nav__title" href="">詳細レポート</a>
+            <ul class="nav__sub-list">
+                <li class="nav__sub-item">プロジェクトA</li>
+                <li class="nav__sub-item">プロジェクトB</li>
+            </ul>
+        </li>
+        <li class="nav__item">
+            <a class="nav__title" href="">Keyword Researcher</a>
+        </li>
+        <li class="nav__item">
+            <a class="nav__title" href="">設定</a>
+            <ul class="nav__sub-list">
+                <li class="nav__sub-item">マイページ</li>
+                <li class="nav__sub-item">その他</li>
+            </ul>
+        </li>
+    </ul>
+</nav>
+<div class="contents">
+    <h2 class="main__title">プロジェクト管理</h2>
+    {% if projects %}
+    <ul class="main__list">
+        {% for project in projects %}
+        <li class="main__item">
+            <a class="main__link">
+                <h3 class="main__item-name">{{ project.name }}</h3>
+                <p class="main__item-url">{{ project.url }}</p>
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</div>
+{% endblock %}

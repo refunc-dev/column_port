@@ -1,0 +1,66 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    {% block extraheader %}{% endblock %}
+</head>
+
+<body class="body">
+    <header class="header">
+        <div class="header__inner">
+            <h1 class="header__title">
+                <img class="header__title-image" src="{% static 'images/column_port_logo.svg' %}" alt="Column Port">
+            </h1>
+            <nav class="header__nav">
+                {% if user.is_authenticated %}
+                <div class="header__user">
+                    <a class="header__user-link">
+                        <img class="header__user-icon" src="{% static 'images/user.png' %}">
+                        <p class="header__user-name">{{ request.user }}</p>
+                    </a>
+                </div>
+                <div class="header__popup">
+                    <div class="header__popup-user">
+                        <img class="header__popup-icon" src="{% static 'images/user.png' %}">
+                        <p class="header__popup-name">{{ request.user }}</p>
+                    </div>
+                    <ul class="header__popup-list">
+                        <li class="header__popup-item">
+                            <a class="header__popup-link" href="">マイページ</a>
+                        </li>
+                        <li class="header__popup-item">
+                            <a class="header__popup-link" href="{% url 'logout' %}">ログアウト</a>
+                        </li>
+                    </ul>
+                </div>
+                {% else %}
+                <ul class="header__nav-list">
+                    <li class="header__nav-item">
+                        <a class="header__nav-link" href="{% url 'login' %}">ログイン</a>
+                    </li>
+                    <li class="header__nav-item">
+                        <a class="header__nav-link" href="{% url 'signup' %}">新規会員登録</a>
+                    </li>
+                </ul>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+    <main class=" main">
+        <div class="main__inner">
+            {% block main %}{% endblock %}
+        </div>
+    </main>
+    <footer class="footer">
+        <div class="footer__inner">
+            <p class="footer__copyright">&copy; 2022 Refunc Inc. All right reserves.</p>
+        </div>
+    </footer>
+    </div>
+</body>
+
+</html>

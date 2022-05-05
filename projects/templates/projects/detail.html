@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extraheader %}
+<link rel="stylesheet" href="{% static 'projects/css/detail/style.css' %}">
+<title>プロジェクト一覧 - カラムポート(Column Port)</title>
+<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+<script src="{% static 'projects/js/script.js' %}"></script>
+{% endblock %}
+
+{% block main %}
+<nav class="nav">
+    <ul class="nav__list">
+        <li class="nav__item">
+            <a class="nav__title" href="">プロジェクト</a>
+            <ul class="nav__sub-list">
+                <li class="nav__sub-item">
+                    <a class="nav__sub-link" href="{% url 'project_list' %}">プロジェクト管理</a>
+                </li>
+                <li class="nav__sub-item">
+                    <a class="nav__sub-link" href="{% url 'project_new' %}">新規プロジェクト登録</a>
+                </li>
+            </ul>
+        </li>
+        <li class="nav__item">
+            <a class="nav__title" href="">詳細レポート</a>
+            <ul class="nav__sub-list">
+                <li class="nav__sub-item">プロジェクトA</li>
+                <li class="nav__sub-item">プロジェクトB</li>
+            </ul>
+        </li>
+        <li class="nav__item">
+            <a class="nav__title" href="">Keyword Researcher</a>
+        </li>
+        <li class="nav__item">
+            <a class="nav__title" href="">設定</a>
+            <ul class="nav__sub-list">
+                <li class="nav__sub-item">マイページ</li>
+                <li class="nav__sub-item">その他</li>
+            </ul>
+        </li>
+    </ul>
+</nav>
+<div class="contents">
+    <h2 class="main__title">記事管理表</h2>
+    {% if articles %}
+    <table class="main__table">
+        <thead class="main__thead">
+            <tr class="main__tr">
+                <th class="main__th" rowspan="2">ID</th>
+                <th class="main__th" rowspan="2">タイトル/URL</th>
+                <th class="main__th" rowspan="2">公開日</th>
+                <th class="main__th" rowspan="2">更新日</th>
+                <th class="main__th" rowspan="2">担当</th>
+                <th class="main__th" rowspan="2">種別</th>
+                <th class="main__th" rowspan="2">メイン対策KW</th>
+                <th class="main__th" rowspan="2">検索数</th>
+                <th class="main__th" colspan="6">検索順位</th>
+                <th class="main__th" rowspan="2">ランクインページ</th>
+                <th class="main__th" colspan="6">流入数</th>
+                <th class="main__th" colspan="6">CVR</th>
+                <th class="main__th" colspan="6">CV数</th>
+            </tr>
+            <tr class="main__tr">
+                <th class="main__th">6週間前</th>
+                <th class="main__th">5週間前</th>
+                <th class="main__th">4週間前</th>
+                <th class="main__th">3週間前</th>
+                <th class="main__th">2週間前</th>
+                <th class="main__th">1週間前</th>
+                <th class="main__th">6週間前</th>
+                <th class="main__th">5週間前</th>
+                <th class="main__th">4週間前</th>
+                <th class="main__th">3週間前</th>
+                <th class="main__th">2週間前</th>
+                <th class="main__th">1週間前</th>
+                <th class="main__th">6週間前</th>
+                <th class="main__th">5週間前</th>
+                <th class="main__th">4週間前</th>
+                <th class="main__th">3週間前</th>
+                <th class="main__th">2週間前</th>
+                <th class="main__th">1週間前</th>
+                <th class="main__th">6週間前</th>
+                <th class="main__th">5週間前</th>
+                <th class="main__th">4週間前</th>
+                <th class="main__th">3週間前</th>
+                <th class="main__th">2週間前</th>
+                <th class="main__th">1週間前</th>
+            </tr>
+        </thead>
+        <tbody class="main__item">
+            {% for contents in articles %}
+            <tr class="main__tr">
+                <td class="main__td" rowspan="{{ contents.size }}">
+                    <a class="main__link" href="/articles/{{ contents.article.id }}/">
+                        {{ contents.article.id }}
+                    </a>
+                </td>
+                <td class="main__td" rowspan="{{ contents.size }}">
+                    {{ contents.article.title }}<br>{{ contents.article.url }}</td>
+                <td class="main__td" rowspan="{{ contents.size }}">{{ contents.article.published_at }}</td>
+                <td class="main__td" rowspan="{{ contents.size }}">{{ contents.article.updated_at }}</td>
+                <td class="main__td" rowspan="{{ contents.size }}">{{ contents.article.person_in_charge }}</td>
+                <td class="main__td" rowspan="{{ contents.size }}"></td>
+                {% for keyword in contents.keywords %}
+                {% if forloop.first %}
+                <td class="main__td">{{ keyword.keyword }}</td>
+                <td class="main__td">{{ keyword.volume }}</td>
+                <td class="main__td"></td>
+                <td class="main__td"></td>
+                <td class="main__td"></td>
+                <td class="main__td"></td>
+                <td class="main__td"></td>
+                <td class="main__td"></td>
+                <td class="main__td"></td>
+                <td class="main__td"></td>
+                <td class="main__td"></td>
+                <td class="main__td"></td>
+                <td class="main__td"></td>
+                <td class="main__td"></td>
+                <td class="main__td"></td>
+                <td class="main__td"></td>
+                <td class="main__td"></td>
+                <td class="main__td"></td>
+                <td class="main__td"></td>
+                <td class="main__td"></td>
+                <td class="main__td"></td>
+                <td class="main__td"></td>
+                <td class="main__td"></td>
+                <td class="main__td"></td>
+                <td class="main__td"></td>
+                <td class="main__td"></td>
+                <td class="main__td"></td>
+            </tr>
+            {% else %}
+            <tr class="main__tr">
+                <td class="main__td">{{ keyword.keyword }}</td>
+                <td class="main__td">{{ keyword.volume }}</td>
+                <td class="main__td"></td>
+                <td class="main__td"></td>
+                <td class="main__td"></td>
+                <td class="main__td"></td>
+                <td class="main__td"></td>
+                <td class="main__td"></td>
+                <td class="main__td"></td>
+                <td class="main__td"></td>
+                <td class="main__td"></td>
+                <td class="main__td"></td>
+                <td class="main__td"></td>
+                <td class="main__td"></td>
+                <td class="main__td"></td>
+                <td class="main__td"></td>
+                <td class="main__td"></td>
+                <td class="main__td"></td>
+                <td class="main__td"></td>
+                <td class="main__td"></td>
+                <td class="main__td"></td>
+                <td class="main__td"></td>
+                <td class="main__td"></td>
+                <td class="main__td"></td>
+                <td class="main__td"></td>
+                <td class="main__td"></td>
+                <td class="main__td"></td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+    <br><br>
+    <form method="post" class="main__form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">追加</button>
+    </form>
+</div>
+{% endblock %}

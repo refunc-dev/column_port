@@ -1,0 +1,45 @@
+@charset "utf-8";
+/* ==========================================================================
+viewport指定
+============================================================================*/
+$breakpoint: 900px;
+
+@mixin pc($viewport: $breakpoint) {
+  @media screen and (min-width: $viewport) {
+    @content;
+  }
+}
+
+@mixin sp($viewport: $breakpoint) {
+  @media screen and (max-width: $viewport - 1) {
+    @content;
+  }
+}
+
+//clearfix
+@mixin clearfix {
+  &::after {
+    content: "";
+    display: block;
+    clear: both;
+  }
+}
+
+//placeholder
+@mixin placeholder {
+  &:placeholder-shown {
+    @content;
+  }
+  &::-webkit-input-placeholder {
+    @content;
+  }
+  &:-moz-placeholder {
+    @content;
+  }
+  &::-moz-placeholder {
+    @content;
+  }
+  &:-ms-input-placeholder {
+    @content;
+  }
+}
