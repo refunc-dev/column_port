@@ -25,8 +25,21 @@ SECRET_KEY = 'django-insecure-9@(185u*oo5^+m1chc2^1h*s-hen7=4m4mbzsb71+)h9+pm0wu
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    '0.0.0.0',
+    'seo-hub.jp',
+    'column-port.seo-hub.jp',
+]
 
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost',
+    'http://127.0.0.1',
+    'http://0.0.0.0',
+    'https://seo-hub.jp',
+    'https://column-port.seo-hub.jp',
+]
 
 # Application definition
 
