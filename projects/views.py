@@ -33,6 +33,7 @@ def project_new(request):
 
 @login_required
 def project_detail(request, project_id):
+    contents = []
     if request.method == 'POST':
         form = ArticleForm(request.POST)
         if form.is_valid():
@@ -40,7 +41,6 @@ def project_detail(request, project_id):
             article.save()
             return redirect(project_detail, project_id=project_id)
     else:
-        contents = []
         articles = Article.objects.filter(project_id=project_id).all()
         for article in articles:
             keywords = Keyword.objects.filter(article_id=article.id).all()
