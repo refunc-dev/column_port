@@ -16,9 +16,6 @@ class Article(models.Model):
         null=True,
         related_name="articles_in_charge"
     )
-    number_of_session = models.PositiveIntegerField('流入数', default=0)
-    cvr = models.FloatField('CVR', default=0.0)
-    cv = models.PositiveIntegerField('CV数', default=0)
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         verbose_name="作成者",
@@ -51,9 +48,15 @@ class Keyword(models.Model):
 
 
 class Ranking(models.Model):
-    ranking = models.PositiveIntegerField('キーワード数', default=0)
+    rw_choices = (
+        ('right', '○'),
+        ('wrong', '×')
+    )
+
+    ranking = models.PositiveIntegerField('順位', default=0)
     ranking_page = models.CharField('ランクインページ', max_length=2083, null=True)
-    date = models.DateField('日付', auto_now_add=True) 
+    date = models.DateField('日付') 
+    right_wrong = models.CharField('正誤表', max_length=5, choices=rw_choices, blank=True)
     keyword_id = models.ForeignKey(
         Keyword,
         verbose_name="キーワード",
@@ -61,4 +64,23 @@ class Ranking(models.Model):
     )
 
     def __str__(self):
-        return self.ranking
+        return str(self.ranking)
+
+
+class Analytics(models.Model):
+    path = models.CharField('記事URL', max_length=2083)
+    year_week = models.PositiveIntegerField('週', default=0) 
+    session = models.PositiveIntegerField('流入数', default=0)
+    conversion_rate = models.FloatField('CVR', default=0.0)
+    conversion = models.FloatField('CV数', default=0)
+    article_id = models.ForeignKey(
+        Article,
+        verbose_name='記事',
+        on_delete=models.CASCADE
+    )
+
+    class Meta:
+        verbose_name_plural = 'Analytics'
+
+    def __str__(self):
+        return str(self.session)

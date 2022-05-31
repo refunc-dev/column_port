@@ -1,10 +1,14 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 
-from projects.models import Project
-from projects.forms import ProjectForm
-from articles.models import Article, Keyword, Ranking
+from projects.models import Project, Regex, Weekly, Monthly
+from projects.forms import ProjectForm, RegexForm
+from articles.models import Article, Keyword, Ranking, Analytics
 from articles.forms import ArticleForm
+
+from projects.management.commands.utils.get_specific_analytics_data import get_weekly_analytics_data_regex, get_monthly_analytics_data_regex
+from articles.management.commands.utils.get_specific_analytics_data import get_analytics_data_eq
+from urllib.parse import urlparse
 
 
 @login_required
@@ -23,8 +27,39 @@ def project_new(request):
     if request.method == 'POST':
         form = ProjectForm(request.POST)
         if form.is_valid():
-            project = form.save(commit=False)
-            project.save()
+            project = Project.objects.create(
+                name=request.POST.get('name'),
+                url=request.POST.get('url'),
+                created_by=request.user
+            )
+            regex = Regex.objects.create(
+                regex='^/*',
+                project_id=project
+            )
+            res = get_weekly_analytics_data_regex(regex.regex, 24)
+            for data in res:
+                Weekly.objects.create(
+                    regex=regex,
+                    year_week=data['term'],
+                    session=data['session'],
+                    conversion=data['cv'],
+                    conversion_rate=data['cvr'],
+                    page_view=data['pv'],
+                    page_view_per_session=data['pvr'],
+                    project_id=project
+                )            
+            res = get_monthly_analytics_data_regex(regex.regex, 24) 
+            for data in res:
+                Monthly.objects.create(
+                    regex=regex,
+                    year_month=data['term'],
+                    session=data['session'],
+                    conversion=data['cv'],
+                    conversion_rate=data['cvr'],
+                    page_view=data['pv'],
+                    page_view_per_session=data['pvr'],
+                    project_id=project
+                )  
             return redirect(project_list)
     else:
         form = ProjectForm()
@@ -37,20 +72,111 @@ def project_detail(request, project_id):
         form = ArticleForm(request.POST)
         if form.is_valid():
             article = form.save(commit=False)
+            article.created_by = request.user
             article.save()
+            path = urlparse(article.url).path
+            res = get_analytics_data_eq(path, 6)
+            for data in reversed(res):
+                Analytics.objects.create(
+                    path=data['path'],
+                    year_week=data['year_week'],
+                    session=data['session'],
+                    conversion_rate=data['cvr'],
+                    conversion=data['cv'],
+                    article_id=article
+                )
             return redirect(project_detail, project_id=project_id)
     else:
         contents = []
         articles = Article.objects.filter(project_id=project_id).all()
         for article in articles:
+            analytic = Analytics.objects.filter(article_id=article.id).order_by().reverse()[:6]
+            session = {"1": "-","2": "-","3": "-","4": "-","5": "-","6": "-"}
+            cvr = {"1": "-","2": "-","3": "-","4": "-","5": "-","6": "-"}
+            cv = {"1": "-","2": "-","3": "-","4": "-","5": "-","6": "-"}
+            for i, a in enumerate(analytic):
+                session[f"{i + 1}"] = a.session
+                cvr[f"{i + 1}"] = a.conversion_rate
+                cv[f"{i + 1}"] = a.conversion
+            klist = []
             keywords = Keyword.objects.filter(article_id=article.id).all()
             size = len(keywords)
             if size == 0:
                 size = 1
-            contents.append({'article': article, 'keywords': keywords, 'size': size})
+            else:
+                for k in keywords:
+                    ranking = Ranking.objects.filter(keyword_id=k.id).order_by('date').reverse()[:6]
+                    kdata = {
+                        "keyword": k.keyword,
+                        "volume": k.volume,
+                        "1": "-",
+                        "2": "-",
+                        "3": "-",
+                        "4": "-",
+                        "5": "-",
+                        "6": "-",
+                        "right_wrong": "-",
+                        "ranking_page": "-"
+                    }
+                    for i, r in enumerate(ranking):
+                        if i == 0:
+                            kdata["ranking_page"] = r.ranking_page
+                            kdata["right_wrong"] = r.get_right_wrong_display()
+                        kdata[f"{i + 1}"] = r.ranking
+                    klist.append(kdata)
+            contents.append({'article': article, 'keywords': klist, 'session': session, 'cvr': cvr, 'cv': cv, 'size': size})
         form = ArticleForm()
         context = {
+            'id': project_id,
             'articles': contents,
             'form': form
         }
     return render(request, 'projects/detail.html', context)
+
+@login_required
+def report_weekly(request, project_id):
+    if request.method == 'POST':
+        form = RegexForm(request.POST)
+        if form.is_valid():
+            regex = form.save(commit=False)
+            regex.project_id = project_id
+            regex.save()
+            return redirect(report_weekly, project_id=project_id)
+    else:
+        regex = Regex.objects.get(project_id=project_id, regex='^/*')
+        weekly = Weekly.objects.filter(project_id=project_id, regex=regex).order_by('year_week').reverse()[:24]
+        form = RegexForm()
+        data = []
+        for w in reversed(weekly):
+            data.append([str(w.year_week), w.session, w.conversion_rate])
+        context = {
+            'term': {'ja': '年週', 'en': 'YearWeek'},
+            'id': project_id,
+            'data': data,
+            'form': form
+        }
+    return render(request, 'projects/report.html', context)
+
+@login_required
+def report_monthly(request, project_id):
+    if request.method == 'POST':
+        form = RegexForm(request.POST)
+        if form.is_valid():
+            regex = form.save(commit=False)
+            regex.project_id = project_id
+            regex.save()
+            return redirect(report_monthly, project_id=project_id)
+    else:
+        regex = Regex.objects.get(project_id=project_id, regex='^/*')
+        monthly = Monthly.objects.filter(project_id=project_id, regex=regex).order_by('year_month').reverse()[:24]
+        form = RegexForm()
+        data = []
+        for m in reversed(monthly):
+            data.append([str(m.year_month), m.session, m.conversion_rate])
+        context = {
+            'term': {'ja': '年月', 'en': 'YearMonth'},
+            'id': project_id,
+            'data': data,
+            'form': form
+        }
+    return render(request, 'projects/report.html', context)

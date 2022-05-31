@@ -7,6 +7,10 @@ from articles.forms import ArticleForm, KeywordForm
 
 from projects.views import project_list
 
+from articles.management.commands.utils.get_specific_analytics_data import get_analytics_data_eq
+from articles.management.commands.utils.generate_keywords_api import generate_keywords_api
+from urllib.parse import urlparse
+
 
 @login_required
 def keyword_new(request, article_id):
@@ -14,6 +18,7 @@ def keyword_new(request, article_id):
         form = KeywordForm(request.POST)
         if form.is_valid():
             keyword = form.save(commit=False)
+            keyword.volume = generate_keywords_api(keyword.keyword)
             keyword.save()
             messages.add_message(request, messages.SUCCESS,
                                 "スニペットを作成しました。")
@@ -24,24 +29,6 @@ def keyword_new(request, article_id):
     else:
         form = KeywordForm()
     return render(request, 'articles/keyword_new.html', {'form': form})
-
-
-def article_new(request):
-    if request.method == 'POST':
-        form = ArticleForm(request.POST)
-        if form.is_valid():
-            article = form.save(commit=False)
-            article.created_by = request.user
-            article.save()
-            messages.add_message(request, messages.SUCCESS,
-                                "スニペットを作成しました。")
-            return redirect(article_list)
-        else:
-            messages.add_message(request, messages.ERROR,
-                                 "スニペットの作成に失敗しました。")
-    else:
-        form = ArticleForm()
-    return render(request, 'articles/new.html', {'form': form})
 
 
 @login_required

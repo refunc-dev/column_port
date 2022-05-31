@@ -25,8 +25,12 @@
         <li class="nav__item">
             <a class="nav__title" href="">詳細レポート</a>
             <ul class="nav__sub-list">
-                <li class="nav__sub-item">プロジェクトA</li>
-                <li class="nav__sub-item">プロジェクトB</li>
+                <li class="nav__sub-item">
+                    <a class="nav__sub-link" href="/projects/{{ id }}/reports/weekly/">週次レポート</a>
+                </li>
+                <li class="nav__sub-item">
+                    <a class="nav__sub-link" href="/projects/{{ id }}/reports/monthly/">月次レポート</a>
+                </li>
             </ul>
         </li>
         <li class="nav__item">
@@ -53,13 +57,14 @@
                 <th class="main__th" rowspan="2">更新日</th>
                 <th class="main__th" rowspan="2">担当</th>
                 <th class="main__th" rowspan="2">種別</th>
-                <th class="main__th" rowspan="2">メイン対策KW</th>
-                <th class="main__th" rowspan="2">検索数</th>
-                <th class="main__th" colspan="6">検索順位</th>
-                <th class="main__th" rowspan="2">ランクインページ</th>
                 <th class="main__th" colspan="6">流入数</th>
                 <th class="main__th" colspan="6">CVR</th>
                 <th class="main__th" colspan="6">CV数</th>
+                <th class="main__th" rowspan="2">メイン対策KW</th>
+                <th class="main__th" rowspan="2">検索数</th>
+                <th class="main__th" colspan="6">検索順位</th>
+                <th class="main__th" rowspan="2">正誤表</th>
+                <th class="main__th" rowspan="2">ランクインページ</th>
             </tr>
             <tr class="main__tr">
                 <th class="main__th">6週間前</th>
@@ -102,65 +107,49 @@
                 <td class="main__td" rowspan="{{ contents.size }}">{{ contents.article.updated_at }}</td>
                 <td class="main__td" rowspan="{{ contents.size }}">{{ contents.article.person_in_charge }}</td>
                 <td class="main__td" rowspan="{{ contents.size }}"></td>
+                <td class="main__td" rowspan="{{ contents.size }}">{{ contents.session.6 }}</td>
+                <td class="main__td" rowspan="{{ contents.size }}">{{ contents.session.5 }}</td>
+                <td class="main__td" rowspan="{{ contents.size }}">{{ contents.session.4 }}</td>
+                <td class="main__td" rowspan="{{ contents.size }}">{{ contents.session.3 }}</td>
+                <td class="main__td" rowspan="{{ contents.size }}">{{ contents.session.2 }}</td>
+                <td class="main__td" rowspan="{{ contents.size }}">{{ contents.session.1 }}</td>
+                <td class="main__td" rowspan="{{ contents.size }}">{{ contents.cvr.6 }}</td>
+                <td class="main__td" rowspan="{{ contents.size }}">{{ contents.cvr.5 }}</td>
+                <td class="main__td" rowspan="{{ contents.size }}">{{ contents.cvr.4 }}</td>
+                <td class="main__td" rowspan="{{ contents.size }}">{{ contents.cvr.3 }}</td>
+                <td class="main__td" rowspan="{{ contents.size }}">{{ contents.cvr.2 }}</td>
+                <td class="main__td" rowspan="{{ contents.size }}">{{ contents.cvr.1 }}</td>
+                <td class="main__td" rowspan="{{ contents.size }}">{{ contents.cv.6 }}</td>
+                <td class="main__td" rowspan="{{ contents.size }}">{{ contents.cv.5 }}</td>
+                <td class="main__td" rowspan="{{ contents.size }}">{{ contents.cv.4 }}</td>
+                <td class="main__td" rowspan="{{ contents.size }}">{{ contents.cv.3 }}</td>
+                <td class="main__td" rowspan="{{ contents.size }}">{{ contents.cv.2 }}</td>
+                <td class="main__td" rowspan="{{ contents.size }}">{{ contents.cv.1 }}</td>
                 {% for keyword in contents.keywords %}
                 {% if forloop.first %}
                 <td class="main__td">{{ keyword.keyword }}</td>
                 <td class="main__td">{{ keyword.volume }}</td>
-                <td class="main__td"></td>
-                <td class="main__td"></td>
-                <td class="main__td"></td>
-                <td class="main__td"></td>
-                <td class="main__td"></td>
-                <td class="main__td"></td>
-                <td class="main__td"></td>
-                <td class="main__td"></td>
-                <td class="main__td"></td>
-                <td class="main__td"></td>
-                <td class="main__td"></td>
-                <td class="main__td"></td>
-                <td class="main__td"></td>
-                <td class="main__td"></td>
-                <td class="main__td"></td>
-                <td class="main__td"></td>
-                <td class="main__td"></td>
-                <td class="main__td"></td>
-                <td class="main__td"></td>
-                <td class="main__td"></td>
-                <td class="main__td"></td>
-                <td class="main__td"></td>
-                <td class="main__td"></td>
-                <td class="main__td"></td>
-                <td class="main__td"></td>
+                <td class="main__td">{{ keyword.6 }}</td>
+                <td class="main__td">{{ keyword.5 }}</td>
+                <td class="main__td">{{ keyword.4 }}</td>
+                <td class="main__td">{{ keyword.3 }}</td>
+                <td class="main__td">{{ keyword.2 }}</td>
+                <td class="main__td">{{ keyword.1 }}</td>
+                <td class="main__td">{{ keyword.right_wrong }}</td>
+                <td class="main__td">{{ keyword.ranking_page }}</td>
             </tr>
             {% else %}
             <tr class="main__tr">
                 <td class="main__td">{{ keyword.keyword }}</td>
                 <td class="main__td">{{ keyword.volume }}</td>
-                <td class="main__td"></td>
-                <td class="main__td"></td>
-                <td class="main__td"></td>
-                <td class="main__td"></td>
-                <td class="main__td"></td>
-                <td class="main__td"></td>
-                <td class="main__td"></td>
-                <td class="main__td"></td>
-                <td class="main__td"></td>
-                <td class="main__td"></td>
-                <td class="main__td"></td>
-                <td class="main__td"></td>
-                <td class="main__td"></td>
-                <td class="main__td"></td>
-                <td class="main__td"></td>
-                <td class="main__td"></td>
-                <td class="main__td"></td>
-                <td class="main__td"></td>
-                <td class="main__td"></td>
-                <td class="main__td"></td>
-                <td class="main__td"></td>
-                <td class="main__td"></td>
-                <td class="main__td"></td>
-                <td class="main__td"></td>
-                <td class="main__td"></td>
+                <td class="main__td">{{ keyword.6 }}</td>
+                <td class="main__td">{{ keyword.5 }}</td>
+                <td class="main__td">{{ keyword.4 }}</td>
+                <td class="main__td">{{ keyword.3 }}</td>
+                <td class="main__td">{{ keyword.2 }}</td>
+                <td class="main__td">{{ keyword.1 }}</td>
+                <td class="main__td">{{ keyword.right_wrong }}</td>
+                <td class="main__td">{{ keyword.ranking_page }}</td>
             </tr>
             {% endif %}
             {% endfor %}

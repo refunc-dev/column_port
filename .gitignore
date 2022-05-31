@@ -127,3 +127,8 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+test.mp3
+error_page_source.txt
+config/column-port-service.json
+config/google-ads.yaml

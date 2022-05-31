@@ -14,3 +14,67 @@ class Project(models.Model):
 
     def __str__(self):
         return str(self.id)
+
+class Regex(models.Model):
+    regex = models.CharField('正規表現', max_length=100)
+    project_id = models.ForeignKey(
+        Project,
+        verbose_name='プロジェクト',
+        on_delete=models.CASCADE
+    )
+
+    class Meta:
+        verbose_name_plural = 'Regex'
+    
+    def __str__(self):
+        return self.regex
+
+
+class Weekly(models.Model):
+    regex = models.ForeignKey(
+        Regex,
+        verbose_name='正規表現',
+        on_delete=models.CASCADE
+    )
+    year_week = models.PositiveIntegerField('年週', default=0) 
+    session = models.PositiveIntegerField('流入数', default=0)
+    conversion = models.FloatField('CV数', default=0)
+    conversion_rate = models.FloatField('CVR', default=0.0)
+    page_view = models.FloatField('PV', default=0)
+    page_view_per_session = models.FloatField('PV/流入数', default=0)
+    project_id = models.ForeignKey(
+        Project,
+        verbose_name='プロジェクト',
+        on_delete=models.CASCADE
+    )
+    
+    class Meta:
+        verbose_name_plural = 'Weekly'
+    
+    def __str__(self):
+        return str(self.year_week)
+
+
+class Monthly(models.Model):
+    regex = models.ForeignKey(
+        Regex,
+        verbose_name='正規表現',
+        on_delete=models.CASCADE
+    )
+    year_month = models.PositiveIntegerField('年月', default=0) 
+    session = models.PositiveIntegerField('流入数', default=0)
+    conversion = models.FloatField('CV数', default=0)
+    conversion_rate = models.FloatField('CVR', default=0.0)
+    page_view = models.FloatField('PV', default=0)
+    page_view_per_session = models.FloatField('PV/流入数', default=0)
+    project_id = models.ForeignKey(
+        Project,
+        verbose_name='プロジェクト',
+        on_delete=models.CASCADE
+    )
+    
+    class Meta:
+        verbose_name_plural = 'Monthly'
+    
+    def __str__(self):
+        return str(self.year_month)
