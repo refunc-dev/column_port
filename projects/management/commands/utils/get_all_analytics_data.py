@@ -4,6 +4,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 from datetime import datetime, date, timedelta
 from dateutil.relativedelta import relativedelta
 import calendar
+import os
 
 def get_service(api_name, api_version, scopes, key_file_location):
     """Get a service that communicates to a Google API.
