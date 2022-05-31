@@ -130,7 +130,7 @@ def _map_locations_ids_to_resource_names(client, location_ids):
 def generate_keywords_api(keyword):
     # GoogleAdsClient will read the google-ads.yaml configuration file in the
     # home directory if none is specified.
-    os.environ["GOOGLE_ADS_CONFIGURATION_FILE_PATH"] = "./config/google-ads.yaml"
+    os.environ["GOOGLE_ADS_CONFIGURATION_FILE_PATH"] = f'{os.environ["CP_CONFIG_PATH"]}google-ads.yaml'
     googleads_client = GoogleAdsClient.load_from_storage(version="v10")
 
     try:

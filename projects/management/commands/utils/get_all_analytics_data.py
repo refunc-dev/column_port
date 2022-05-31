@@ -75,7 +75,7 @@ def percentage(part, whole):
 def get_all_analytics_data(start, end, term):
     # Define the auth scopes to request.
     scope = 'https://www.googleapis.com/auth/analytics.readonly'
-    key_file_location = './config/column-port-service.json'
+    key_file_location = f'{os.environ["CP_CONFIG_PATH"]}column-port-service.json'
 
     # Authenticate and construct service.
     service = get_service(
