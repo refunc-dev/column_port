@@ -8,14 +8,14 @@ import time,requests
 from bs4 import BeautifulSoup
 
 # Logger setting
-from logging import getLogger, FileHandler, DEBUG
-logger = getLogger(__name__)
-today = datetime.datetime.now()
-handler = FileHandler(f'log/{today.strftime("%Y-%m-%d")}_result.log', mode='a')
-handler.setLevel(DEBUG)
-logger.setLevel(DEBUG)
-logger.addHandler(handler)
-logger.propagate = False
+#from logging import getLogger, FileHandler, DEBUG
+#logger = getLogger(__name__)
+#today = datetime.datetime.now()
+#handler = FileHandler(f'log/{today.strftime("%Y-%m-%d")}_result.log', mode='a')
+#handler.setLevel(DEBUG)
+#logger.setLevel(DEBUG)
+#logger.addHandler(handler)
+#logger.propagate = False
 
 ### functions ###
 def audio_to_text(driver, mp3Path, audioToTextDelay):
@@ -43,7 +43,7 @@ def audio_to_text(driver, mp3Path, audioToTextDelay):
     return result
 
 def request_audio_file(href, filename):
-    logger.debug(f'by_pass_captcha: href: {href}')
+    #logger.debug(f'by_pass_captcha: href: {href}')
     response = requests.get(href, stream=True)
     logger.info(f'by_pass_captcha: request_audio_file: {response.status_code}')
     if response.status_code != 200:
@@ -62,7 +62,7 @@ def by_pass_captcha(driver):
     audioBtnFound = False
     audioBtnIndex = -1
     
-    logger.debug("by_pass_captcha: find iframe")
+    #logger.debug("by_pass_captcha: find iframe")
     for index in range(len(allIframesLen)):
         driver.switch_to.default_content()
         iframe = driver.find_elements_by_tag_name('iframe')[index]
@@ -77,14 +77,14 @@ def by_pass_captcha(driver):
         except Exception as e:
             pass
 
-    logger.debug("by_pass_captcha: proceed to audio authenticate")
+    #logger.debug("by_pass_captcha: proceed to audio authenticate")
     if audioBtnFound:
         try:
             while True:
                 href = driver.find_element_by_id('audio-source').get_attribute('src')
                 request_audio_file(href, filename)
                 response = audio_to_text(driver, os.getcwd() + '/' + filename, audioToTextDelay)
-                logger.debug(response)
+                #logger.debug(response)
     
                 driver.switch_to.default_content()
                 iframe = driver.find_elements_by_tag_name('iframe')[audioBtnIndex]

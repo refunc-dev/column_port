@@ -17,15 +17,15 @@ from webdriver_manager.chrome import ChromeDriverManager
 from articles.management.commands.utils.by_pass_captcha import by_pass_captcha
 
 # Logger setting
-from logging import getLogger, FileHandler, DEBUG
-logger = getLogger(__name__)
-today = datetime.datetime.now()
-os.makedirs('./log', exist_ok=True)
-handler = FileHandler(f'log/{today.strftime("%Y-%m-%d")}_result.log', mode='a')
-handler.setLevel(DEBUG)
-logger.setLevel(DEBUG)
-logger.addHandler(handler)
-logger.propagate = False
+#from logging import getLogger, FileHandler, DEBUG
+#logger = getLogger(__name__)
+#today = datetime.datetime.now()
+#os.makedirs('./log', exist_ok=True)
+#handler = FileHandler(f'log/{today.strftime("%Y-%m-%d")}_result.log', mode='a')
+#handler.setLevel(DEBUG)
+#logger.setLevel(DEBUG)
+#logger.addHandler(handler)
+#logger.propagate = False
 
 ### functions ###
 def launch_driver():
@@ -97,7 +97,7 @@ def search_ranking_browser(domain, search_words):
         for index, search_word in enumerate(search_words):
             no = search_word["id"]
             kw = search_word["kw"]
-            logger.info(f'{index + 1} > {search_word}')
+            #logger.info(f'{index + 1} > {search_word}')
 
             driver.execute_script('''window.open("","_blank");''')
             driver.switch_to.window(driver.window_handles[1])
@@ -143,5 +143,5 @@ def search_ranking_browser(domain, search_words):
         return data
 
     except Exception as err:
-        logger.debug(f'search_ranking: {err}')
+        #logger.debug(f'search_ranking: {err}')
         return(1)
