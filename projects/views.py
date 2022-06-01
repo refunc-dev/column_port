@@ -1,11 +1,12 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 
-from projects.models import Project, Regex, Weekly, Monthly
+from projects.models import Project, Regex, WeeklyAll, MonthlyAll, WeeklyDir, MonthlyDir
 from projects.forms import ProjectForm, RegexForm
 from articles.models import Article, Keyword, Ranking, Analytics
 from articles.forms import ArticleForm
 
+from projects.management.commands.utils.get_all_analytics_data import get_weekly_analytics_data, get_monthly_analytics_data
 from projects.management.commands.utils.get_specific_analytics_data import get_weekly_analytics_data_regex, get_monthly_analytics_data_regex
 from articles.management.commands.utils.get_specific_analytics_data import get_analytics_data_eq
 from urllib.parse import urlparse
@@ -32,34 +33,46 @@ def project_new(request):
                 url=request.POST.get('url'),
                 created_by=request.user
             )
-            regex = Regex.objects.create(
-                regex='^/*',
-                project_id=project
-            )
-            res = get_weekly_analytics_data_regex(regex.regex, 24)
-            for data in res:
-                Weekly.objects.create(
-                    regex=regex,
-                    year_week=data['term'],
-                    session=data['session'],
-                    conversion=data['cv'],
-                    conversion_rate=data['cvr'],
-                    page_view=data['pv'],
-                    page_view_per_session=data['pvr'],
+            data = get_weekly_analytics_data(24)
+            for d in data:
+                WeeklyAll.objects.create(
+                    date=d['date'],
+                    users=d['users'],
+                    session=d['session'],
+                    conversion=d['cv'],
+                    conversion_rate=d['cvr'],
+                    page_view=d['pv'],
+                    page_view_per_session=d['pvr'],
+                    direct=d['direct'],
+                    organic=d['organic'],
+                    paid=d['paid'],
+                    referral=d['referral'],
+                    display=d['display'],
+                    social=d['social'],
+                    email=d['email'],
+                    others=d['others'],
                     project_id=project
-                )            
-            res = get_monthly_analytics_data_regex(regex.regex, 24) 
-            for data in res:
-                Monthly.objects.create(
-                    regex=regex,
-                    year_month=data['term'],
-                    session=data['session'],
-                    conversion=data['cv'],
-                    conversion_rate=data['cvr'],
-                    page_view=data['pv'],
-                    page_view_per_session=data['pvr'],
+                )   
+            data = get_monthly_analytics_data(24)
+            for d in data:
+                MonthlyAll.objects.create(
+                    date=d['date'],
+                    users=d['users'],
+                    session=d['session'],
+                    conversion=d['cv'],
+                    conversion_rate=d['cvr'],
+                    page_view=d['pv'],
+                    page_view_per_session=d['pvr'],
+                    direct=d['direct'],
+                    organic=d['organic'],
+                    paid=d['paid'],
+                    referral=d['referral'],
+                    display=d['display'],
+                    social=d['social'],
+                    email=d['email'],
+                    others=d['others'],
                     project_id=project
-                )  
+                )
             return redirect(project_list)
     else:
         form = ProjectForm()
@@ -143,12 +156,12 @@ def report_weekly(request, project_id):
             regex.save()
             return redirect(report_weekly, project_id=project_id)
     else:
-        regex = Regex.objects.get(project_id=project_id, regex='^/*')
-        weekly = Weekly.objects.filter(project_id=project_id, regex=regex).order_by('year_week').reverse()[:24]
+        regex = Regex.objects.filter(project_id=project_id)
+        weekly = WeeklyAll.objects.filter(project_id=project_id).order_by('date').reverse()[:24]
         form = RegexForm()
         data = []
         for w in reversed(weekly):
-            data.append([str(w.year_week), w.session, w.conversion_rate])
+            data.append([str(w.date), w.session, w.conversion_rate])
         context = {
             'term': {'ja': '年週', 'en': 'YearWeek'},
             'id': project_id,
@@ -167,12 +180,12 @@ def report_monthly(request, project_id):
             regex.save()
             return redirect(report_monthly, project_id=project_id)
     else:
-        regex = Regex.objects.get(project_id=project_id, regex='^/*')
-        monthly = Monthly.objects.filter(project_id=project_id, regex=regex).order_by('year_month').reverse()[:24]
+        regex = Regex.objects.filter(project_id=project_id)
+        monthly = MonthlyAll.objects.filter(project_id=project_id).order_by('date').reverse()[:24]
         form = RegexForm()
         data = []
         for m in reversed(monthly):
-            data.append([str(m.year_month), m.session, m.conversion_rate])
+            data.append([str(m.date), m.session, m.conversion_rate])
         context = {
             'term': {'ja': '年月', 'en': 'YearMonth'},
             'id': project_id,

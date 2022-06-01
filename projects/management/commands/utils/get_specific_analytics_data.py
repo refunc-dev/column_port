@@ -94,12 +94,15 @@ def get_analytics_data(regex, start, end, term):
     profile_id = get_first_profile_id(service)
     results = get_results(service, profile_id, regex, start, end, term)
     rows = results.get('rows')
-    print(rows)
     response = []
     for data in rows:
+        if term == 'yearWeek':
+            date = datetime.strptime(f'{data[0]}-7', '%Y%U-%u')
+        elif term == 'yearMonth':
+            date = datetime.strptime(f'{data[0]}', '%Y%m')
         response.append({
             'regex': regex,
-            'term': data[0],
+            'date': date,
             'users': data[1],
             'session':data[2],
             'pv': data[3],
@@ -111,11 +114,11 @@ def get_analytics_data(regex, start, end, term):
 
 def get_weekly_analytics_data_regex(regex, week):
     week = week - 1
-    day = date.today() - timedelta(days=7)
-    yr = day.isocalendar().year
-    wk = day.isocalendar().week
+    day = datetime.now() - timedelta(days=7)
+    yr = day.strftime('%Y')
+    wk = day.strftime('%U')
 
-    end_day = datetime.strptime(f'{yr}-{wk}-6', '%G-%V-%u')
+    end_day = datetime.strptime(f'{yr}-{wk}-6', '%Y-%U-%u')
     start_day = end_day - timedelta(days=6+(week*7))
     end = end_day.strftime('%Y-%m-%d')
     start = start_day.strftime('%Y-%m-%d')

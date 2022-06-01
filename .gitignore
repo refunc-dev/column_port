@@ -132,3 +132,5 @@ test.mp3
 error_page_source.txt
 config/column-port-service.json
 config/google-ads.yaml
+articles/migrations/*
+projects/migrations/*

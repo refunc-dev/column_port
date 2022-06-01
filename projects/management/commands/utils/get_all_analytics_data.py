@@ -56,16 +56,109 @@ def get_first_profile_id(service):
 
     return None
 
+class ChannelData:
+    direct = 0
+    organic = 0
+    paid = 0
+    referral = 0
+    display = 0
+    social = 0
+    email = 0
+    others = 0
+
+    def set(self, channel, amount):
+        if channel == 'Direct':
+            self.direct += amount
+        elif channel == 'Organic Search':
+            self.organic += amount
+        elif channel == 'Paid Search':
+            self.paid += amount
+        elif channel == 'Referral':
+            self.referral += amount
+        elif channel == 'Display':
+            self.display += amount
+        elif channel == 'Social':
+            self.social += amount
+        elif channel == 'Email':
+            self.email += amount
+        elif channel == '(Other)':
+            self.others += amount
+
+    def get(self, channel):
+        if channel == 'direct':
+            return self.direct
+        elif channel == 'organic':
+            return self.organic
+        elif channel == 'paid':
+            return self.paid
+        elif channel == 'referral':
+            return self.referral
+        elif channel == 'display':
+            return self.display
+        elif channel == 'social':
+            return self.social
+        elif channel == 'email':
+            return self.email
+        elif channel == 'others':
+            return self.others
+
 def get_results(service, profile_id, start, end, term):
-    return service.data().ga().get(
+    data = service.data().ga().get(
             ids='ga:' + profile_id,
             start_date=start,
             end_date=end,
             metrics='ga:users,ga:sessions,ga:pageviews,ga:goalCompletionsAll',
-            dimensions='ga:' + term,
+            dimensions=f'ga:{term},ga:channelGrouping',
+            sort='ga:' + term
+            ).execute().get('rows')
+    channel = {}
+    for d in data:
+        if d[0] not in channel:
+            channel[d[0]] = ChannelData()
+        channel[d[0]].set(d[1], int(d[3]))
+    data = service.data().ga().get(
+            ids='ga:' + profile_id,
+            start_date=start,
+            end_date=end,
+            metrics='ga:users,ga:sessions,ga:pageviews,ga:goalCompletionsAll',
+            dimensions=f'ga:{term}',
             sort='ga:' + term,
-            segment='gaid::-5'
-            ).execute()
+            ).execute().get('rows')
+    output = []
+    for d in data:
+        if term == 'yearWeek':
+            date = datetime.strptime(f'{d[0]}-7', '%Y%U-%u')
+        elif term == 'yearMonth':
+            date = datetime.strptime(f'{d[0]}', '%Y%m')
+        item = {
+            'date': date,
+            'users': d[1],
+            'session': d[2],
+            'pv': d[3],
+            'cv': d[4],
+            'cvr': percentage(d[4], d[2]),
+            'pvr': percentage(d[3], d[2]),
+        }
+        if d[0] in channel:
+            item['direct'] = channel[d[0]].get('direct')
+            item['organic'] = channel[d[0]].get('organic')
+            item['paid'] = channel[d[0]].get('paid')
+            item['referral'] = channel[d[0]].get('referral')
+            item['display'] = channel[d[0]].get('display')
+            item['social'] = channel[d[0]].get('social')
+            item['email'] = channel[d[0]].get('email')
+            item['others'] = channel[d[0]].get('others')
+        else:
+            item['direct'] = 0
+            item['organic'] = 0
+            item['paid'] = 0
+            item['referral'] = 0
+            item['display'] = 0
+            item['social'] = 0
+            item['email'] = 0
+            item['others'] = 0
+        output.append(item)
+    return output
 
 def percentage(part, whole):
     if whole == '0':
@@ -86,28 +179,15 @@ def get_all_analytics_data(start, end, term):
             key_file_location=key_file_location)
 
     profile_id = get_first_profile_id(service)
-    results = get_results(service, profile_id, start, end, term)
-    rows = results.get('rows')
-    response = []
-    for data in rows:
-        response.append({
-            'term': data[0],
-            'users': data[1],
-            'session':data[2],
-            'pv': data[3],
-            'cv': data[4],
-            'cvr': percentage(data[4], data[2]),
-            'pvr': percentage(data[3], data[2])
-        })
-    return response
+    return get_results(service, profile_id, start, end, term)
 
 def get_weekly_analytics_data(week):
     week = week - 1
     day = date.today() - timedelta(days=7)
-    yr = day.isocalendar().year
-    wk = day.isocalendar().week
+    yr = day.strftime('%Y')
+    wk = day.strftime('%U')
 
-    end_day = datetime.strptime(f'{yr}-{wk}-6', '%G-%V-%u')
+    end_day = datetime.strptime(f'{yr}-{wk}-6', '%Y-%U-%u')
     start_day = end_day - timedelta(days=6+(week*7))
     end = end_day.strftime('%Y-%m-%d')
     start = start_day.strftime('%Y-%m-%d')
@@ -126,4 +206,4 @@ def get_monthly_analytics_data(month):
     return get_all_analytics_data(start, end, "yearMonth")
 
 if __name__ == '__main__':
-    print(get_weekly_analytics_data(6))
+    print(get_monthly_analytics_data(24))
