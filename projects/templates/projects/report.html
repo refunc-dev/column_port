@@ -6,7 +6,7 @@
 <title>月次レポート - カラムポート(Column Port)</title>
 <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
 <script src="{% static 'projects/js/script.js' %}"></script>
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
 {% endblock %}
 
 {% block main %}
@@ -51,50 +51,17 @@
         <h2 class="main__title">流入レポート_サイト全体（週次）</h2>
         <section class="main__part">
             <h3 class="main__part-title">全チャネル</h3>
-            <article class="main__article">
-                <div id="chart_all" class="main__graph"></div>
-                <script type="text/javascript">
-                    google.charts.load('current', { 'packages': ['corechart'] });
-                    google.charts.setOnLoadCallback(drawChart);
-
-                    function drawChart() {
-                        var data = new google.visualization.DataTable();
-                        data.addColumn('string', '{{ term.ja }}');
-                        data.addColumn('number', 'セッション');
-                        data.addColumn('number', 'CVR');
-                        data.addRows(
-                            {% autoescape off %}
-                            {{ data }}
-                            {% endautoescape %}
-                        );
-                        var options = {
-                            title: 'セッション数とCVR',
-                            hAxis: { title: '{{ term.en }}', titleTextStyle: { color: '#333' } },
-                            vAxis: { minValue: 0 },
-                            vAxes: {
-                                1: { maxValue: 100.0, format: '#0.0\'%\'' }
-                            },
-                            seriesType: 'bars',
-                            series: {
-                                0: { type: 'bars', targetAxisIndex: 0 },
-                                1: { type: 'line', targetAxisIndex: 1, format: '##.0\'%\'' }
-                            }
-                        };
-
-                        var chart = new google.visualization.ComboChart(document.getElementById('chart_all'));
-                        chart.draw(data, options);
-                    }
-                </script>
-            </article>
+            {% include 'projects/include/chart_all.html' with data=data.all %}
+            {% include 'projects/include/chart_channel.html' with data=data.channel %}
         </section>
     </seciton>
     <section class="main__section">
         <h2 class="main__title">流入レポート_ディレクトリ別（週次）</h2>
         <section class="main__part">
             <h3 class="main__part-title">自然検索流入</h3>
-            <aritcle class="main__article">
-                <div id="" class="main__graph"></div>
-            </aritcle>
+            {% for e in data.regex %}
+            {% include 'projects/include/chart_dir.html' with id=forloop.counter regex=e.regex data=e.data %}
+            {% endfor %}
         </section>
         <div id="chart_directory"></div>
     </section>

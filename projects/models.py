@@ -55,7 +55,7 @@ class WeeklyAll(models.Model):
         verbose_name_plural = 'WeeklyAll'
     
     def __str__(self):
-        return f'<WeeklyAll: {self.date}, {self.session}>'
+        return f'<WeeklyAll: {self.channel}, {self.date}, {self.session}>'
 
 
 class MonthlyAll(models.Model):
@@ -84,7 +84,7 @@ class MonthlyAll(models.Model):
         verbose_name_plural = 'MonthlyAll'
     
     def __str__(self):
-        return f'<MonthlyAll: {self.date}, {self.session}>'
+        return f'<MonthlyAll: {self.channel}, {self.date}, {self.session}>'
 
 class WeeklyDir(models.Model):
     regex = models.ForeignKey(

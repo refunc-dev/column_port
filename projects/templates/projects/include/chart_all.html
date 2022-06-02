@@ -1,0 +1,64 @@
+<article class="graph__container">
+    <h3 class="graph__title">セッション数とCVR</h3>
+    <canvas id="chart_all" class="graph__chart"></canvas>
+</article>
+{% autoescape off %}
+<script>
+    ctx_all = document.getElementById("chart_all").getContext("2d");
+
+    var data_all = {
+        labels: {{ data.labels }},
+        datasets: [
+            {
+                type: 'line',
+                label: 'CVR',
+                data: {{ data.cvrData }},
+                borderColor: "rgba(254,97,132,0.8)",
+                pointBackgroundColor: "rgba(254,97,132,0.8)",
+                fill: false,
+                yAxisID: "y-axis-1",// 追加
+            },
+            {
+                type: 'bar',
+                label: 'セッション',
+                data: {{ data.sessionData }},
+                borderColor: "rgba(54,164,235,0.8)",
+                backgroundColor: "rgba(54,164,235,0.5)",
+                yAxisID: "y-axis-2",
+            },
+        ],
+    };
+
+    var options_all = {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            yAxes: [{
+                id: "y-axis-1",
+                type: "linear",
+                position: "left",
+                ticks: {
+                    max: {{ data.cvrMax }},
+                    min: 0,
+                    stepSize: {{ data.cvrStepSize }}
+                },
+            }, {
+                id: "y-axis-2",
+                type: "linear",
+                position: "right",
+                ticks: {
+                    max: {{ data.sessionMax }},
+                    min: 0,
+                    stepSize: {{ data.sessionStepSize }}
+                },
+            }],
+        }
+    };
+
+    var chart_all = new Chart(ctx_all, {
+        type: 'bar',
+        data: data_all,
+        options: options_all
+    });
+</script>
+{% endautoescape %}
