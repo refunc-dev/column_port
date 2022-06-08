@@ -46,6 +46,8 @@ def project_new(request):
                     page_view_per_session=d['pvr'],
                     direct=d['direct'],
                     organic=d['organic'],
+                    organic_conversion=d['organic_conversion'],
+                    organic_conversion_rate=d['organic_conversion_rate'],
                     paid=d['paid'],
                     referral=d['referral'],
                     display=d['display'],
@@ -66,6 +68,8 @@ def project_new(request):
                     page_view_per_session=d['pvr'],
                     direct=d['direct'],
                     organic=d['organic'],
+                    organic_conversion=d['organic_conversion'],
+                    organic_conversion_rate=d['organic_conversion_rate'],
                     paid=d['paid'],
                     referral=d['referral'],
                     display=d['display'],
@@ -95,8 +99,8 @@ def project_detail(request, project_id):
                     path=data['path'],
                     year_week=data['year_week'],
                     session=data['session'],
-                    conversion_rate=data['cvr'],
                     conversion=data['cv'],
+                    conversion_rate=data['cvr'],
                     article_id=article
                 )
             return redirect(project_detail, project_id=project_id)
@@ -113,13 +117,13 @@ def project_detail(request, project_id):
                 cvr[f"{i + 1}"] = a.conversion_rate
                 cv[f"{i + 1}"] = a.conversion
             klist = []
-            keywords = Keyword.objects.filter(article_id=article.id).all()
+            keywords = article.keywords.all()
             size = len(keywords)
             if size == 0:
                 size = 1
             else:
                 for k in keywords:
-                    ranking = Ranking.objects.filter(keyword_id=k.id).order_by('date').reverse()[:6]
+                    ranking = Ranking.objects.filter(article_id=article,keyword_id=k).order_by('date').reverse()[:6]
                     kdata = {
                         "keyword": k.keyword,
                         "volume": k.volume,
@@ -161,6 +165,7 @@ def create_report_data(data, regex):
         'labels': [],
         'directData': [],
         'organicData': [],
+        'organicConversion': [],
         'paidData': [],
         'referralData': [],
         'displayData': [],
@@ -179,6 +184,7 @@ def create_report_data(data, regex):
         channel['labels'].append(d.date.strftime('%m/%d~'))
         channel['directData'].append(d.direct)
         channel['organicData'].append(d.organic)
+        channel['organicConversion'].append(d.organic_conversion)
         channel['paidData'].append(d.paid)
         channel['referralData'].append(d.referral)
         channel['displayData'].append(d.display)
@@ -282,7 +288,8 @@ def report_weekly(request, project_id):
         context = {
             'id': project_id,
             'data': create_report_data(weekly, rdata),
-            'form': form
+            'form': form,
+            'type': {'en': 'weekly', 'ja': '週次'}
         }
     return render(request, 'projects/report.html', context)
 
@@ -297,7 +304,7 @@ def report_monthly(request, project_id):
                 regex=regex,
                 project_id=project
             )
-            data = get_weekly_analytics_data_regex(regex, 12)
+            data = get_weekly_analytics_data_regex(regex, 24)
             for d in data:
                 WeeklyDir.objects.create(
                     regex=r,
@@ -310,7 +317,7 @@ def report_monthly(request, project_id):
                     page_view_per_session=d['pvr'],
                     project_id=project
                 )   
-            data = get_monthly_analytics_data_regex(regex, 12)
+            data = get_monthly_analytics_data_regex(regex, 24)
             for d in data:
                 MonthlyDir.objects.create(
                     regex=r,
@@ -328,12 +335,13 @@ def report_monthly(request, project_id):
         regex = Regex.objects.filter(project_id=project_id)
         rdata = []
         for r in regex:
-            rdata.append(MonthlyDir.objects.filter(regex=r).order_by('date').reverse()[:12])
+            rdata.append(MonthlyDir.objects.filter(regex=r).order_by('date').reverse()[:24])
         monthly = MonthlyAll.objects.filter(project_id=project_id).order_by('date').reverse()[:24]
         form = RegexForm()
         context = {
             'id': project_id,
             'data': create_report_data(monthly, rdata),
-            'form': form
+            'form': form,
+            'type': {'en': 'monthly', 'ja': '月次'}
         }
     return render(request, 'projects/report.html', context)

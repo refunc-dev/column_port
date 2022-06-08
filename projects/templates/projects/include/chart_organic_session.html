@@ -1,0 +1,76 @@
+<article class="graph">
+    <h4 class="graph__title">セッション数</h4>
+    <div class="graph__container organic_session">
+        <canvas id="chart_organic_session" class="graph__chart"></canvas>
+    </div>
+</article>
+{% autoescape off %}
+<script>
+    ctx_organic_session = document.getElementById("chart_organic_session").getContext("2d");
+
+    var data_organic_session = {
+        labels: [
+            {% for e in data.labels %}
+            {% if forloop.counter > 12 %}
+            "{{ e }}",
+            {% endif %}
+            {% endfor %}
+        ],
+        datasets: [
+            {% if type == 'monthly' %}
+            {
+                type: 'bar',
+                label: 'セッション（昨年）',
+                data: [
+                    {% for e in channel.organicData %}
+                    {% if forloop.counter <= 12 %}
+                    {{ e }},
+                    {% endif %}
+                    {% endfor %}
+                ],
+                borderColor: "rgba(0,164,235,0.8)",
+                backgroundColor: "rgba(0,164,235,0.5)",
+                yAxisID: "y-axis",
+            },
+            {% endif %}
+            {
+                type: 'bar',
+                label: 'セッション',
+                data: [
+                    {% for e in channel.organicData %}
+                    {% if forloop.counter > 12 %}
+                    {{ e }},
+                    {% endif %}
+                    {% endfor %}
+                ],
+                borderColor: "rgba(54,164,235,0.8)",
+                backgroundColor: "rgba(54,164,235,0.5)",
+                yAxisID: "y-axis",
+            },
+        ],
+    };
+
+    var options_organic_session = {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            yAxes: [{
+                id: "y-axis",
+                type: "linear",
+                position: "left",
+                ticks: {
+                    max: {{ data.sessionMax }},
+                    min: 0,
+                    stepSize: {{ data.sessionStepSize }}
+                },
+            }],
+        }
+    };
+
+    var chart_organic_session = new Chart(ctx_organic_session, {
+        type: 'bar',
+        data: data_organic_session,
+        options: options_organic_session
+    });
+</script>
+{% endautoescape %}

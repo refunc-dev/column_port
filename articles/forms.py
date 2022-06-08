@@ -10,4 +10,4 @@ class ArticleForm(forms.ModelForm):
 class KeywordForm(forms.ModelForm):
     class Meta:
         model = Keyword
-        fields = '__all__'
+        fields = ('keyword',)

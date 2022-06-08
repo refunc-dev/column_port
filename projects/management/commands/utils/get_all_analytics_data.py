@@ -59,6 +59,8 @@ def get_first_profile_id(service):
 class ChannelData:
     direct = 0
     organic = 0
+    organic_conversion = 0
+    organic_conversion_rate = 0
     paid = 0
     referral = 0
     display = 0
@@ -66,11 +68,13 @@ class ChannelData:
     email = 0
     others = 0
 
-    def set(self, channel, amount):
+    def set(self, channel, amount, cv):
         if channel == 'Direct':
             self.direct += amount
         elif channel == 'Organic Search':
             self.organic += amount
+            self.organic_conversion += cv
+            self.organic_conversion_rate = percentage(cv, amount)
         elif channel == 'Paid Search':
             self.paid += amount
         elif channel == 'Referral':
@@ -89,6 +93,10 @@ class ChannelData:
             return self.direct
         elif channel == 'organic':
             return self.organic
+        elif channel == 'organic_conversion':
+            return self.organic_conversion
+        elif channel == 'organic_conversion_rate':
+            return self.organic_conversion_rate
         elif channel == 'paid':
             return self.paid
         elif channel == 'referral':
@@ -115,7 +123,7 @@ def get_results(service, profile_id, start, end, term):
     for d in data:
         if d[0] not in channel:
             channel[d[0]] = ChannelData()
-        channel[d[0]].set(d[1], int(d[3]))
+        channel[d[0]].set(d[1], int(d[3]), int(d[5]))
     data = service.data().ga().get(
             ids='ga:' + profile_id,
             start_date=start,
@@ -142,6 +150,8 @@ def get_results(service, profile_id, start, end, term):
         if d[0] in channel:
             item['direct'] = channel[d[0]].get('direct')
             item['organic'] = channel[d[0]].get('organic')
+            item['organic_conversion'] = channel[d[0]].get('organic_conversion')
+            item['organic_conversion_rate'] = channel[d[0]].get('organic_conversion_rate')
             item['paid'] = channel[d[0]].get('paid')
             item['referral'] = channel[d[0]].get('referral')
             item['display'] = channel[d[0]].get('display')
@@ -151,6 +161,8 @@ def get_results(service, profile_id, start, end, term):
         else:
             item['direct'] = 0
             item['organic'] = 0
+            item['organic_conversion'] = 0
+            item['organic_conversion_rate'] = 0.0
             item['paid'] = 0
             item['referral'] = 0
             item['display'] = 0

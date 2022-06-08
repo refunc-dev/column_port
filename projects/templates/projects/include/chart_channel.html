@@ -1,6 +1,8 @@
-<article class="graph__container">
-    <h3 class="graph__title">チャネル別セッション数</h3>
-    <canvas id="chart_channel" class="graph__chart"></canvas>
+<article class="graph">
+    <h4 class="graph__title">チャネル別セッション数</h4>
+    <div class="graph__container">
+        <canvas id="chart_channel" class="graph__chart"></canvas>
+    </div>
 </article>
 {% autoescape off %}
 <script>
@@ -70,6 +72,7 @@
 
     var options_channel = {
         responsive: true,
+        maintainAspectRatio: false,
         scales: {
             yAxes: [{
                 type: "linear",

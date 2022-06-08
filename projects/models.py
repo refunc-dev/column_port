@@ -33,12 +33,14 @@ class WeeklyAll(models.Model):
     date = models.DateField('日付') 
     users = models.PositiveIntegerField('ユーザー数', default=0)
     session = models.PositiveIntegerField('流入数', default=0)
-    conversion = models.FloatField('CV数', default=0)
+    conversion = models.PositiveIntegerField('CV数', default=0)
     conversion_rate = models.FloatField('CVR', default=0.0)
     page_view = models.FloatField('PV', default=0)
     page_view_per_session = models.FloatField('PV/流入数', default=0)
     direct = models.PositiveIntegerField('ダイレクト', default=0)
     organic = models.PositiveIntegerField('自然検索', default=0)
+    organic_conversion = models.FloatField('自然検索CV数', default=0)
+    organic_conversion_rate = models.FloatField('自然検索CVR', default=0.0)
     paid = models.PositiveIntegerField('有料検索', default=0)
     referral = models.PositiveIntegerField('リファラー', default=0)
     display = models.PositiveIntegerField('ディスプレイ', default=0)
@@ -55,19 +57,21 @@ class WeeklyAll(models.Model):
         verbose_name_plural = 'WeeklyAll'
     
     def __str__(self):
-        return f'<WeeklyAll: {self.channel}, {self.date}, {self.session}>'
+        return f'<WeeklyAll: {self.date}, {self.session}>'
 
 
 class MonthlyAll(models.Model):
     date = models.DateField('日付') 
     users = models.PositiveIntegerField('ユーザー数', default=0)
     session = models.PositiveIntegerField('流入数', default=0)
-    conversion = models.FloatField('CV数', default=0)
+    conversion = models.PositiveIntegerField('CV数', default=0)
     conversion_rate = models.FloatField('CVR', default=0.0)
     page_view = models.FloatField('PV', default=0)
     page_view_per_session = models.FloatField('PV/流入数', default=0)
     direct = models.PositiveIntegerField('ダイレクト', default=0)
     organic = models.PositiveIntegerField('自然検索', default=0)
+    organic_conversion = models.FloatField('自然検索CV数', default=0)
+    organic_conversion_rate = models.FloatField('自然検索CVR', default=0.0)
     paid = models.PositiveIntegerField('有料検索', default=0)
     referral = models.PositiveIntegerField('リファラー', default=0)
     display = models.PositiveIntegerField('ディスプレイ', default=0)
@@ -84,7 +88,7 @@ class MonthlyAll(models.Model):
         verbose_name_plural = 'MonthlyAll'
     
     def __str__(self):
-        return f'<MonthlyAll: {self.channel}, {self.date}, {self.session}>'
+        return f'<MonthlyAll: {self.date}, {self.session}>'
 
 class WeeklyDir(models.Model):
     regex = models.ForeignKey(

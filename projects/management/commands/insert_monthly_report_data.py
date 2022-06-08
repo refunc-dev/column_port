@@ -21,6 +21,8 @@ class Command(BaseCommand):
                     page_view_per_session=d['pvr'],
                     direct=d['direct'],
                     organic=d['organic'],
+                    organic_conversion=d['organic_conversion'],
+                    organic_conversion_rate=d['organic_conversion_rate'],
                     paid=d['paid'],
                     referral=d['referral'],
                     display=d['display'],

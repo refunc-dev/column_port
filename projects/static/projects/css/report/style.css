@@ -580,7 +580,7 @@ html {
 .header {
   width: 100%;
   height: 60px;
-  position: absolute;
+  position: fixed;
   top: 0;
   border-bottom: 1px solid #c9c9c9;
 }
@@ -763,6 +763,12 @@ html {
   min-height: calc(100vh - 60px);
   margin-left: 240px;
   padding: 20px;
+  position: absolute;
+  top: 60px;
+}
+
+.main .contents .main__section {
+  position: relative;
 }
 
 .main .contents .main__title {
@@ -785,36 +791,9 @@ html {
   transform: rotate(45deg);
 }
 
-.main .contents .main__table {
-  border-collapse: collapse;
-  border: solid 2px;
-}
-
-.main .contents .main__th,
-.main .contents .main__td {
-  border: solid 1px;
-}
-
-.main .contents .main__item {
-  width: 100%;
-  height: 150px;
-  font-size: 1.5rem;
-  margin-bottom: 10px;
-  padding: 10px;
-}
-
-.main .contents .main__item:hover {
-  opacity: 0.8;
-}
-
-.main .contents .main__item-name {
-  margin-right: 15px;
-}
-
 .footer {
   width: 100%;
   height: 50px;
-  position: absolute;
   right: 0;
   bottom: 0;
 }

@@ -145,3 +145,6 @@ def search_ranking_browser(domain, search_words):
     except Exception as err:
         #logger.debug(f'search_ranking: {err}')
         return(1)
+
+if __name__ == '__main__':
+    print(search_ranking_browser('artmake-school.com', 'アートメイク スクール'))

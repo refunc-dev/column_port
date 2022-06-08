@@ -1,6 +1,8 @@
-<article class="graph__container">
-    <h3 class="graph__title">セッション数とCVR</h3>
-    <canvas id="chart_all" class="graph__chart"></canvas>
+<article class="graph">
+    <h4 class="graph__title">セッション数とCVR</h4>
+    <div class="graph__container all">
+        <canvas id="chart_all" class="graph__chart"></canvas>
+    </div>
 </article>
 {% autoescape off %}
 <script>
@@ -16,7 +18,7 @@
                 borderColor: "rgba(254,97,132,0.8)",
                 pointBackgroundColor: "rgba(254,97,132,0.8)",
                 fill: false,
-                yAxisID: "y-axis-1",// 追加
+                yAxisID: "y-axis-1",
             },
             {
                 type: 'bar',
@@ -26,6 +28,16 @@
                 backgroundColor: "rgba(54,164,235,0.5)",
                 yAxisID: "y-axis-2",
             },
+            {% if type == 'month' %}
+            {
+                type: 'bar',
+                label: 'セッション（昨年）',
+                data: {{ data.sessionData2 }},
+                borderColor: "rgba(0,164,235,0.8)",
+                backgroundColor: "rgba(0,164,235,0.5)",
+                yAxisID: "y-axis-2",
+            }
+            {% endif %}
         ],
     };
 
@@ -36,16 +48,19 @@
             yAxes: [{
                 id: "y-axis-1",
                 type: "linear",
-                position: "left",
+                position: "right",
                 ticks: {
                     max: {{ data.cvrMax }},
                     min: 0,
-                    stepSize: {{ data.cvrStepSize }}
+                    stepSize: {{ data.cvrStepSize }},
+                    callback: function (value) {
+                        return value + '%';
+                    }
                 },
             }, {
                 id: "y-axis-2",
                 type: "linear",
-                position: "right",
+                position: "left",
                 ticks: {
                     max: {{ data.sessionMax }},
                     min: 0,

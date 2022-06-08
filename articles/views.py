@@ -9,7 +9,9 @@ from projects.views import project_list
 
 from articles.management.commands.utils.get_specific_analytics_data import get_analytics_data_eq
 from articles.management.commands.utils.generate_keywords_api import generate_keywords_api
+
 from urllib.parse import urlparse
+from datetime import date
 
 
 @login_required
@@ -17,9 +19,14 @@ def keyword_new(request, article_id):
     if request.method == 'POST':
         form = KeywordForm(request.POST)
         if form.is_valid():
-            keyword = form.save(commit=False)
-            keyword.volume = generate_keywords_api(keyword.keyword)
-            keyword.save()
+            keyword = request.POST.get('keyword')
+            k = Keyword.objects.create(
+                keyword=keyword,
+                volume=generate_keywords_api(keyword),
+                updated_at=date.today()
+            )
+            article = Article.objects.get(id=article_id)
+            article.keywords.add(k)
             messages.add_message(request, messages.SUCCESS,
                                 "スニペットを作成しました。")
             return redirect(project_list)
