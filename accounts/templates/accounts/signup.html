@@ -17,7 +17,10 @@
 <form class="main__form" action="" method="POST">
     {% csrf_token %}
     <input type="hidden" name="next" value="{{ next }}">
-    <input class="main__form-input" type="text" name="username" id="username" placeholder="メールアドレス">
+    <input class="main__form-input" type="text" name="username" id="username" placeholder="ユーザー名">
+    <input class="main__form-input" type="text" name="email" id="email" placeholder="メールアドレス">
+    <input class="main__form-input" type="text" name="first_name" id="first_name" placeholder="名">
+    <input class="main__form-input" type="text" name="last_name" id="last_name" placeholder="姓">
     <input class="main__form-input" type="text" name="password1" id="password1" placeholder="パスワード">
     <input class="main__form-input" type="text" name="password2" id="password2" placeholder="パスワード（確認）">
     <button class="main__form-btn" type="submit">新規登録</button>
