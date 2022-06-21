@@ -102,7 +102,7 @@ def search_ranking_browser(driver, kw):
             sleep(random.randint(2, 4))
             
         soup = BeautifulSoup(driver.page_source, "html.parser")
-        search_site_list = soup.select('div.ZINbbc.xpd.O9g5cc.uUPGi')
+        search_site_list = soup.select('div.Gx5Zad.fP1Qef.xpd.EtOod.pkphOe')
 
         return search_all_rank(search_site_list)
 

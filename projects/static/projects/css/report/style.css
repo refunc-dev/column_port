@@ -661,6 +661,7 @@ html {
           transform: translateY(-10px);
   opacity: 0;
   visibility: hidden;
+  z-index: 999;
 }
 
 .header .header__inner .header__popup.active {

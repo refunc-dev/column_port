@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% load static %}
+{% load i18n %}
+{% load account socialaccount %}
+
+{% block head_title %}{% trans "Sign In" %} - カラムポート(Column Port){% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'accounts/css/login/style.css' %}">
+<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+<script src="{% static 'accounts/js/script.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<main class="main">
+  <div class="main__inner">
+    <div id="focus"></div>
+    <h1 class="main__title">
+      <img class="main__title-image" src="{% static 'images/column_port_title.svg' %}" alt="Column Port">
+      <p class="main__title-text">Login</p>
+    </h1>
+    {% get_providers as socialaccount_providers %}
+
+    <form class="main__form" method="POST" action="{% url 'account_login' %}">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ next }}">
+      <input class="main__input" type="email" name="login" placeholder="メールアドレス" autocomplete="email" required
+        id="id_login">
+      <input class="main__input" type="password" name="password" placeholder="パスワード" autocomplete="current-password"
+        required id="id_password">
+      <button class="main__primaryAction" type="submit">{% trans "Sign In" %}</button>
+      <a class="main__secondaryAction" href="{% url 'account_reset_password' %}">パスワードをお忘れの方はこちら</a>
+      {% if redirect_field_value %}
+      <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+      {% endif %}
+    </form>
+    <div class="main__or">
+      <span class="main__or-border"></span>
+      <p class="main__or-text">または</p>
+      <span class="main__or-border right"></span>
+    </div>
+    <a title="Google" class="socialaccount_provider google main__google"
+      href="/accounts/google/login/?process=login">Googleでログインする</a>
+    <div class="main__signup">
+      <img class="main__signup-img" src="{% static 'accounts/images/question.png' %}">
+      <p class="main__signup-check">まだアカウントをお持ちではありませんか？</p>
+      <a class="main__signup-link" href="{% url 'account_signup' %}">アカウント登録はこちら</a>
+    </div>
+  </div>
+</main>
+{% endblock %}

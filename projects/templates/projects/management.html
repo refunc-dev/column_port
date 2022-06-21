@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block head_title %}記事管理表 - カラムポート(Column Port){% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'projects/css/management/style.css' %}">
+<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+<script src="{% static 'js/script.js' %}"></script>
+<script src="{% static 'projects/js/management/script.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<main class="main">
+    <div class="main__inner">
+        <nav class="nav">
+            <ul class="nav__list">
+                <li class="nav__item">
+                    <a class="nav__title" href="">プロジェクト</a>
+                    <ul class="nav__sub-list">
+                        {% for project in projects %}
+                        <li class="nav__sub-item">
+                            <a class="nav__sub-link" href="/projects/{{ project.id }}">{{ project.name }}</a>
+                        </li>
+                        {% endfor %}
+                        <li class="nav__sub-item">
+                            <a id="new-project" class="nav__sub-link" href="">[ 新規プロジェクト登録 ]</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav__item">
+                    <a class="nav__title" href="">流入レポート</a>
+                    <ul class="nav__sub-list">
+                        <li class="nav__sub-item">
+                            <a class="nav__sub-link" href="/projects/{{ id }}/reports/weekly/">週次</a>
+                        </li>
+                        <li class="nav__sub-item">
+                            <a class="nav__sub-link" href="/projects/{{ id }}/reports/monthly/">月次</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav__item">
+                    <a class="nav__title" href="">Keyword Researcher</a>
+                </li>
+                <li class="nav__item">
+                    <a class="nav__title" href="">設定</a>
+                    <ul class="nav__sub-list">
+                        <li class="nav__sub-item">
+                            <a class="nav__sub-link" href="/projects/">マイページ</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav__item">
+                    <a class="nav__title" href="">サポート</a>
+                    <ul class="nav__sub-list">
+                        <li class="nav__sub-item">ヘルプ</li>
+                        <li class="nav__sub-item">お知らせ</li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+        <div class="contents">
+            <ul class="breadcrumb__list">
+                <li class="breadcrumb__item">
+                    <a class="breadcrumb">{{ current.name }}</a>
+                </li>
+                <li class="breadcrumb__item">
+                    <a class="breadcrumb">記事管理表</a>
+                </li>
+            </ul>
+            <section class="articles">
+                {% if articles %}
+                <div class="articles__inner">
+                    <table class="articles__table">
+                        <thead class="articles__thead">
+                            <tr class="articles__tr">
+                                <th class="articles__th" rowspan="2">ID</th>
+                                <th class="articles__th title" rowspan="2">記事タイトル/URLパス</th>
+                                <th class="articles__th" rowspan="2">公開日/更新日</th>
+                                <th class="articles__th" rowspan="2">担当</th>
+                                <th class="articles__th" rowspan="2">種別</th>
+                                <th class="articles__th" colspan="6">流入数</th>
+                                <th class="articles__th" colspan="6">CVR</th>
+                                <th class="articles__th" colspan="6">CV数</th>
+                                <th class="articles__th keyword" rowspan="2">メイン対策KW</th>
+                                <th class="articles__th" rowspan="2">検索数</th>
+                                <th class="articles__th" colspan="6">検索順位</th>
+                                <th class="articles__th" rowspan="2">正誤表</th>
+                                <th class="articles__th ranking-page" rowspan="2">ランクインページ</th>
+                            </tr>
+                            <tr class="articles__tr">
+                                {% with ''|center:4 as range %}
+                                {% for _ in range %}
+                                <th class="articles__th">{{ articles.0.date.6 }}</th>
+                                <th class="articles__th">{{ articles.0.date.5 }}</th>
+                                <th class="articles__th">{{ articles.0.date.4 }}</th>
+                                <th class="articles__th">{{ articles.0.date.3 }}</th>
+                                <th class="articles__th">{{ articles.0.date.2 }}</th>
+                                <th class="articles__th">{{ articles.0.date.1 }}</th>
+                                {% endfor %}
+                                {% endwith %}
+                            </tr>
+                        </thead>
+                        <tbody class="articles__item">
+                            {% for contents in articles %}
+                            <tr class="articles__tr">
+                                <td class="articles__td" rowspan="{{ contents.size }}">
+                                    <a class="aritcles__link" href="/articles/{{ contents.article.id }}/">
+                                        {{ contents.article.id }}
+                                    </a>
+                                </td>
+                                <td class="aritcles__td" rowspan="{{ contents.size }}">
+                                    {{ contents.article.title }}<br>{{ contents.article.url }}</td>
+                                <td class="articles__td" rowspan="{{ contents.size }}">
+                                    {{ contents.article.published_at }}<br>
+                                    {{ contents.article.updated_at }}
+                                </td>
+                                <td class="articles__td" rowspan="{{ contents.size }}">
+                                    {{ contents.article.person_in_charge }}
+                                </td>
+                                <td class="articles__td" rowspan="{{ contents.size }}"></td>
+                                <td class="articles__td" rowspan="{{ contents.size }}">{{ contents.session.6 }}</td>
+                                <td class="articles__td" rowspan="{{ contents.size }}">{{ contents.session.5 }}</td>
+                                <td class="articles__td" rowspan="{{ contents.size }}">{{ contents.session.4 }}</td>
+                                <td class="articles__td" rowspan="{{ contents.size }}">{{ contents.session.3 }}</td>
+                                <td class="articles__td" rowspan="{{ contents.size }}">{{ contents.session.2 }}</td>
+                                <td class="articles__td" rowspan="{{ contents.size }}">{{ contents.session.1 }}</td>
+                                <td class="articles__td" rowspan="{{ contents.size }}">{{ contents.cvr.6 }}</td>
+                                <td class="articles__td" rowspan="{{ contents.size }}">{{ contents.cvr.5 }}</td>
+                                <td class="articles__td" rowspan="{{ contents.size }}">{{ contents.cvr.4 }}</td>
+                                <td class="articles__td" rowspan="{{ contents.size }}">{{ contents.cvr.3 }}</td>
+                                <td class="articles__td" rowspan="{{ contents.size }}">{{ contents.cvr.2 }}</td>
+                                <td class="articles__td" rowspan="{{ contents.size }}">{{ contents.cvr.1 }}</td>
+                                <td class="articles__td" rowspan="{{ contents.size }}">{{ contents.cv.6 }}</td>
+                                <td class="articles__td" rowspan="{{ contents.size }}">{{ contents.cv.5 }}</td>
+                                <td class="articles__td" rowspan="{{ contents.size }}">{{ contents.cv.4 }}</td>
+                                <td class="articles__td" rowspan="{{ contents.size }}">{{ contents.cv.3 }}</td>
+                                <td class="articles__td" rowspan="{{ contents.size }}">{{ contents.cv.2 }}</td>
+                                <td class="articles__td" rowspan="{{ contents.size }}">{{ contents.cv.1 }}</td>
+                                {% for keyword in contents.keywords %}
+                                {% if forloop.first %}
+                                <td class="articles__td">{{ keyword.keyword }}</td>
+                                <td class="articles__td">{{ keyword.volume }}</td>
+                                <td class="articles__td">{{ keyword.6 }}</td>
+                                <td class="articles__td">{{ keyword.5 }}</td>
+                                <td class="articles__td">{{ keyword.4 }}</td>
+                                <td class="articles__td">{{ keyword.3 }}</td>
+                                <td class="articles__td">{{ keyword.2 }}</td>
+                                <td class="articles__td">{{ keyword.1 }}</td>
+                                <td class="articles__td">{{ keyword.right_wrong }}</td>
+                                <td class="articles__td">{{ keyword.ranking_page }}</td>
+                            </tr>
+                            {% else %}
+                            <tr class="main__tr">
+                                <td class="articles__td">{{ keyword.keyword }}</td>
+                                <td class="articles__td">{{ keyword.volume }}</td>
+                                <td class="articles__td">{{ keyword.6 }}</td>
+                                <td class="articles__td">{{ keyword.5 }}</td>
+                                <td class="articles__td">{{ keyword.4 }}</td>
+                                <td class="articles__td">{{ keyword.3 }}</td>
+                                <td class="articles__td">{{ keyword.2 }}</td>
+                                <td class="articles__td">{{ keyword.1 }}</td>
+                                <td class="articles__td">{{ keyword.right_wrong }}</td>
+                                <td class="articles__td">{{ keyword.ranking_page }}</td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% endif %}
+                <button class="articles__add-btn" type="button">+ 入力で記事登録</button>
+                <div class="modal-container">
+                    <div class="modal-body">
+                        <div class="modal-close">×</div>
+                        <div class="modal-content">
+                            <form method="post" class="articles__add-form">
+                                {% csrf_token %}
+                                <input class="articles__add-input" type="text" name="url" maxlength="2083" required
+                                    id="id_url" placeholder="記事URL">
+                                <input class="articles__add-input" type="text" name="title" maxlength="100" required
+                                    id="id_title" placeholder="記事タイトル">
+                                <input class="articles__add-input" type="date" name="published_at" required
+                                    id="id_published_at" placeholder="公開日">
+                                <input class="articles__add-input" type="date" name="updated_at" id="id_updated_at"
+                                    placeholder="更新日">
+                                <button class="articles__add-submit" type="submit">登録</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</main>
+{% endblock %}

@@ -78,11 +78,12 @@ def percentage(part, whole):
     return round(percentage, 1)
 
 def get_analytics_data(path, week):
-    day = date.today() - timedelta(days=7)
-    yr = day.isocalendar().year
-    wk = day.isocalendar().week
+    week = week - 1
+    day = datetime.now() - timedelta(days=7)
+    yr = day.strftime('%Y')
+    wk = day.strftime('%U')
 
-    end_day = datetime.strptime(f'{yr}-{wk}-6', '%G-%V-%u')
+    end_day = datetime.strptime(f'{yr}-{wk}-6', '%Y-%U-%u')
     start_day = end_day - timedelta(days=6+(week*7))
     end = end_day.strftime('%Y-%m-%d')
     start = start_day.strftime('%Y-%m-%d')
@@ -103,9 +104,10 @@ def get_analytics_data(path, week):
     rows = results.get('rows')
     response = []
     for data in rows:
+        date = datetime.strptime(f'{data[2]}-7', '%Y%U-%u')
         response.append({
             'path': data[1],
-            'year_week': data[2],
+            'date': date,
             'session':data[3],
             'cv': data[4],
             'cvr': percentage(data[4], data[3])

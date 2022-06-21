@@ -172,7 +172,7 @@ class Ranking(models.Model):
 
 class Analytics(models.Model):
     path = models.CharField('記事URL', max_length=2083)
-    year_week = models.PositiveIntegerField('週', default=0) 
+    date = models.DateField('日付') 
     session = models.PositiveIntegerField('流入数', default=0)
     conversion = models.FloatField('CV数', default=0)
     conversion_rate = models.FloatField('CVR', default=0.0)

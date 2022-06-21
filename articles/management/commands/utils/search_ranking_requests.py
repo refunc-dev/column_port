@@ -71,7 +71,7 @@ def search_ranking_requests(domain, search_words):
 
             # Googleのページ解析を行う
             soup = BeautifulSoup(request.text, "html.parser")
-            search_site_list = soup.select('div.ZINbbc.xpd.O9g5cc.uUPGi')
+            search_site_list = soup.select('div.Gx5Zad.fP1Qef.xpd.EtOod.pkphOe')
 
             data.append(search_specific_rank(domain, search_site_list, obj))
             sleep(random.randint(2, 7))

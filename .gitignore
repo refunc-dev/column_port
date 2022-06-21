@@ -134,3 +134,4 @@ config/column-port-service.json
 config/google-ads.yaml
 articles/migrations/*
 projects/migrations/*
+accounts/migrations/*

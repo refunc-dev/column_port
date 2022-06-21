@@ -71,6 +71,7 @@
       transform: translateY(-10px);
       opacity: 0;
       visibility: hidden;
+      z-index: 999;
 
       &.active {
         opacity: 1;

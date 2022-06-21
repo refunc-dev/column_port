@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% load static %}
+{% load i18n %}
+{% block head_title %}アカウント登録 - カラムポート(Column Port){% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'accounts/css/signup/style.css' %}">
+<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+<script src="{% static 'accounts/js/script.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<main class="main">
+  <div class="main__inner">
+    <div id="focus"></div>
+    <h1 class="main__title">
+      <img class="main__title-image" src="{% static 'images/column_port_title.svg' %}" alt="Column Port">
+      <p class="main__title-text">Sign Up</p>
+    </h1>
+
+    <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ next }}">
+      <input class="main__form-input" type="text" name="username" id="username" placeholder="ユーザー名">
+      <input class="main__form-input" type="email" name="email" id="email" placeholder="メールアドレス">
+      <input class="main__form-input" type="password" name="password1" id="password1" placeholder="パスワード">
+      <input class="main__form-input" type="password" name="password2" id="password2" placeholder="パスワード（確認）">
+      <button class="main__form-btn" type="submit">アカウント登録</button>
+      {% if redirect_field_value %}
+      <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+      {% endif %}
+      <div class="main__login">
+        <img class="main__login-img" src="{% static 'accounts/images/question.png' %}">
+        <p class="main__login-check">既にアカウントをお持ちですか？</p>
+        <a class="main__login-link" href="{% url 'account_login' %}">ログインはこちら</a>
+      </div>
+    </form>
+  </div>
+</main>
+{% endblock %}

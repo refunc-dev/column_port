@@ -3,7 +3,7 @@ from django.db import models
 
 class Project(models.Model):
     name = models.CharField('プロジェクト名', max_length=128)
-    url = models.CharField('プロジェクトURL', max_length=2083)
+    domain = models.CharField('プロジェクトURL', max_length=2083)
     created_by = models.ForeignKey(
                     settings.AUTH_USER_MODEL,
                     verbose_name="作成者",
@@ -13,7 +13,7 @@ class Project(models.Model):
     created_at = models.DateField('作成日', auto_now_add=True)
 
     def __str__(self):
-        return f'<Project: {self.name}, {self.url}>'
+        return f'<Project: {self.name}, {self.domain}>'
 
 class Regex(models.Model):
     regex = models.CharField('正規表現', max_length=100)

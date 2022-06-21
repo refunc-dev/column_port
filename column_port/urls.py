@@ -16,12 +16,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from projects.views import top
+from projects.views import project_list
 
 urlpatterns = [
-    path('', top, name='top'),
+    path('', project_list, name='top'),
     path('admin/', admin.site.urls),
     path('projects/', include('projects.urls')),
-    path('accounts/', include('accounts.urls')),
+    path('accounts/', include('allauth.urls')),
     path('articles/', include('articles.urls')),
 ]

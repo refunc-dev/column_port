@@ -49,12 +49,31 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.sites',
     'django.contrib.staticfiles',
     'django_extensions',
     'projects.apps.ProjectsConfig',
     'accounts.apps.AccountsConfig',
     'articles.apps.ArticlesConfig',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 ]
+
+SITE_ID = 1
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -96,6 +115,12 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
 
 
 # Password validation
@@ -144,6 +169,36 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_URL = '/accounts/login/'
+AUTH_USER_MODEL = 'accounts.User'
+
+LOGIN_URL = 'account_login'
 LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = 'account_login'
+ACCOUNT_LOGOUT_REDIRECT_URL = 'account_login'
+ACCOUNT_SIGNUP_REDIRECT_URL = '/'
+
+DEFAULT_FROM_EMAIL = 'refunc.tech@gmail.com'
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 1
+
+ACCOUNT_FORMS = {
+    'signup': 'accounts.forms.CustomSignupForm',
+}
+
+SOCIALACCOUNT_EMAIL_VERIFICATION = 'none' 
+SOCIALACCOUNT_EMAIL_REQUIRED = False
+SOCIALACCOUNT_USERNAME_REQUIRED = False
+
+ACCOUNT_EMAIL_SUBJECT_PREFIX = ''
+ACCOUNT_MAX_EMAIL_ADDRESSES = 2
+ACCOUNT_USERNAME_BLACKLIST = []
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'refunc.tech@gmail.com'
+EMAIL_HOST_PASSWORD = 'fzxlwvgwhosbrjem'
+EMAIL_USE_TLS = True

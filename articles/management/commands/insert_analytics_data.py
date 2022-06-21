@@ -15,7 +15,7 @@ class Command(BaseCommand):
             for data in res:
                 Analytics.objects.create(
                     path=data['path'],
-                    year_week=data['year_week'],
+                    date=data['date'],
                     session=data['session'],
                     conversion_rate=data['cvr'],
                     conversion=data['cv'],

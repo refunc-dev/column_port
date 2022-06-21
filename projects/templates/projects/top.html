@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block head_title %}プロジェクト一覧 - カラムポート(Column Port){% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'projects/css/top/style.css' %}">
+<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+<script src="{% static 'js/script.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<main class="main">
+    <div class="main__inner">
+        <nav class="nav">
+            <ul class="nav__list">
+                <li class="nav__item">
+                    <a class="nav__title" href="">プロジェクト</a>
+                    <ul class="nav__sub-list">
+                        {% for project in projects %}
+                        <li class="nav__sub-item">
+                            <a class="nav__sub-link" href="/projects/{{ project.id }}">{{ project.name }}</a>
+                        </li>
+                        {% endfor %}
+                        <li class="nav__sub-item">
+                            <a id="new-project" class="nav__sub-link" href="">[ 新規プロジェクト登録 ]</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav__item">
+                    <a class="nav__title" href="">Keyword Researcher</a>
+                </li>
+                <li class="nav__item">
+                    <a class="nav__title" href="">設定</a>
+                    <ul class="nav__sub-list">
+                        <li class="nav__sub-item">
+                            <a class="nav__sub-link" href="/projects/">マイページ</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav__item">
+                    <a class="nav__title" href="">サポート</a>
+                    <ul class="nav__sub-list">
+                        <li class="nav__sub-item">ヘルプ</li>
+                        <li class="nav__sub-item">お知らせ</li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+        <div class="contents">
+            <ul class="breadcrumb__list">
+                <li class="breadcrumb__item">
+                    <a class="breadcrumb">TOP</a>
+                </li>
+                <li class="breadcrumb__item">
+                    <a class="breadcrumb">{{ current.name }}</a>
+                </li>
+            </ul>
+            <section class="project">
+                <h2 class="project__title">
+                    <span class="project__favicon">
+                        <img class="project__favicon-image"
+                            src="http://www.google.com/s2/favicons?domain={{ current.domain }}">
+                    </span>
+                    <span class="project__title-text">{{ current.name }}</span>
+                </h2>
+                <p class="project__domain">{{ current.domain }}</p>
+                <ul class="project__nav">
+                    <li class="project__item">
+                        <a class="project__link" href="/projects/{{ current.id }}/article-manager/">記事管理表</a>
+                    </li>
+                    <li class="project__item">
+                        <a class="project__link" href>ヘルスチェック</a>
+                    </li>
+                    <li class="project__item">
+                        <a class="project__link" href>順位レポート</a>
+                    </li>
+                    <li class="project__item">
+                        <a class="project__link" href>流入レポート</a>
+                    </li>
+                    <li class="project__item">
+                        <a class="project__link" href>プロジェクト設定</a>
+                    </li>
+                    <li class="project__item">
+                        <a class="project__link" href>ユーザー管理</a>
+                    </li>
+                </ul>
+                <dl class="project__summary">
+                    <dt class="project__sub-title">自然検索流入 : </dt>
+                    <dd class="project__sub-item"></dd>
+                    <dt class="project__sub-title">ランクスコア : </dt>
+                    <dd class="project__sub-item"></dd>
+                    <dt class="project__sub-title">ヘルスチェック : </dt>
+                    <dd class="project__sub-item"></dd>
+                </dl>
+            </section>
+        </div>
+    </div>
+</main>
+{% endblock %}

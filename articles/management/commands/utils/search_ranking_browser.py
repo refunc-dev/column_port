@@ -129,7 +129,7 @@ def search_ranking_browser(domain, search_words):
 #            logger.debug(f'{soup}')
 #            logger.debug('【HTMLソース】↑↑↑\n')
 
-            search_site_list = soup.select('div.ZINbbc.xpd.O9g5cc.uUPGi')
+            search_site_list = soup.select('div.Gx5Zad.fP1Qef.xpd.EtOod.pkphOe')
 
             data.append(search_specific_rank(domain, search_site_list, no))
             sleep(random.randint(2, 5))

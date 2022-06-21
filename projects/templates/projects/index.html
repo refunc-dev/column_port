@@ -1,52 +1,130 @@
 {% extends "base.html" %}
+
 {% load static %}
 
-{% block extraheader %}
+{% block head_title %}プロジェクト一覧 - カラムポート(Column Port){% endblock %}
+{% block extra_head %}
 <link rel="stylesheet" href="{% static 'projects/css/index/style.css' %}">
-<title>プロジェクト一覧 - カラムポート(Column Port)</title>
 <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
-<script src="{% static 'projects/js/script.js' %}"></script>
+<script src="{% static 'js/script.js' %}"></script>
+<script src="{% static 'projects/js/index/script.js' %}"></script>
 {% endblock %}
 
-{% block main %}
-<nav class="nav">
-    <ul class="nav__list">
-        <li class="nav__item">
-            <a class="nav__title" href="">プロジェクト</a>
-            <ul class="nav__sub-list">
-                <li class="nav__sub-item">
-                    <a class="nav__sub-link" href="{% url 'project_list' %}">プロジェクト管理</a>
+{% block content %}
+<main class="main">
+    <div class="main__inner">
+        <nav class="nav">
+            <ul class="nav__list">
+                <li class="nav__item">
+                    <a class="nav__title" href="">プロジェクト</a>
+                    <ul class="nav__sub-list">
+                        {% for project in projects %}
+                        <li class="nav__sub-item">
+                            <a class="nav__sub-link" href="/projects/{{ project.id }}">{{ project.name }}</a>
+                        </li>
+                        {% endfor %}
+                        <li class="nav__sub-item">
+                            <a id="new-project" class="nav__sub-link" href="">[ 新規プロジェクト登録 ]</a>
+                        </li>
+                    </ul>
                 </li>
-                <li class="nav__sub-item">
-                    <a class="nav__sub-link" href="{% url 'project_new' %}">新規プロジェクト登録</a>
+                <li class="nav__item">
+                    <a class="nav__title" href="">Keyword Researcher</a>
+                </li>
+                <li class="nav__item">
+                    <a class="nav__title" href="">設定</a>
+                    <ul class="nav__sub-list">
+                        <li class="nav__sub-item">
+                            <a class="nav__sub-link" href="/projects/">マイページ</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav__item">
+                    <a class="nav__title" href="">サポート</a>
+                    <ul class="nav__sub-list">
+                        <li class="nav__sub-item">ヘルプ</li>
+                        <li class="nav__sub-item">お知らせ</li>
+                    </ul>
                 </li>
             </ul>
-        </li>
-        <li class="nav__item">
-            <a class="nav__title" href="">Keyword Researcher</a>
-        </li>
-        <li class="nav__item">
-            <a class="nav__title" href="">設定</a>
-            <ul class="nav__sub-list">
-                <li class="nav__sub-item">マイページ</li>
-                <li class="nav__sub-item">その他</li>
+        </nav>
+        <div class="contents">
+            <ul class="breadcrumb__list">
+                <li class="breadcrumb__item">
+                    <a class="breadcrumb">TOP</a>
+                </li>
+                <li class="breadcrumb__item">
+                    <a class="breadcrumb">マイページ</a>
+                </li>
             </ul>
-        </li>
-    </ul>
-</nav>
-<div class="contents">
-    <h2 class="main__title">プロジェクト管理</h2>
-    {% if projects %}
-    <ul class="main__list">
-        {% for project in projects %}
-        <li class="main__item">
-            <a class="main__link" href="/projects/{{ project.id }}">
-                <h3 class="main__item-name">{{ project.name }}</h3>
-                <p class="main__item-url">{{ project.url }}</p>
-            </a>
-        </li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-</div>
+            <section class="mypage">
+                <h2 class="mypage__title">{{ request.user }} 様</h2>
+                <ul class="mypage__nav">
+                    <li class="mypage__item">登録情報</li>
+                    <li class="mypage__item">契約情報</li>
+                    <li class="mypage__item">通知設定</li>
+                </ul>
+                <section class="news">
+                    <h3 class="main__sub-title">- お知らせ -</h3>
+                    <dl class="news__list">
+                        <dt class="news__date">2022/06/03</dt>
+                        <dd class="news__text">記事管理表に〇〇機能が追加されました。</dd>
+                        <dt class="news__date">2022/06/03</dt>
+                        <dd class="news__text">記事管理表に〇〇機能が追加されました。</dd>
+                        <dt class="news__date">2022/06/03</dt>
+                        <dd class="news__text">記事管理表に〇〇機能が追加されました。</dd>
+                    </dl>
+                </section>
+            </section>
+            <section class="projects">
+                {% if projects %}
+                <ul class="projects__list">
+                    {% for project in projects %}
+                    <li class="projects__item">
+                        <a class="projects__link" href="/projects/{{ project.id }}">
+                            <h2 class="projects__title">
+                                <span class="projects__favicon">
+                                    <img class="projects__favicon-image"
+                                        src="http://www.google.com/s2/favicons?domain={{ project.domain }}">
+                                </span>
+                                <span class="projects__title-text">{{ project.name }}</span>
+                            </h2>
+                            <p class="projects__domain">{{ project.domain }}</p>
+                            <dl class="projects__summary">
+                                <dt class="projects__sub-title">週次サマリ</dt>
+                                <dd class="projects__sub-item">自然検索流入 : </dd>
+                                <dd class="projects__sub-item">ランクスコア : </dd>
+                                <dd class="projects__sub-item">登録ページ数 : </dd>
+                                <dt class="projects__sub-title">ヘルスチェック</dt>
+                                <dd class="projects__sub-item">注力ワード順位変化数 : </dd>
+                                <dd class="projects__sub-item">HTTPステータスエラー : </dd>
+                            </dl>
+                        </a>
+                        <button class="projects__favourite" type="button">
+                            <img class="projects__favourite-image" src="{% static 'projects/images/normal.png' %}">
+                        </button>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                <button class="projects__add-btn" type="button">+ 新規プロジェクト登録</button>
+                <div class="modal-container">
+                    <div class="modal-body">
+                        <div class="modal-close">×</div>
+                        <div class="modal-content">
+                            <form method="post" class="projects__add-form">
+                                {% csrf_token %}
+                                <input class="projects__add-input" type="text" name="name" maxlength="128" required
+                                    id="id_name" placeholder="プロジェクト名">
+                                <input class="projects__add-input" type="text" name="domain" maxlength="2083" required
+                                    id="id_domain" placeholder="ドメイン名">
+                                <button class="projects__add-submit" type="submit">登録</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</main>
 {% endblock %}
