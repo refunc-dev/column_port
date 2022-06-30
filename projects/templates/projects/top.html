@@ -7,53 +7,20 @@
 <link rel="stylesheet" href="{% static 'projects/css/top/style.css' %}">
 <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
 <script src="{% static 'js/script.js' %}"></script>
+<script src="{% static 'projects/js/top/script.js' %}"></script>
 {% endblock %}
 
 {% block content %}
 <main class="main">
     <div class="main__inner">
-        <nav class="nav">
-            <ul class="nav__list">
-                <li class="nav__item">
-                    <a class="nav__title" href="">プロジェクト</a>
-                    <ul class="nav__sub-list">
-                        {% for project in projects %}
-                        <li class="nav__sub-item">
-                            <a class="nav__sub-link" href="/projects/{{ project.id }}">{{ project.name }}</a>
-                        </li>
-                        {% endfor %}
-                        <li class="nav__sub-item">
-                            <a id="new-project" class="nav__sub-link" href="">[ 新規プロジェクト登録 ]</a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="nav__item">
-                    <a class="nav__title" href="">Keyword Researcher</a>
-                </li>
-                <li class="nav__item">
-                    <a class="nav__title" href="">設定</a>
-                    <ul class="nav__sub-list">
-                        <li class="nav__sub-item">
-                            <a class="nav__sub-link" href="/projects/">マイページ</a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="nav__item">
-                    <a class="nav__title" href="">サポート</a>
-                    <ul class="nav__sub-list">
-                        <li class="nav__sub-item">ヘルプ</li>
-                        <li class="nav__sub-item">お知らせ</li>
-                    </ul>
-                </li>
-            </ul>
-        </nav>
+        {% include 'projects/includes/nav.html' with projects=projects current=current %}
         <div class="contents">
             <ul class="breadcrumb__list">
                 <li class="breadcrumb__item">
-                    <a class="breadcrumb">TOP</a>
+                    <a class="breadcrumb__link" href="/">TOP</a>
                 </li>
                 <li class="breadcrumb__item">
-                    <a class="breadcrumb">{{ current.name }}</a>
+                    <a class="breadcrumb__link">{{ current.name }}</a>
                 </li>
             </ul>
             <section class="project">
@@ -70,30 +37,74 @@
                         <a class="project__link" href="/projects/{{ current.id }}/article-manager/">記事管理表</a>
                     </li>
                     <li class="project__item">
-                        <a class="project__link" href>ヘルスチェック</a>
+                        <a class="project__link" id="delete-project" href="">プロジェクト設定</a>
                     </li>
                     <li class="project__item">
-                        <a class="project__link" href>順位レポート</a>
-                    </li>
-                    <li class="project__item">
-                        <a class="project__link" href>流入レポート</a>
-                    </li>
-                    <li class="project__item">
-                        <a class="project__link" href>プロジェクト設定</a>
-                    </li>
-                    <li class="project__item">
-                        <a class="project__link" href>ユーザー管理</a>
+                        <a class="project__link" href="/projects/{{ current.id }}/members/">メンバー管理</a>
                     </li>
                 </ul>
-                <dl class="project__summary">
-                    <dt class="project__sub-title">自然検索流入 : </dt>
-                    <dd class="project__sub-item"></dd>
-                    <dt class="project__sub-title">ランクスコア : </dt>
-                    <dd class="project__sub-item"></dd>
-                    <dt class="project__sub-title">ヘルスチェック : </dt>
-                    <dd class="project__sub-item"></dd>
-                </dl>
+                <section class="health-check">
+                    <h2 class="health-check__title">- ヘルスチェック -</h2>
+                    <dl class="health-check__list">
+                        <dt class="health-check__dt">2022/06/22</dt>
+                        <dd class="health-check__dd">リンク切れが検出されました</dd>
+                        <dt class="health-check__dt">2022/06/21</dt>
+                        <dd class="health-check__dd">リンク切れが検出されました</dd>
+                        <dt class="health-check__dt">2022/06/20</dt>
+                        <dd class="health-check__dd">titleタグのないURLが検出されました</dd>
+                    </dl>
+                    <a class="health-check__link" href="">> 一覧へ</a>
+                </section>
+                <section class="session">
+                    <h2 class="session__title">- 流入レポート -</h2>
+                    <div class="dummy"></div>
+                    <ul class="session__list">
+                        <li class="session__item">
+                            <a class="session__link">月次レポート</a>
+                        </li>
+                        <li class="session__item">
+                            <a class="session__link">週次レポート</a>
+                        </li>
+                        <li class="session__item">
+                            <a class="session__link">日次レポート</a>
+                        </li>
+                    </ul>
+                </section>
+                <section class="ranking">
+                    <h2 class="ranking__title">- 順位レポート -</h2>
+                    <div class="dummy"></div>
+                    <ul class="ranking__list">
+                        <li class="ranking__item">
+                            <a class="ranking__link">注視ワード</a>
+                        </li>
+                        <li class="ranking__item">
+                            <a class="ranking__link">全キーワード</a>
+                        </li>
+                    </ul>
+                    <div class="dummy"></div>
+                    <ul class="ranking__list">
+                        <li class="ranking__item">
+                            <a class="ranking__link">順位レンジ</a>
+                        </li>
+                        <li class="ranking__item">
+                            <a class="ranking__link">順位スコア</a>
+                        </li>
+                    </ul>
+                </section>
             </section>
+        </div>
+        <div class="modal-container">
+            <div class="modal-body">
+                <div class="modal-close">×</div>
+                <div class="modal-content">
+                    <p class="delete__message">プロジェクトを削除しますか？</p>
+                    <form method="post" class="delete__form">
+                        {% csrf_token %}
+                        <input class="delete__input" type="hidden" name="delete" id="project_delete" value="true">
+                        <button class="delete__submit" type="submit">削除</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </main>

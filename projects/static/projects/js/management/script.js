@@ -28,4 +28,7 @@ $(document).ready(function () {
     const MM = ("0"+(today.getMonth()+1)).slice(-2);
     const DD = ("0"+today.getDate()).slice(-2);
     document.getElementById("id_published_at").value=YYYY+'-'+MM+'-'+DD;
+    document.getElementById("id_updated_at").value=YYYY+'-'+MM+'-'+DD;
+
+
 });

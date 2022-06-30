@@ -1,6 +1,6 @@
 $(document).ready(function () {
     const FORM = $(".main__inner"); // set form or other element here
-    const TYPES = ["input"]; // set which elements get targeted by the focus
+    const TYPES = ["input[type=text], input[type=email], input[type=password]"]; // set which elements get targeted by the focus
     const FOCUS = $("#focus"); // focus element
 
     // function for positioning the div

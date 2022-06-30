@@ -5,12 +5,19 @@ class Project(models.Model):
     name = models.CharField('プロジェクト名', max_length=128)
     domain = models.CharField('プロジェクトURL', max_length=2083)
     created_by = models.ForeignKey(
-                    settings.AUTH_USER_MODEL,
-                    verbose_name="作成者",
-                    on_delete=models.SET_NULL,
-                    null=True
-                )
+        settings.AUTH_USER_MODEL,
+        verbose_name="作成者",
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="created_projects"
+    )
     created_at = models.DateField('作成日', auto_now_add=True)
+    members = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        verbose_name="メンバー",
+        blank=True,
+        related_name='members_projects'
+    )
 
     def __str__(self):
         return f'<Project: {self.name}, {self.domain}>'

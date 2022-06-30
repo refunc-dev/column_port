@@ -10,4 +10,4 @@ class ProjectForm(forms.ModelForm):
 class RegexForm(forms.ModelForm):
     class Meta:
         model = Regex
-        fields = '__all__'
+        fields = ('regex',)

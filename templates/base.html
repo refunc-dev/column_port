@@ -6,6 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="icon" href="{% static '/favicon.ico' %}">
     <title>{% block head_title %}{% endblock %}</title>
     {% block extra_head %}
     {% endblock %}
@@ -13,25 +14,13 @@
 
 <body class="body">
     {% block body %}
-
-    {% if messages %}
-    <div>
-        <strong>Messages:</strong>
-        <ul>
-            {% for message in messages %}
-            <li>{{message}}</li>
-            {% endfor %}
-        </ul>
-    </div>
-    {% endif %}
-
     <header class="header">
         <div class="header__inner">
             <h1 class="header__title">
                 <img class="header__title-image" src="{% static 'images/column_port_logo.svg' %}" alt="Column Port">
             </h1>
-            {% if user.is_authenticated %}
             <nav class="header__nav">
+                {% if user.is_authenticated %}
                 <div class="header__user">
                     <a class="header__user-link">
                         <img class="header__user-icon" src="{% static 'images/user.png' %}">
@@ -45,25 +34,23 @@
                     </div>
                     <ul class="header__popup-list">
                         <li class="header__popup-item">
-                            <a class="header__popup-link" href="">マイページ</a>
+                            <a class="header__popup-link" href="/">マイページ</a>
                         </li>
                         <li class="header__popup-item">
                             <a class="header__popup-link" href="{% url 'account_logout' %}">ログアウト</a>
                         </li>
                     </ul>
                 </div>
+                {% else %}
+                <ul class="header__nav-list">
+                    <li class="header__nav-item">
+                        <a class="header__nav-link login" href="{% url 'account_login' %}">Login</a>
+                    </li>
+                    <li class="header__nav-item">
+                        <a class="header__nav-link signup" href="{% url 'account_signup' %}">Sign up</a>
+                    </li>
+                </ul>
             </nav>
-            {% else %}
-            <!--
-            <ul class="header__nav-list">
-                <li class="header__nav-item">
-                    <a class="header__nav-link" href="{% url 'account_login' %}">ログイン</a>
-                </li>
-                <li class="header__nav-item">
-                    <a class="header__nav-link" href="{% url 'account_signup' %}">新規会員登録</a>
-                </li>
-            </ul>
-            -->
             {% endif %}
         </div>
     </header>

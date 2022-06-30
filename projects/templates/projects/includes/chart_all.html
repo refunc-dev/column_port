@@ -1,0 +1,69 @@
+<article class="graph">
+    <h4 class="graph__title">- 全体セッション数 -</h4>
+    <div class="graph__container all">
+        <canvas id="chart_all" class="graph__chart"></canvas>
+    </div>
+</article>
+{% autoescape off %}
+<script>
+    ctx_all = document.getElementById("chart_all").getContext("2d");
+
+    var data_all = {
+        labels: {{ data.labels }},
+        datasets: [
+            {
+                type: 'line',
+                label: 'CVR',
+                data: {{ data.cvrData }},
+                borderColor: "rgba(255,153,2,0.8)",
+                backgroundColor: "rgba(255,153,2,0.8)",
+                fill: false,
+                yAxisID: "y-axis-1",
+            },
+            {
+                type: 'bar',
+                label: 'セッション',
+                data: {{ data.sessionData }},
+                borderColor: "rgba(11,83,149,1)",
+                backgroundColor: "rgba(11,83,149,1)",
+                yAxisID: "y-axis-2",
+            },
+        ],
+    };
+
+    var options_all = {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            yAxes: [{
+                id: "y-axis-1",
+                type: "linear",
+                position: "right",
+                ticks: {
+                    max: {{ data.cvrMax }},
+                    min: 0,
+                    stepSize: {{ data.cvrStepSize }},
+                    callback: function (value) {
+                        return value + '%';
+                    }
+                },
+            }, {
+                id: "y-axis-2",
+                type: "linear",
+                position: "left",
+                ticks: {
+                    max: {{ data.sessionMax }},
+                    min: 0,
+                    stepSize: {{ data.sessionStepSize }}
+                },
+            }],
+        }
+    };
+
+    var chart_all = new Chart(ctx_all, {
+        type: 'bar',
+        data: data_all,
+        options: options_all
+    });
+</script>
+{% endautoescape %}

@@ -1,0 +1,69 @@
+<nav class="nav">
+    <ul class="nav__list">
+        <li class="nav__item">
+            <a class="nav__title" href="">プロジェクト</a>
+            <ul class="nav__sub-list">
+                {% for project in projects %}
+                <li class="nav__sub-item">
+                    <a class="nav__sub-link" href="/projects/{{ project.id }}">{{ project.name }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </li>
+        <li class="nav__item">
+            <a class="nav__title">ヘルスチェック</a>
+        </li>
+        <li class="nav__item">
+            <a class="nav__title" href="/projects/{{ current.id }}/article-manager/">記事管理表</a>
+        </li>
+        <li class="nav__item">
+            <a class="nav__title" href="/projects/{{ current.id }}/reports/">流入レポート</a>
+            <ul class="nav__sub-list">
+                <li class="nav__sub-item">
+                    <a class="nav__sub-link">日次</a>
+                </li>
+                <li class="nav__sub-item">
+                    <a class="nav__sub-link" href="/projects/{{ current.id }}/reports/weekly/">週次</a>
+                </li>
+                <li class="nav__sub-item">
+                    <a class="nav__sub-link" href="/projects/{{ current.id }}/reports/monthly/">月次</a>
+                </li>
+            </ul>
+        </li>
+        <li class="nav__item">
+            <a class="nav__title" href="/projects/{{ current.id }}/reports/ranking/">順位レポート</a>
+            <ul class="nav__sub-list">
+                <li class="nav__sub-item">
+                    <a class="nav__sub-link">注視ワード</a>
+                </li>
+                <li class="nav__sub-item">
+                    <a class="nav__sub-link" href="/projects/{{ current.id }}/reports/ranking/all/">全キーワード</a>
+                </li>
+                <li class="nav__sub-item">
+                    <a class="nav__sub-link">順位レンジ</a>
+                </li>
+                <li class="nav__sub-item">
+                    <a class="nav__sub-link">順位スコア</a>
+                </li>
+            </ul>
+        </li>
+        <li class="nav__item">
+            <a class="nav__title" href="">Keyword Researcher</a>
+        </li>
+        <li class="nav__item">
+            <a class="nav__title" href="">設定</a>
+            <ul class="nav__sub-list">
+                <li class="nav__sub-item">
+                    <a class="nav__sub-link" href="/projects/">マイページ</a>
+                </li>
+            </ul>
+        </li>
+        <li class="nav__item">
+            <a class="nav__title" href="">サポート</a>
+            <ul class="nav__sub-list">
+                <li class="nav__sub-item">ヘルプ</li>
+                <li class="nav__sub-item">お知らせ</li>
+            </ul>
+        </li>
+    </ul>
+</nav>

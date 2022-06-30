@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block head_title %}メンバー一覧 - カラムポート(Column Port){% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'projects/css/members/style.css' %}">
+<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+<script src="{% static 'js/script.js' %}"></script>
+<script src="{% static 'projects/js/members/script.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<main class="main">
+    <div class="main__inner">
+        {% include 'projects/includes/nav.html' with projects=projects current=current %}
+        <div class="contents">
+            <ul class="breadcrumb__list">
+                <li class="breadcrumb__item">
+                    <a class="breadcrumb__link" href="/">TOP</a>
+                </li>
+                <li class="breadcrumb__item">
+                    <a class="breadcrumb__link" href="/projects/{{ current.id }}/">{{ current.name }}</a>
+                </li>
+                <li class="breadcrumb__item">
+                    <a class="breadcrumb__link">メンバー</a>
+                </li>
+            </ul>
+            <section class="member">
+                <h2 class="member__title">メンバーリスト</h2>
+                <form method="post" class="member__form">
+                    {% csrf_token %}
+                    <ul class="member__list">
+                        <li class="member__item member__item-header">
+                            <ul class="member__item-list">
+                                <li class="member__item-item member__item-role">役割</li>
+                                <li class="member__item-item member__item-username">名前</li>
+                                <li class="member__item-item member__item-email">メールアドレス</li>
+                            </ul>
+                        </li>
+                        {% for member in members %}
+                        <li class="member__item">
+                            <ul class="member__item-list">
+                                {% if request.user != member %}
+                                <input class="member__item-input" type="checkbox" name="member"
+                                    value="{{ member.email }}">
+                                <li class="member__item-item member__item-role">メンバー</li>
+                                {% else %}
+                                <li class="member__item-item member__item-role">管理者</li>
+                                {% endif %}
+                                <li class="member__item-item member__item-username">{{ member.username }}</li>
+                                <li class="member__item-item member__item-email">{{ member.email }}</li>
+                            </ul>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <button class="member__submit" type="submit">削除</button>
+                </form>
+            </section>
+            <button id="add-member" class="member-add__btn" type="button">+ 新規メンバー追加</button>
+            <div class="modal-container">
+                <div class="modal-body">
+                    <div class="modal-close">×</div>
+                    <div class="modal-content">
+                        <p class="member-add__message">メンバーを追加しますか？</p>
+                        <p class="member-add__message">追加するメンバーのメールアドレスを入力してください。</p>
+                        <form method="post" class="member-add__form">
+                            {% csrf_token %}
+                            <input class="member-add__input" type="email" name="email" placeholder="メールアドレス"
+                                autocomplete="email" required="" id="id_email">
+                            <button class="member-add__submit" type="submit">追加</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

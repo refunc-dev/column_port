@@ -1,0 +1,16 @@
+@charset "UTF-8";
+
+.body {
+  background-color: $clr-bg02 !important;
+  padding: 0;
+}
+
+.header {
+  height: 80px !important;
+  border-bottom: none !important;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+}

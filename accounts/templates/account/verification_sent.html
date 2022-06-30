@@ -1,12 +1,29 @@
-{% extends "account/base.html" %}
+{% extends "base.html" %}
 
+{% load static %}
 {% load i18n %}
 
-{% block head_title %}{% trans "Verify Your E-mail Address" %}{% endblock %}
+{% block head_title %}{% trans "Verify Your E-mail Address" %} - カラムポート(Column Port){% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'accounts/css/password_reset/style.css' %}">
+<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+<script src="{% static 'js/script.js' %}"></script>
+<script src="{% static 'accounts/js/script.js' %}"></script>
+{% endblock %}
 
 {% block content %}
-    <h1>{% trans "Verify Your E-mail Address" %}</h1>
+<main class="main">
+    <div class="main__inner">
+        <h1 class="main__title">
+            <img class="main__title-image" src="{% static 'images/column_port_title.png' %}" alt="Column Port">
+            <p class="main__title-text">{% trans "Verify Your E-mail Address" %}</p>
+        </h1>
 
-    <p>{% blocktrans %}We have sent an e-mail to you for verification. Follow the link provided to finalize the signup process. If you do not see the verification e-mail in your main inbox, check your spam folder. Please contact us if you do not receive the verification e-mail within a few minutes.{% endblocktrans %}</p>
-
+        <p>{% blocktrans %}We have sent an e-mail to you for verification. Follow the link provided to finalize the
+            signup
+            process. If you do not see the verification e-mail in your main inbox, check your spam folder. Please
+            contact us if
+            you do not receive the verification e-mail within a few minutes.{% endblocktrans %}</p>
+    </div>
+</main>
 {% endblock %}

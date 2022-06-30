@@ -129,7 +129,7 @@ class Article(models.Model):
         verbose_name="担当",
         on_delete=models.SET_NULL,
         null=True,
-        related_name="articles_in_charge"
+        related_name='articles_in_charge'
     )
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -138,7 +138,11 @@ class Article(models.Model):
         null=True,
         related_name='created_articles'
     )
-    keywords = models.ManyToManyField(Keyword, blank=True)
+    keywords = models.ManyToManyField(
+        Keyword,
+        verbose_name="キーワード",
+        blank=True
+    )
     created_at = models.DateField('作成日', auto_now_add=True)
  
     def __str__(self):
