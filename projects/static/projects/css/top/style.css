@@ -579,6 +579,37 @@ html {
   background-color: #ebebec;
 }
 
+.message {
+  position: fixed;
+  top: 70px;
+  right: 20px;
+  color: #ffffff;
+  padding: 5px;
+  font-size: 1.6rem;
+  border-radius: 10px;
+  z-index: 99999;
+  opacity: 0;
+  -webkit-transform: translateY(-5px);
+          transform: translateY(-5px);
+  -webkit-transition: 2s ease;
+  transition: 2s ease;
+}
+
+.message.error {
+  background-color: #D96738;
+}
+
+.message.success {
+  background-color: #48B0C7;
+}
+
+.message .message__text {
+  display: inline-block;
+  padding: 5px 15px;
+  border: 1px solid white;
+  border-radius: 10px;
+}
+
 .header {
   width: 100%;
   height: 60px;
@@ -758,7 +789,6 @@ html {
 .main {
   width: 100%;
   height: auto;
-  padding-top: 950px;
   /*モーダル本体の指定 + モーダル外側の背景の指定*/
   /*モーダル本体の擬似要素の指定*/
   /*モーダル本体に「active」クラス付与した時のスタイル*/
@@ -917,7 +947,7 @@ html {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  margin-bottom: 15px;
+  margin-bottom: 50px;
 }
 
 .main .contents .project .project__item {
@@ -963,11 +993,37 @@ html {
   margin-right: 25px;
 }
 
+.main .contents .graph {
+  margin: 15px 0 50px;
+}
+
+.main .contents .graph .graph__title {
+  font-size: 1.8rem;
+  font-weight: normal;
+}
+
+.main .contents .graph .graph__chart {
+  height: 400px;
+}
+
 .main .contents .dummy {
   height: 400px;
   width: 100%;
   background-color: moccasin;
   margin: 0 auto;
+}
+
+.main .contents .session {
+  margin-bottom: 50px;
+}
+
+.main .contents .session .session__title {
+  background-color: #144a6e;
+  color: white;
+  text-align: center;
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 15px;
 }
 
 .main .contents .session .session__list {
@@ -993,6 +1049,15 @@ html {
   text-decoration: none;
   color: black;
   padding: 5px 40px;
+}
+
+.main .contents .ranking .ranking__title {
+  background-color: #144a6e;
+  color: white;
+  text-align: center;
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 15px;
 }
 
 .main .contents .ranking .ranking__list {

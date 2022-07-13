@@ -3,6 +3,7 @@ databases==0.5.3
 Django==4.0.3
 django-allauth==0.51.0
 django-bootstrap5==21.3
+django-colorfield==0.7.1
 django-extensions==3.1.5
 django-pygments-renderer==0.0.1
 defusedxml==0.7.1

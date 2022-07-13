@@ -579,6 +579,37 @@ html {
   background-color: #ebebec;
 }
 
+.message {
+  position: fixed;
+  top: 70px;
+  right: 20px;
+  color: #ffffff;
+  padding: 5px;
+  font-size: 1.6rem;
+  border-radius: 10px;
+  z-index: 99999;
+  opacity: 0;
+  -webkit-transform: translateY(-5px);
+          transform: translateY(-5px);
+  -webkit-transition: 2s ease;
+  transition: 2s ease;
+}
+
+.message.error {
+  background-color: #D96738;
+}
+
+.message.success {
+  background-color: #48B0C7;
+}
+
+.message .message__text {
+  display: inline-block;
+  padding: 5px 15px;
+  border: 1px solid white;
+  border-radius: 10px;
+}
+
 .header {
   width: 100%;
   height: 60px;
@@ -758,7 +789,6 @@ html {
 .main {
   width: 100%;
   height: auto;
-  margin-top: 60px;
   /*モーダル本体の指定 + モーダル外側の背景の指定*/
   /*モーダル本体の擬似要素の指定*/
   /*モーダル本体に「active」クラス付与した時のスタイル*/
@@ -866,6 +896,7 @@ html {
   background-color: white;
   padding: 15px;
   border: 1px solid #144a6e;
+  margin-bottom: 15px;
 }
 
 .main .contents .mypage .mypage__title {

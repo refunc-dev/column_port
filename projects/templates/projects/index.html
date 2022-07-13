@@ -20,7 +20,7 @@
                     <ul class="nav__sub-list">
                         {% for project in projects %}
                         <li class="nav__sub-item">
-                            <a class="nav__sub-link" href="/projects/{{ project.id }}">{{ project.name }}</a>
+                            <a class="nav__sub-link" href="/{{ project.id }}/">{{ project.name }}</a>
                         </li>
                         {% endfor %}
                         <li class="nav__sub-item">
@@ -39,13 +39,6 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav__item">
-                    <a class="nav__title" href="">サポート</a>
-                    <ul class="nav__sub-list">
-                        <li class="nav__sub-item">ヘルプ</li>
-                        <li class="nav__sub-item">お知らせ</li>
-                    </ul>
-                </li>
             </ul>
         </nav>
         <div class="contents">
@@ -59,20 +52,18 @@
             </ul>
             <section class="mypage">
                 <h2 class="mypage__title">{{ request.user }} 様</h2>
+                <!--
                 <ul class="mypage__nav">
                     <li class="mypage__item">登録情報</li>
                     <li class="mypage__item">契約情報</li>
                     <li class="mypage__item">通知設定</li>
                 </ul>
+                -->
                 <section class="news">
                     <h3 class="main__sub-title">- お知らせ -</h3>
                     <dl class="news__list">
-                        <dt class="news__date">2022/06/03</dt>
-                        <dd class="news__text">記事管理表に〇〇機能が追加されました。</dd>
-                        <dt class="news__date">2022/06/03</dt>
-                        <dd class="news__text">記事管理表に〇〇機能が追加されました。</dd>
-                        <dt class="news__date">2022/06/03</dt>
-                        <dd class="news__text">記事管理表に〇〇機能が追加されました。</dd>
+                        <dt class="news__date">2022/07/11</dt>
+                        <dd class="news__text">Column Portベータ版リリース</dd>
                     </dl>
                 </section>
             </section>
@@ -81,15 +72,15 @@
                 <ul class="projects__list">
                     {% for project in projects %}
                     <li class="projects__item">
-                        <a class="projects__link" href="/projects/{{ project.id }}">
+                        <a class="projects__link" href="/{{ project.id }}/">
                             <h2 class="projects__title">
                                 <span class="projects__favicon">
                                     <img class="projects__favicon-image"
-                                        src="http://www.google.com/s2/favicons?domain={{ project.domain }}">
+                                        src="http://www.google.com/s2/favicons?domain={{ project.website.domain }}">
                                 </span>
                                 <span class="projects__title-text">{{ project.name }}</span>
                             </h2>
-                            <p class="projects__domain">{{ project.domain }}</p>
+                            <p class="projects__domain">{{ project.website.domain }}</p>
                             <dl class="projects__summary">
                                 <dt class="projects__sub-title">週次サマリ</dt>
                                 <dd class="projects__sub-item">自然検索流入 : </dd>

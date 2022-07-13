@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block head_title %}{{ type.ja }}レポート - カラムポート(Column Port){% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'analytics/css/style.css' %}">
+<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+<script src="{% static 'analytics/js/script.js' %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+<!--
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.4.0/dist/chartjs-plugin-datalabels.min.js"></script> 
+-->
+{% endblock %}
+
+{% block content %}
+<main class="main">
+    <div class="main__inner">
+        {% include 'nav/project-nav.html' with projects=projects current=current %}
+        <div class="contents">
+            <ul class="breadcrumb__list">
+                <li class="breadcrumb__item">
+                    <a class="breadcrumb__link" href="/{{ current.id }}/">{{ current.name }}</a>
+                </li>
+                <li class="breadcrumb__item">
+                    <a class="breadcrumb__link">流入レポート【{{ type.ja }}】</a>
+                </li>
+            </ul>
+            <section class="reports">
+                <h2 class="reports__title">
+                    <span class="reports__favicon">
+                        <img class="reports__favicon-image"
+                            src="http://www.google.com/s2/favicons?domain={{ current.website.domain }}">
+                    </span>
+                    <span class="reports__title-text">{{ current.name }}</span>
+                </h2>
+                <p class="reports__domain">{{ current.domain }}</p>
+                <ul class="reports__tabs">
+                    <li class="reports__tab">
+                        <a class="reports__tab-link all checked" href="">サイト全体</a>
+                    </li>
+                    <li class="reports__tab directory">
+                        <a class="reports__tab-link directory" href="">ディレクトリ別</a>
+                    </li>
+                </ul>
+                <ul class="reports__contents">
+                    <li class="reports__item all display">
+                        {% include 'analytics/includes/chart_all.html' with data=data.all type=type.en %}
+                        {% include 'analytics/includes/chart_channel.html' with data=data.channel %}
+                        {% include 'analytics/includes/chart_cv.html' with data=data.all type=type.en %}
+                    </li>
+                    <li class="reports__item directory display hidden">
+                        {% for e in data.regex %}
+                        {% include 'analytics/includes/chart_dir.html' with id=forloop.counter regex=e.regex data=e.data type=type.en %}
+                        {% endfor %}
+                        <button class="reports__add-btn" type="button" id="add-report">+ 新規ディレクトリ登録</button>
+                    </li>
+                </ul>
+            </section>
+            <div class="modal-container">
+                <div class="modal-body">
+                    <div class="modal-close">×</div>
+                    <div class="modal-content">
+                        <p class="reports__message">正規表現を追加しますか？</p>
+                        <form method="post" class="reports__form">
+                            {% csrf_token %}
+                            <input class="reports__input" type="text" name="regex" maxlength="100" required="" id="id_regex" placeholder="正規表現">
+                            <input class="reports__input" type="text" name="name" maxlength="200" required="" id="id_name" placeholder="ディレクトリ名">
+                            <button class="reports__submit" type="submit">追加</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

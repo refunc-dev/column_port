@@ -1,9 +1,66 @@
+import uuid
 from django.conf import settings
 from django.db import models
+from django.utils import timezone
+
+from colorfield.fields import ColorField
+
+
+class GetOrNoneManager(models.Manager):
+    def get_or_none(self, **kwargs):
+        try:
+            return self.get(**kwargs)
+        except self.model.DoesNotExist:
+            return None
+
+
+class Keyword(models.Model):
+    keyword = models.CharField("キーワード", max_length=1000)
+    volume = models.PositiveIntegerField('検索数', default=0)
+    registered_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        verbose_name="登録者",
+        on_delete=models.CASCADE
+    )
+    registered_at = models.DateTimeField('登録日', auto_now_add=True)
+    updated_at = models.DateField('更新日', blank=True, null=True)
+    objects = GetOrNoneManager()
+
+    def __str__(self):
+        return f'<Keyword: {self.keyword}>'
+
+
+class Website(models.Model):
+    domain = models.CharField('ドメイン名', primary_key=True, max_length=2083)
+    keywords = models.ManyToManyField(
+        Keyword,
+        verbose_name="キーワード",
+        through="WebsiteKeywordRelation",
+        through_fields=("website", "keyword"),
+        blank=True
+    )
+    registered_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        verbose_name="登録者",
+        on_delete=models.CASCADE
+    )
+    registered_at = models.DateField('登録日', auto_now_add=True)
+    objects = GetOrNoneManager()
+    
+    def __str__(self):
+        return f'<Website: {self.domain}>'
+
 
 class Project(models.Model):
-    name = models.CharField('プロジェクト名', max_length=128)
-    domain = models.CharField('プロジェクトURL', max_length=2083)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField('プロジェクト名', max_length=256)
+    website = models.ForeignKey(
+        Website,
+        verbose_name='サイト',
+        on_delete=models.CASCADE,
+        related_name="website_projects"
+    )
+    color = ColorField(default='#144A6E')
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         verbose_name="作成者",
@@ -11,139 +68,74 @@ class Project(models.Model):
         null=True,
         related_name="created_projects"
     )
-    created_at = models.DateField('作成日', auto_now_add=True)
+    created_at = models.DateTimeField('作成日', auto_now_add=True)
     members = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
         verbose_name="メンバー",
         blank=True,
         related_name='members_projects'
     )
+    competitors = models.ManyToManyField(
+        Website,
+        verbose_name="競合サイト",
+        through="ProjectCompetitorRelation",
+        through_fields=("project", "competitor"),
+        blank=True,
+        related_name="competitors_projects"
+    )
+    objects = GetOrNoneManager()
 
     def __str__(self):
-        return f'<Project: {self.name}, {self.domain}>'
+        return f'<Project: {self.name}, {self.website.domain}>'
 
-class Regex(models.Model):
-    regex = models.CharField('正規表現', max_length=100)
-    project_id = models.ForeignKey(
+
+class WebsiteKeywordRelation(models.Model):
+    website = models.ForeignKey(
+        Website,
+        verbose_name='サイト',
+        on_delete=models.CASCADE
+    )
+    keyword = models.ForeignKey(
+        Keyword,
+        verbose_name='キーワード',
+        on_delete=models.CASCADE
+    )
+    project = models.ForeignKey(
+        Project,
+        verbose_name='プロジェクト',
+        on_delete=models.CASCADE,
+        null=True
+    )
+    registered_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        verbose_name="登録者",
+        on_delete=models.CASCADE
+    )
+    registered_at = models.DateTimeField('登録日', auto_now_add=True)
+    objects = GetOrNoneManager()
+
+    def __str__(self):
+        return f'<{self.website.domain}, {self.keyword.keyword}>'
+
+class ProjectCompetitorRelation(models.Model):
+    project = models.ForeignKey(
         Project,
         verbose_name='プロジェクト',
         on_delete=models.CASCADE
+    ) 
+    competitor = models.ForeignKey(
+        Website,
+        verbose_name='競合サイト',
+        on_delete=models.CASCADE
     )
+    color = ColorField(default='#D96738')
+    registered_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        verbose_name="登録者",
+        on_delete=models.CASCADE
+    )
+    registered_at = models.DateTimeField('登録日', auto_now_add=True)
+    objects = GetOrNoneManager()
 
-    class Meta:
-        verbose_name_plural = 'Regex'
-    
     def __str__(self):
-        return f'<Regex: {self.regex}, {self.project_id}>'
-
-class WeeklyAll(models.Model):
-    date = models.DateField('日付') 
-    users = models.PositiveIntegerField('ユーザー数', default=0)
-    session = models.PositiveIntegerField('流入数', default=0)
-    conversion = models.PositiveIntegerField('CV数', default=0)
-    conversion_rate = models.FloatField('CVR', default=0.0)
-    page_view = models.FloatField('PV', default=0)
-    page_view_per_session = models.FloatField('PV/流入数', default=0)
-    direct = models.PositiveIntegerField('ダイレクト', default=0)
-    organic = models.PositiveIntegerField('自然検索', default=0)
-    organic_conversion = models.FloatField('自然検索CV数', default=0)
-    organic_conversion_rate = models.FloatField('自然検索CVR', default=0.0)
-    paid = models.PositiveIntegerField('有料検索', default=0)
-    referral = models.PositiveIntegerField('リファラー', default=0)
-    display = models.PositiveIntegerField('ディスプレイ', default=0)
-    social = models.PositiveIntegerField('SNS', default=0)
-    email = models.PositiveIntegerField('メール', default=0)
-    others = models.PositiveIntegerField('その他', default=0)
-    project_id = models.ForeignKey(
-        Project,
-        verbose_name='プロジェクト',
-        on_delete=models.CASCADE
-    )
-    
-    class Meta:
-        verbose_name_plural = 'WeeklyAll'
-    
-    def __str__(self):
-        return f'<WeeklyAll: {self.date}, {self.session}>'
-
-
-class MonthlyAll(models.Model):
-    date = models.DateField('日付') 
-    users = models.PositiveIntegerField('ユーザー数', default=0)
-    session = models.PositiveIntegerField('流入数', default=0)
-    conversion = models.PositiveIntegerField('CV数', default=0)
-    conversion_rate = models.FloatField('CVR', default=0.0)
-    page_view = models.FloatField('PV', default=0)
-    page_view_per_session = models.FloatField('PV/流入数', default=0)
-    direct = models.PositiveIntegerField('ダイレクト', default=0)
-    organic = models.PositiveIntegerField('自然検索', default=0)
-    organic_conversion = models.FloatField('自然検索CV数', default=0)
-    organic_conversion_rate = models.FloatField('自然検索CVR', default=0.0)
-    paid = models.PositiveIntegerField('有料検索', default=0)
-    referral = models.PositiveIntegerField('リファラー', default=0)
-    display = models.PositiveIntegerField('ディスプレイ', default=0)
-    social = models.PositiveIntegerField('SNS', default=0)
-    email = models.PositiveIntegerField('メール', default=0)
-    others = models.PositiveIntegerField('その他', default=0)
-    project_id = models.ForeignKey(
-        Project,
-        verbose_name='プロジェクト',
-        on_delete=models.CASCADE
-    )
-    
-    class Meta:
-        verbose_name_plural = 'MonthlyAll'
-    
-    def __str__(self):
-        return f'<MonthlyAll: {self.date}, {self.session}>'
-
-class WeeklyDir(models.Model):
-    regex = models.ForeignKey(
-        Regex,
-        verbose_name='正規表現',
-        on_delete=models.CASCADE
-    )
-    date = models.DateField('日付') 
-    users = models.PositiveIntegerField('ユーザー数', default=0)
-    session = models.PositiveIntegerField('流入数', default=0)
-    conversion = models.FloatField('CV数', default=0)
-    conversion_rate = models.FloatField('CVR', default=0.0)
-    page_view = models.FloatField('PV', default=0)
-    page_view_per_session = models.FloatField('PV/流入数', default=0)
-    project_id = models.ForeignKey(
-        Project,
-        verbose_name='プロジェクト',
-        on_delete=models.CASCADE
-    )
-    
-    class Meta:
-        verbose_name_plural = 'WeeklyDir'
-    
-    def __str__(self):
-        return f'<WeeklyDir: {self.regex}, {self.date}, {self.session}>'
-
-
-class MonthlyDir(models.Model):
-    regex = models.ForeignKey(
-        Regex,
-        verbose_name='正規表現',
-        on_delete=models.CASCADE
-    )
-    date = models.DateField('日付') 
-    users = models.PositiveIntegerField('ユーザー数', default=0) 
-    session = models.PositiveIntegerField('流入数', default=0)
-    conversion = models.FloatField('CV数', default=0)
-    conversion_rate = models.FloatField('CVR', default=0.0)
-    page_view = models.FloatField('PV', default=0)
-    page_view_per_session = models.FloatField('PV/流入数', default=0)
-    project_id = models.ForeignKey(
-        Project,
-        verbose_name='プロジェクト',
-        on_delete=models.CASCADE
-    )
-    
-    class Meta:
-        verbose_name_plural = 'MonthlyDir'
-    
-    def __str__(self):
-        return f'<MonthlyDir: {self.regex}, {self.date}, {self.session}>'
+        return f'<{self.project.name}, {self.competitor.domain}, {self.color}>'

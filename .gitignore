@@ -135,3 +135,5 @@ config/google-ads.yaml
 articles/migrations/*
 projects/migrations/*
 accounts/migrations/*
+analytics/migrations/*
+ranking/migrations/*

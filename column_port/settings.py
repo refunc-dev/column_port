@@ -52,14 +52,17 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.staticfiles',
     'django_extensions',
-    'projects.apps.ProjectsConfig',
     'accounts.apps.AccountsConfig',
     'articles.apps.ArticlesConfig',
+    'projects.apps.ProjectsConfig',
+    'ranking.apps.RankingConfig',
+    'analytics.apps.AnalyticsConfig',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'rest_framework',
+    'colorfield',
 ]
 
 SITE_ID = 1
@@ -184,7 +187,7 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 1
-ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
+#ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
 
 ACCOUNT_FORMS = {
     'signup': 'accounts.forms.CustomSignupForm',
@@ -204,3 +207,9 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'refunc.tech@gmail.com'
 EMAIL_HOST_PASSWORD = 'fzxlwvgwhosbrjem'
 EMAIL_USE_TLS = True
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
+}

@@ -1,0 +1,55 @@
+<article class="graph">
+    <h4 class="graph__title">- キーワード全体の順位スコア -</h4>
+    <div class="graph__container">
+        <canvas id="chart_score" class="graph__chart"></canvas>
+    </div>
+</article>
+{% autoescape off %}
+<script>
+    ctx_score = document.getElementById("chart_score").getContext("2d");
+
+    var data_score = {
+        labels: {{ score.date }},
+        datasets: [
+            {
+                label: '{{ current.website.domain }}',
+                data: {{ score.score }},
+                borderColor: "{{ score.rgba }}",
+                backgroundColor: "{{ score.rgba }}",
+                fill: false,
+            }
+            {% for c in score.competitors %}
+            ,{
+                label: '{{ c.name }}',
+                data: {{ c.score }},
+                borderColor: "{{ c.rgba }}",
+                backgroundColor: "{{ c.rgba }}",
+                fill: false,
+            }
+            {% endfor %}
+        ],
+    };
+
+    var options_score = {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            yAxes: [{
+                type: "linear",
+                position: "left",
+                ticks: {
+                    max: {{ score.max }},
+                    min: 0,
+                    stepSize: {{ score.stepSize }}
+                }
+            }]
+        }
+    };
+    
+    var chart_score = new Chart(ctx_score, {
+        type: 'line',
+        data: data_score,
+        options: options_score
+    });
+</script>
+{% endautoescape %}

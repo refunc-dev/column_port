@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block head_title %}記事管理表 - カラムポート(Column Port){% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'ranking/css/ranking_all/style.css' %}">
+<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+<script src="{% static 'js/script.js' %}"></script>
+<script src="{% static 'ranking/js/script.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<main class="main">
+    <div class="main__inner">
+        {% include 'nav/project-nav.html' with projects=projects current=current %}
+        <div class="contents">
+            <ul class="breadcrumb__list">
+                <li class="breadcrumb__item">
+                    <a class="breadcrumb__link" href="/{{ current.id }}/">{{ current.name }}</a>
+                </li>
+                <li class="breadcrumb__item">
+                    <a class="breadcrumb__link">順位レポート</a>
+                </li>
+            </ul>
+            <section class="ranking">
+                <h2 class="ranking__title">
+                    <span class="ranking__favicon">
+                        <img class="ranking__favicon-image"
+                            src="http://www.google.com/s2/favicons?domain={{ current.website.domain }}">
+                    </span>
+                    <span class="ranking__title-text">{{ current.name }}</span>
+                </h2>
+                <p class="ranking__domain">{{ current.website.domain }}</p>
+                <ul class="ranking__nav">
+                    <li class="ranking__nav-item">
+                        <a class="ranking__nav-link">注視ワード</a>
+                    </li>
+                    <li class="ranking__nav-item selected">
+                        <a class="ranking__nav-link" href="/{{ current.id }}/reports/ranking/all/">全キーワード</a>
+                    </li>
+                    <li class="ranking__nav-item">
+                        <a class="ranking__nav-link" href="/{{ current.id }}/reports/ranking/range/">順位レンジ</a>
+                    </li>
+                    <li class="ranking__nav-item">
+                        <a class="ranking__nav-link" href="/{{ current.id }}/reports/ranking/score/">順位スコア</a>
+                    </li>
+                </ul>
+                <div class="ranking__contents">
+                    {% if keywords %}
+                    <ul class="ranking__table">
+                        <li class="ranking__row head">
+                            <p class="ranking__item id">ID</p>
+                            <p class="ranking__item keyword">キーワード</p>
+                            <p class="ranking__item volume">検索数</p>
+                            <div class="ranking__item multi">
+                                <p class="ranking__item-top">検索順位</p>
+                                <ul class="ranking__item-list">
+                                    {% for keyword in keywords %}
+                                    {% if forloop.first %}
+                                    {% for date in keyword.date %}
+                                    {% if date == '-' %}
+                                    <li class="ranking__item-item rank">-</li>
+                                    {% else %}
+                                    <li class="ranking__item-item rank">{{ date|date:"n/j" }}</li>
+                                    {% endif %}
+                                    {% endfor %}
+                                    {% endif %}
+                                    {% empty %}
+                                    <li class="ranking__item-item rank">-</li>
+                                    <li class="ranking__item-item rank">-</li>
+                                    <li class="ranking__item-item rank">-</li>
+                                    <li class="ranking__item-item rank">-</li>
+                                    <li class="ranking__item-item rank">-</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            <p class="ranking__item page">ランクインページ</p>
+                            <p class="ranking__item page">タイトルリンク</p>
+                        </li>
+                        {% for keyword in keywords %}
+                        <li class="ranking__row">
+                            <p class="ranking__item id">
+                                {{ forloop.counter }}
+                            </p>
+                            <p class="ranking__item keyword">{{ keyword.keyword }}</p>
+                            <p class="ranking__item volume">{{ keyword.volume }}</p>
+                            {% for r in keyword.ranking %}
+                            <p class="ranking__item rank">{{ r }}</p>
+                            {% endfor %}
+                            <p class="ranking__item page">{{ keyword.ranking_page }}</p>
+                            <p class="ranking__item page">{{ keyword.title_link }}</p>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+            </section>
+            <button class="keyword__add-btn" type="button">+ 入力でキーワード登録</button>
+            <div class="modal-container">
+                <div class="modal-body">
+                    <div class="modal-close">×</div>
+                    <div class="modal-content">
+                        <form method="post" class="keyword__add-form">
+                            {% csrf_token %}
+                            <textarea class="keyword__add-input" name="keyword" cols="40" rows="10" required
+                                id="id_keyword" placeholder="キーワード（複数可）"></textarea>
+                            <label class="keyword__add-label" for="articles">記事（任意）
+                                <select class="keyword__add-input input-date" name="article" required id="articles">
+                                    <option hidden>選択してください</option>
+                                    {% for article in articles %}
+                                    <option value="{{ article.id }}">
+                                        {{ article.path }} |
+                                        {{ article.title }}</option>
+                                    {% endfor %}
+                                </select>
+                            </label>
+                            <button class="keyword__add-submit" type="submit">登録</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

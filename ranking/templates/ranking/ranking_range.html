@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block head_title %}記事管理表 - カラムポート(Column Port){% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'ranking/css/ranking_range/style.css' %}">
+<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+<script src="{% static 'js/script.js' %}"></script>
+<script src="{% static 'ranking/js/script.js' %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<main class="main">
+    <div class="main__inner">
+        {% include 'nav/project-nav.html' with projects=projects current=current %}
+        <div class="contents">
+            <ul class="breadcrumb__list">
+                <li class="breadcrumb__item">
+                    <a class="breadcrumb__link" href="/{{ current.id }}/">{{ current.name }}</a>
+                </li>
+                <li class="breadcrumb__item">
+                    <a class="breadcrumb__link">順位レポート</a>
+                </li>
+            </ul>
+            <section class="ranking">
+                <h2 class="ranking__title">
+                    <span class="ranking__favicon">
+                        <img class="ranking__favicon-image"
+                            src="http://www.google.com/s2/favicons?domain={{ current.website.domain }}">
+                    </span>
+                    <span class="ranking__title-text">{{ current.name }}</span>
+                </h2>
+                <p class="ranking__domain">{{ current.website.domain }}</p>
+                <ul class="ranking__nav">
+                    <li class="ranking__nav-item">
+                        <a class="ranking__nav-link">注視ワード</a>
+                    </li>
+                    <li class="ranking__nav-item">
+                        <a class="ranking__nav-link" href="/{{ current.id }}/reports/ranking/all/">全キーワード</a>
+                    </li>
+                    <li class="ranking__nav-item selected">
+                        <a class="ranking__nav-link" href="/{{ current.id }}/reports/ranking/range/">順位レンジ</a>
+                    </li>
+                    <li class="ranking__nav-item">
+                        <a class="ranking__nav-link" href="/{{ current.id }}/reports/ranking/score/">順位スコア</a>
+                    </li>
+                </ul>
+                <div class="ranking__contents">
+                    {% if data %}
+                    {% include 'ranking/includes/chart_range.html' with data=data.data date=data.date %}
+                    <ul class="ranking__table">
+                        <li class="ranking__row head">
+                            <p class="ranking__item range">順位レンジ</p>
+                            {% for date in data.date %}
+                            <p class="ranking__item date">{{ date }}</p>
+                            {% endfor %}
+                        </li>
+                        <li class="ranking__row">
+                            <p class="ranking__item range">1位</p>
+                            {% for item in data.count.first %}
+                            <p class="ranking__item date">{{ item }}</p>
+                            {% endfor %}
+                        </li>
+                        <li class="ranking__row">
+                            <p class="ranking__item range">2位〜5位</p>
+                            {% for item in data.count.second %}
+                            <p class="ranking__item date">{{ item }}</p>
+                            {% endfor %}
+                        </li>
+                        <li class="ranking__row">
+                            <p class="ranking__item range">6位〜10位</p>
+                            {% for item in data.count.sixth %}
+                            <p class="ranking__item date">{{ item }}</p>
+                            {% endfor %}
+                        </li>
+                        <li class="ranking__row">
+                            <p class="ranking__item range">11位〜30位</p>
+                            {% for item in data.count.eleventh %}
+                            <p class="ranking__item date">{{ item }}</p>
+                            {% endfor %}
+                        </li>
+                        <li class="ranking__row">
+                            <p class="ranking__item range">31位〜50位</p>
+                            {% for item in data.count.thirtyfirst %}
+                            <p class="ranking__item date">{{ item }}</p>
+                            {% endfor %}
+                        </li>
+                        <li class="ranking__row">
+                            <p class="ranking__item range">51位〜100位</p>
+                            {% for item in data.count.fiftyfirst %}
+                            <p class="ranking__item date">{{ item }}</p>
+                            {% endfor %}
+                        </li>
+                        <li class="ranking__row">
+                            <p class="ranking__item range">100位圏外</p>
+                            {% for item in data.count.outofrange %}
+                            <p class="ranking__item date">{{ item }}</p>
+                            {% endfor %}
+                        </li>
+                    </ul>
+                </div>
+                {% endif %}
+            </section>
+        </div>
+    </div>
+</main>
+{% endblock %}

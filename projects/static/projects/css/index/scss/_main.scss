@@ -3,7 +3,6 @@
 .main {
   width: 100%;
   height: auto;
-  margin-top: 60px;
 
   .nav {
     width: 240px;
@@ -100,6 +99,7 @@
       background-color: white;
       padding: 15px;
       border: 1px solid $clr-bd05;
+      margin-bottom: 15px;
 
       .mypage__title {
         font-size: 2rem;

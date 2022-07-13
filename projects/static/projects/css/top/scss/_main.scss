@@ -3,7 +3,6 @@
 .main {
   width: 100%;
   height: auto;
-  padding-top: 950px;
 
   .nav {
     width: 240px;
@@ -144,7 +143,7 @@
 
       .project__nav {
         display: flex;
-        margin-bottom: 15px;
+        margin-bottom: 50px;
       }
 
       .project__item {
@@ -191,6 +190,19 @@
       }
     }
 
+    .graph {
+      margin: 15px 0 50px;
+
+      .graph__title {
+        font-size: 1.8rem;
+        font-weight: normal;
+      }
+
+      .graph__chart {
+        height: 400px;
+      }
+    }
+
     .dummy {
       height: 400px;
       width: 100%;
@@ -199,6 +211,17 @@
     }
 
     .session {
+      margin-bottom: 50px;
+
+      .session__title {
+        background-color: $clr-bg09;
+        color: white;
+        text-align: center;
+        border-radius: 10px;
+        padding: 10px;
+        margin-bottom: 15px;
+      }
+
       .session__list {
         display: flex;
         margin-bottom: 15px;
@@ -224,6 +247,15 @@
     }
 
     .ranking {
+      .ranking__title {
+        background-color: $clr-bg09;
+        color: white;
+        text-align: center;
+        border-radius: 10px;
+        padding: 10px;
+        margin-bottom: 15px;
+      }
+
       .ranking__list {
         display: flex;
         margin-bottom: 15px;

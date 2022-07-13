@@ -1,9 +1,8 @@
 from django.contrib import admin
-from projects.models import Project, Regex, WeeklyAll, WeeklyDir, MonthlyAll, MonthlyDir
+from projects.models import Keyword, Website, Project, WebsiteKeywordRelation, ProjectCompetitorRelation
 
+admin.site.register(Keyword)
+admin.site.register(Website)
 admin.site.register(Project)
-admin.site.register(Regex)
-admin.site.register(WeeklyAll)
-admin.site.register(WeeklyDir)
-admin.site.register(MonthlyAll)
-admin.site.register(MonthlyDir)
+admin.site.register(WebsiteKeywordRelation)
+admin.site.register(ProjectCompetitorRelation)

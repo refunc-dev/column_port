@@ -1,0 +1,79 @@
+<article class="graph">
+    <h4 class="graph__title">- キーワード全体の順位レンジ -</h4>
+    <div class="graph__container all">
+        <canvas id="chart_range" class="graph__chart"></canvas>
+    </div>
+</article>
+{% autoescape off %}
+<script>
+    ctx_range = document.getElementById("chart_range").getContext("2d");
+
+    var data_range = {
+        labels: {{ date }},
+        datasets: [
+            {
+                label: '1位',
+                data: {{ data.first }},
+                backgroundColor: "rgba(32,78,121,1)",
+            },
+            {
+                label: '2位~5位',
+                data: {{ data.second }},
+                backgroundColor: "rgba(157,195,230,1)",
+            },
+            {
+                label: '6位~10位',
+                data: {{ data.sixth }},
+                backgroundColor: "rgba(189,215,238,1)",
+            },
+            {
+                label: '11位~30位',
+                data: {{ data.eleventh }},
+                backgroundColor: "rgba(196,224,180,1)",
+            }, 
+            {
+                label: '31位~50位',
+                data: {{ data.thirtyfirst }},
+                backgroundColor: "rgba(226,240,217,1)",
+            },
+            {
+                label: '51位~100位',
+                data: {{ data.fiftyfirst }},
+                backgroundColor: "rgba(216,216,216,1)",
+            },
+            {
+                label: '100位圏外',
+                data: {{ data.outofrange }},
+                backgroundColor: "rgba(239,239,239,1)",
+            },
+        ],
+    };
+
+    var options_range = {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            xAxes: [{
+                stacked: true,
+            }],
+            yAxes: [{
+                stacked: true,
+                ticks: {
+                    max: 100,
+                    min: 0,
+                    stepSize: 10,
+                    callback: function (value) {
+                      return value + '%';
+                    }
+                },
+            }]
+        }
+    };
+
+    var chart_range = new Chart(ctx_range, {
+        type: 'bar',
+        data: data_range,
+        options: options_range
+    });
+</script>
+{% endautoescape %}

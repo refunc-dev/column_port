@@ -7,13 +7,16 @@
 <link rel="stylesheet" href="{% static 'projects/css/top/style.css' %}">
 <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
 <script src="{% static 'js/script.js' %}"></script>
+<!--
 <script src="{% static 'projects/js/top/script.js' %}"></script>
+-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
 {% endblock %}
 
 {% block content %}
 <main class="main">
     <div class="main__inner">
-        {% include 'projects/includes/nav.html' with projects=projects current=current %}
+        {% include 'nav/project-nav.html' with projects=projects current=current %}
         <div class="contents">
             <ul class="breadcrumb__list">
                 <li class="breadcrumb__item">
@@ -27,22 +30,20 @@
                 <h2 class="project__title">
                     <span class="project__favicon">
                         <img class="project__favicon-image"
-                            src="http://www.google.com/s2/favicons?domain={{ current.domain }}">
+                            src="http://www.google.com/s2/favicons?domain={{ current.website.domain }}">
                     </span>
                     <span class="project__title-text">{{ current.name }}</span>
                 </h2>
                 <p class="project__domain">{{ current.domain }}</p>
                 <ul class="project__nav">
                     <li class="project__item">
-                        <a class="project__link" href="/projects/{{ current.id }}/article-manager/">記事管理表</a>
+                        <a class="project__link" href="/{{ current.id }}/articles/">記事管理表</a>
                     </li>
                     <li class="project__item">
-                        <a class="project__link" id="delete-project" href="">プロジェクト設定</a>
-                    </li>
-                    <li class="project__item">
-                        <a class="project__link" href="/projects/{{ current.id }}/members/">メンバー管理</a>
+                        <a class="project__link" href="/{{ current.id }}/settings/">プロジェクト設定</a>
                     </li>
                 </ul>
+                <!--
                 <section class="health-check">
                     <h2 class="health-check__title">- ヘルスチェック -</h2>
                     <dl class="health-check__list">
@@ -55,56 +56,44 @@
                     </dl>
                     <a class="health-check__link" href="">> 一覧へ</a>
                 </section>
+                -->
                 <section class="session">
                     <h2 class="session__title">- 流入レポート -</h2>
-                    <div class="dummy"></div>
+                    {% include 'analytics/includes/chart_all.html' with data=data.all type=type.en %}
+                    {% include 'analytics/includes/chart_channel.html' with data=data.channel %}
                     <ul class="session__list">
                         <li class="session__item">
-                            <a class="session__link">月次レポート</a>
+                            <a class="session__link" href="/{{ current.id }}/reports/monthly/">月次レポート</a>
                         </li>
                         <li class="session__item">
-                            <a class="session__link">週次レポート</a>
+                            <a class="session__link" href="/{{ current.id }}/reports/weekly/">週次レポート</a>
                         </li>
                         <li class="session__item">
-                            <a class="session__link">日次レポート</a>
+                            <a class="session__link" href="">日次レポート</a>
                         </li>
                     </ul>
                 </section>
                 <section class="ranking">
                     <h2 class="ranking__title">- 順位レポート -</h2>
-                    <div class="dummy"></div>
                     <ul class="ranking__list">
                         <li class="ranking__item">
                             <a class="ranking__link">注視ワード</a>
                         </li>
                         <li class="ranking__item">
-                            <a class="ranking__link">全キーワード</a>
+                            <a class="ranking__link" href="/{{ current.id }}/reports/ranking/all/">全キーワード</a>
                         </li>
                     </ul>
-                    <div class="dummy"></div>
+                    {% include 'ranking/includes/chart_score.html' with score=score current=current %}
                     <ul class="ranking__list">
                         <li class="ranking__item">
-                            <a class="ranking__link">順位レンジ</a>
+                            <a class="ranking__link" href="/{{ current.id }}/reports/ranking/range/">順位レンジ</a>
                         </li>
                         <li class="ranking__item">
-                            <a class="ranking__link">順位スコア</a>
+                            <a class="ranking__link" href="/{{ current.id }}/reports/ranking/score/">順位スコア</a>
                         </li>
                     </ul>
                 </section>
             </section>
-        </div>
-        <div class="modal-container">
-            <div class="modal-body">
-                <div class="modal-close">×</div>
-                <div class="modal-content">
-                    <p class="delete__message">プロジェクトを削除しますか？</p>
-                    <form method="post" class="delete__form">
-                        {% csrf_token %}
-                        <input class="delete__input" type="hidden" name="delete" id="project_delete" value="true">
-                        <button class="delete__submit" type="submit">削除</button>
-                    </form>
-                </div>
-            </div>
         </div>
     </div>
 </main>

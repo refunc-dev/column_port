@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
-from articles.models import Article, Analytics
+from articles.models import Article, ArticleAnalytics
 
 from articles.management.commands.utils.get_specific_analytics_data import get_analytics_data_eq
 
@@ -13,7 +13,7 @@ class Command(BaseCommand):
             path = urlparse(article.url).path
             res = get_analytics_data_eq(path, 1)
             for data in res:
-                Analytics.objects.create(
+                ArticleAnalytics.objects.create(
                     path=data['path'],
                     date=data['date'],
                     session=data['session'],

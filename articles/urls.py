@@ -3,6 +3,7 @@ from django.urls import path
 from articles import views
 
 urlpatterns = [
-    path('<int:article_id>/', views.article_detail, name='article_detail'),
-    path('<int:article_id>/delete_keywords/', views.delete_keywords, name='delete_keywords'),
+    path('', views.top, name='article_top'),
+    path('<str:article_id>/', views.settings, name='article_settings'),
+    path('<str:article_id>/remove_keywords/', views.remove_keywords, name='article_remove_keywords'),
 ]

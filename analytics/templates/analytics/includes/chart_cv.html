@@ -1,0 +1,76 @@
+<article class="graph">
+    <h4 class="graph__title">- サイト全体CV数 -</h4>
+    <div class="graph__container cv">
+        <canvas id="chart_cv" class="graph__chart"></canvas>
+    </div>
+</article>
+{% autoescape off %}
+<script>
+    ctx_cv = document.getElementById("chart_cv").getContext("2d");
+
+    var data_cv = {
+        labels: [
+            {% for e in data.labels %}
+            {% if forloop.counter > 12 %}
+            "{{ e }}",
+            {% endif %}
+            {% endfor %}
+        ],
+        datasets: [
+            {% if type == 'monthly' %}
+            {
+                type: 'bar',
+                label: 'CV数（昨年）',
+                data: [
+                    {% for e in data.cvData %}
+                    {% if forloop.counter <= 12 %}
+                    {{ e }},
+                    {% endif %}
+                    {% endfor %}
+                ],
+                borderColor: "rgba(204,204,204,0.8)",
+                backgroundColor: "rgba(204,204,204,0.8)",
+                yAxisID: "y-axis",
+            },
+            {% endif %}
+            {
+                type: 'bar',
+                label: 'CV数',
+                data: [
+                    {% for e in data.cvData %}
+                    {% if forloop.counter > 12 %}
+                    {{ e }},
+                    {% endif %}
+                    {% endfor %}
+                ],
+                borderColor: "rgba(255,153,0,1)",
+                backgroundColor: "rgba(255,153,0,1)",
+                yAxisID: "y-axis",
+            },
+        ],
+    };
+
+    var options_cv = {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            yAxes: [{
+                id: "y-axis",
+                type: "linear",
+                position: "left",
+                ticks: {
+                    max: {{ data.cvMax }},
+                    min: 0,
+                    stepSize: {{ data.cvStepSize }}
+                },
+            }],
+        }
+    };
+
+    var chart_cv = new Chart(ctx_cv, {
+        type: 'bar',
+        data: data_cv,
+        options: options_cv
+    });
+</script>
+{% endautoescape %}

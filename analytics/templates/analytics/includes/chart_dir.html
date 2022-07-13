@@ -1,0 +1,105 @@
+<article class="graph">
+    <h4 class="graph__title">
+        {% if regex.name %}{{ regex.name }} {% endif %}({{ regex.regex }})
+    </h4>
+    <div class="graph__container dir">
+        <canvas id="chart_dir_{{ id }}" class="graph__chart"></canvas>
+    </div>
+</article>
+{% autoescape off %}
+<script>
+    ctx_dir_{{ id }} = document.getElementById("chart_dir_{{ id }}").getContext("2d");
+
+    var data_dir_{{ id }} = {
+        labels: [
+            {% for e in data.labels %}
+            {% if forloop.counter <= 12 %}
+            "{{ e }}",
+            {% endif %}
+            {% endfor %}
+        ],
+        datasets: [
+            {
+                type: 'line',
+                label: 'CVR',
+                data: [
+                    {% for e in data.cvrData %}
+                    {% if forloop.counter <= 12 %}
+                    {{ e }},
+                    {% endif %}
+                    {% endfor %}
+                ],
+                borderColor: "rgba(251,188,4,0.8)",
+                backgroundColor: "rgba(251,188,4,0.8)",
+                fill: false,
+                yAxisID: "y-axis-1",// 追加
+            },
+            {% if type == 'monthly' %}
+            {
+                type: 'bar',
+                label: 'セッション（昨年）',
+                data: [
+                    {% for e in data.sessionData %}
+                    {% if forloop.counter > 12 %}
+                    {{ e }},
+                    {% endif %}
+                    {% endfor %}
+                ],
+                borderColor: "rgba(204,204,204,0.8)",
+                backgroundColor: "rgba(204,204,204,0.8)",
+                yAxisID: "y-axis-2",
+            },
+            {% endif %}
+            {
+                type: 'bar',
+                label: 'セッション',
+                data: [
+                    {% for e in data.sessionData %}
+                    {% if forloop.counter <= 12 %}
+                    {{ e }},
+                    {% endif %}
+                    {% endfor %}
+                ],
+                borderColor: "rgba(11,83,149,1)",
+                backgroundColor: "rgba(11,83,149,1)",
+                yAxisID: "y-axis-2",
+            },
+        ],
+    };
+
+    var options_dir_{{ id }} = {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            yAxes: [{
+                id: "y-axis-1",
+                type: "linear",
+                position: "right",
+                ticks: {
+                    max: {{ data.cvrMax }},
+                    min: 0,
+                    stepSize: {{ data.cvrStepSize }},
+                    callback: function (value) {
+                      return value + '%';
+                    }
+                },
+            }, {
+                id: "y-axis-2",
+                type: "linear",
+                position: "left",
+                ticks: {
+                    max: {{ data.sessionMax }},
+                    min: 0,
+                    stepSize: {{ data.sessionStepSize }}
+                },
+            }],
+        }
+    };
+
+    var chart_dir_{{ id }} = new Chart(ctx_dir_{{ id }}, {
+        type: 'bar',
+        data: data_dir_{{ id }},
+        options: options_dir_{{ id }}
+    });
+</script>
+{% endautoescape %}

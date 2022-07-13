@@ -4,69 +4,23 @@
 
 {% block head_title %}記事詳細設定 - カラムポート(Column Port){% endblock %}
 {% block extra_head %}
-<link rel="stylesheet" href="{% static 'articles/css/style.css' %}">
+<link rel="stylesheet" href="{% static 'articles/css/detail/style.css' %}">
 <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
 <script src="{% static 'js/script.js' %}"></script>
-<script src="{% static 'articles/js/script.js' %}"></script>
+<script src="{% static 'articles/js/detail/script.js' %}"></script>
 {% endblock %}
 
 {% block content %}
 <main class="main">
     <div class="main__inner">
-        <nav class="nav">
-            <ul class="nav__list">
-                <li class="nav__item">
-                    <a class="nav__title" href="">プロジェクト</a>
-                    <ul class="nav__sub-list">
-                        {% for project in projects %}
-                        <li class="nav__sub-item">
-                            <a class="nav__sub-link" href="/projects/{{ project.id }}">{{ project.name }}</a>
-                        </li>
-                        {% endfor %}
-                        <li class="nav__sub-item">
-                            <a id="new-project" class="nav__sub-link" href="">[ 新規プロジェクト登録 ]</a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="nav__item">
-                    <a class="nav__title" href="">流入レポート</a>
-                    <ul class="nav__sub-list">
-                        <li class="nav__sub-item">
-                            <a class="nav__sub-link" href="/projects/{{ current.project_id.id }}/reports/weekly/">週次</a>
-                        </li>
-                        <li class="nav__sub-item">
-                            <a class="nav__sub-link"
-                                href="/projects/{{ current.project_id.id }}/reports/monthly/">月次</a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="nav__item">
-                    <a class="nav__title" href="">Keyword Researcher</a>
-                </li>
-                <li class="nav__item">
-                    <a class="nav__title" href="">設定</a>
-                    <ul class="nav__sub-list">
-                        <li class="nav__sub-item">
-                            <a class="nav__sub-link" href="/projects/">マイページ</a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="nav__item">
-                    <a class="nav__title" href="">サポート</a>
-                    <ul class="nav__sub-list">
-                        <li class="nav__sub-item">ヘルプ</li>
-                        <li class="nav__sub-item">お知らせ</li>
-                    </ul>
-                </li>
-            </ul>
-        </nav>
+        {% include 'nav/project-nav.html' with projects=projects current=current.project %}
         <div class="contents">
             <ul class="breadcrumb__list">
                 <li class="breadcrumb__item">
-                    <a class="breadcrumb__link" href="/projects/{{ current.project_id.id }}/">TOP</a>
+                    <a class="breadcrumb__link" href="/{{ current.project.id }}/">TOP</a>
                 </li>
                 <li class="breadcrumb__item">
-                    <a class="breadcrumb__link" href="/projects/{{ current.project_id.id }}/article-manager/">記事管理表</a>
+                    <a class="breadcrumb__link" href="/{{ current.project.id }}/articles/">記事管理表</a>
                 </li>
                 <li class="breadcrumb__item">
                     <a class="breadcrumb__link">記事詳細設定</a>
@@ -77,19 +31,19 @@
                 <form method="post" class="detail__form">
                     {% csrf_token %}
                     <p class="detail__item">
-                        <label class="detail__label" for="id_project_id">プロジェクト</label>
-                        <select class="detail__input" name="project_id" required="" id="id_project_id">
+                        <label class="detail__label" for="id_project">プロジェクト</label>
+                        <select class="detail__input" name="project" required="" id="id_project">
                             <option value="">---------</option>
                             {% for project in projects %}
-                            <option value="{{ project.id }}" {% if project == current.project_id %}selected{% endif %}>
-                                {{ project.name }} | {{ project.domain }}</option>
+                            <option value="{{ project.id }}" {% if project == current.project %}selected{% endif %}>
+                                {{ project.name }} | {{ project.website.domain }}</option>
                             {% endfor %}
                         </select>
                     </p>
                     <p class="detail__item">
-                        <label class="detail__label" for="id_url">記事URL</label>
-                        <input class="detail__input" type="text" name="url" maxlength="2083" required="" id="id_url"
-                            placeholder="記事URL" value="{{ current.url }}">
+                        <label class="detail__label" for="id_url">記事パス</label>
+                        <input class="detail__input" type="text" name="path" maxlength="2083" required="" id="id_path"
+                            placeholder="記事パス" value="{{ current.path }}">
                     </p>
                     <p class="detail__item">
                         <label class="detail__label" for="id_title">タイトル</label>
@@ -116,12 +70,17 @@
                             {% endfor %}
                         </select>
                     </p>
+                    <p class="detail__item">
+                        <label class="detail__label" for="id_title">カテゴリ</label>
+                        <input class="detail__input" type="text" name="category" maxlength="100" required="" id="id_category"
+                            placeholder="カテゴリ" value="{{ current.category }}">
+                    </p>
                     <button class="detail__submit" type="submit">保存</button>
                 </form>
             </section>
             <section class="keyword">
                 <h2 class="keyword__title">キーワード一覧</h2>
-                <form method="post" class="keyword__form" action="/articles/{{ current.id }}/delete_keywords/">
+                <form method="post" class="keyword__form" action="/{{ current.project.id }}/articles/{{ current.id }}/remove_keywords/">
                     {% csrf_token %}
                     <ul class="keyword__list">
                         <li class="keyword__item keyword__item-header">
@@ -135,7 +94,7 @@
                         <li class="keyword__item">
                             <ul class="keyword__item-list">
                                 <input class="keyword__item-input" type="checkbox" name="keyword"
-                                    value="{{ keyword.keyword }}">
+                                    value="{{ keyword.id }}">
                                 <li class="keyword__item-item keyword__item-keyword">{{ keyword.keyword }}</li>
                                 <li class="keyword__item-item keyword__item-volume">{{ keyword.volume }}</li>
                                 <li class="keyword__item-item keyword__item-date">
@@ -148,7 +107,8 @@
                 </form>
             </section>
             <button id="add-keyword" class="keyword-add__btn" type="button">+ キーワード追加</button>
-            <div class="modal-container">
+            <button id="remove-article" class="keyword-add__btn" type="button">記事削除</button>
+            <div class="modal-container add-keyword">
                 <div class="modal-body">
                     <div class="modal-close">×</div>
                     <div class="modal-content">
@@ -159,6 +119,19 @@
                             <textarea class="keyword-add__input" name="keyword" cols="40" rows="10" required=""
                                 id="id_keyword"></textarea>
                             <button class="keyword-add__submit" type="submit">追加</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-container remove-article">
+                <div class="modal-body">
+                    <div class="modal-close">×</div>
+                    <div class="modal-content">
+                        <p class="delete__message">記事を削除しますか？</p>
+                        <form method="post" class="delete__form">
+                            {% csrf_token %}
+                            <input class="delete__input" type="hidden" name="delete" id="project_delete" value="true">
+                            <button class="delete__submit" type="submit">削除</button>
                         </form>
                     </div>
                 </div>
