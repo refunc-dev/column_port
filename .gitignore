@@ -133,7 +133,12 @@ error_page_source.txt
 config/column-port-service.json
 config/google-ads.yaml
 articles/migrations/*
+!articles/migrations/__init__.py
 projects/migrations/*
+!projects/migrations/__init__.py
 accounts/migrations/*
+!accounts/migrations/__init__.py
 analytics/migrations/*
+!analytics/migrations/__init__.py
 ranking/migrations/*
+!ranking/migrations/__init__.py
