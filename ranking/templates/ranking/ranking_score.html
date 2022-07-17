@@ -58,7 +58,7 @@
                             <p class="ranking__item date">{{ date }}</p>
                             {% endfor %}
                         </li>
-                        <li class="ranking__row">
+                        <li class="ranking__row first">
                             <input class="ranking__input" type="color" name="project_color" value="{{ current.color }}">
                             <p class="ranking__item range">{{ current.website.domain }}</p>
                             {% for s in score.score %}
@@ -66,7 +66,7 @@
                             {% endfor %}
                         </li>
                         {% for c in score.competitors %}
-                        <li class="ranking__row">
+                        <li class="ranking__row competitor">
                             <input class="ranking__input" type="color" name="{{ c.name }}" value="{{ c.color }}">
                             <p class="ranking__item range">{{ c.name }}</p>
                             {% for s in c.score %}
@@ -74,6 +74,12 @@
                             {% endfor %}
                         </li>
                         {% endfor %}
+                        <li class="ranking__row">
+                            <p class="ranking__item range">合計KW数</p>
+                            {% for t in score.total %}
+                            <p class="ranking__item date">{{ t }}</p>
+                            {% endfor %}
+                        </li>
                     </ul>
                     <button class="ranking__submit" type="submit">変更</button>
                 </form>

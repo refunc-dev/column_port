@@ -1,14 +1,14 @@
 <article class="graph">
-    <h4 class="graph__title">- 全チャネルセッション数 -</h4>
-    <div class="graph__container all">
-        <canvas id="chart_all" class="graph__chart"></canvas>
+    <h4 class="graph__title">- 自然検索セッション数 -</h4>
+    <div class="graph__container organic">
+        <canvas id="chart_organic" class="graph__chart"></canvas>
     </div>
 </article>
 {% autoescape off %}
 <script>
-    ctx_all = document.getElementById("chart_all").getContext("2d");
+    ctx_organic = document.getElementById("chart_organic").getContext("2d");
 
-    var data_all = {
+    var data_organic = {
         labels: {{ data.labels }},
         datasets: [
             {
@@ -31,7 +31,7 @@
         ],
     };
 
-    var options_all = {
+    var options_organic = {
         responsive: true,
         maintainAspectRatio: false,
         scales: {
@@ -60,10 +60,10 @@
         }
     };
 
-    var chart_all = new Chart(ctx_all, {
+    var chart_organic = new Chart(ctx_organic, {
         type: 'bar',
-        data: data_all,
-        options: options_all
+        data: data_organic,
+        options: options_organic
     });
 </script>
 {% endautoescape %}

@@ -93,9 +93,15 @@
                             <p class="ranking__item date">{{ item }}</p>
                             {% endfor %}
                         </li>
-                        <li class="ranking__row">
+                        <li class="ranking__row last">
                             <p class="ranking__item range">100位圏外</p>
                             {% for item in data.count.outofrange %}
+                            <p class="ranking__item date">{{ item }}</p>
+                            {% endfor %}
+                        </li>
+                        <li class="ranking__row">
+                            <p class="ranking__item range">合計KW数</p>
+                            {% for item in data.count.total %}
                             <p class="ranking__item date">{{ item }}</p>
                             {% endfor %}
                         </li>

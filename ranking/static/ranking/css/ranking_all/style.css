@@ -1047,6 +1047,10 @@ html {
   width: 400px;
 }
 
+.main .contents .ranking__contents .ranking__table .ranking__row.head .ranking__item.multi.competitor {
+  width: auto;
+}
+
 .main .contents .ranking__contents .ranking__table .ranking__row.head .ranking__item-top {
   height: 50%;
   line-height: 30px;
@@ -1191,7 +1195,8 @@ html {
   background-image: url("/static/projects/images/updated.png");
 }
 
-.main .contents .keyword__add-btn {
+.main .contents .keyword__add-btn,
+.main .contents .keyword__delete-btn {
   color: #555555;
   background-color: white;
   font-size: 1.5rem;
@@ -1202,7 +1207,8 @@ html {
   cursor: pointer;
 }
 
-.main .contents .keyword__add-btn:hover {
+.main .contents .keyword__add-btn:hover,
+.main .contents .keyword__delete-btn:hover {
   border: 2px solid #144a6e;
 }
 
@@ -1277,6 +1283,86 @@ html {
 }
 
 .main .contents .keyword__add-form .keyword__add-submit:active {
+  -webkit-transform: translate(0, 2px);
+  transform: translate(0, 2px);
+  border-bottom: none;
+}
+
+.main .contents .keyword__delete-form {
+  font-size: 1.6rem;
+}
+
+.main .contents .keyword__delete-form .keyword__list {
+  width: 100%;
+  margin-left: 0;
+  margin-bottom: 30px;
+  padding: 0;
+}
+
+.main .contents .keyword__delete-form .keyword__item {
+  list-style: none;
+  border-bottom: 1px dashed #144a6e;
+}
+
+.main .contents .keyword__delete-form .keyword__item:first-child {
+  font-weight: bold;
+  border-bottom: 2px solid #144a6e;
+}
+
+.main .contents .keyword__delete-form .keyword__item-list {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  position: relative;
+  padding-left: 40px;
+}
+
+.main .contents .keyword__delete-form .keyword__item-item {
+  list-style: none;
+  margin: 0;
+  padding: 5px 10px;
+}
+
+.main .contents .keyword__delete-form .keyword__item-item.keyword__item-keyword {
+  width: 400px;
+}
+
+.main .contents .keyword__delete-form .keyword__item-item.keyword__item-volume {
+  width: 120px;
+}
+
+.main .contents .keyword__delete-form .keyword__item-item.keyword__item-date {
+  width: 150px;
+}
+
+.main .contents .keyword__delete-form .keyword__item-input {
+  display: block;
+  position: absolute;
+  left: 20px;
+}
+
+.main .contents .keyword__delete-form .keyword__delete-submit {
+  padding: 7px 10px;
+  border-radius: 5px;
+  background: #144a6e;
+  color: #ffffff;
+  width: 100px;
+  font-weight: 800;
+  font-size: 1.4rem;
+  letter-spacing: 1.8pt;
+  display: block;
+  cursor: pointer;
+  position: relative;
+  border-top: 2px solid rgba(255, 255, 255, 0.2);
+  border-left: 2px solid rgba(255, 255, 255, 0.2);
+  border-right: 2px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 2px solid rgba(0, 0, 0, 0.2);
+}
+
+.main .contents .keyword__delete-form .keyword__delete-submit:active {
   -webkit-transform: translate(0, 2px);
   transform: translate(0, 2px);
   border-bottom: none;

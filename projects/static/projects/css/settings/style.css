@@ -1053,6 +1053,14 @@ html {
   border: 2px solid #144a6e;
 }
 
+.main .member-add__form .member-add__label {
+  display: block;
+  text-align: center;
+  font-size: 1.6rem;
+  margin: 30px auto;
+  color: #555555;
+}
+
 .main .member-add__form .member-add__input {
   padding: 15px 20px;
   border-radius: 5px;
@@ -1088,6 +1096,12 @@ html {
 
 .main .member-add__form .member-add__input:focus {
   outline: 0;
+}
+
+.main .member-add__form .member-add__input.input-role {
+  display: inline-block;
+  width: 45%;
+  margin: 0 0 0 15px;
 }
 
 .main .member-add__form .member-add__submit {

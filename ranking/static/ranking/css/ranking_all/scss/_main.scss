@@ -230,6 +230,10 @@
 
               &.multi {
                 width: 400px;
+
+                &.competitor {
+                  width: auto;
+                }
               }
             }
 
@@ -357,7 +361,8 @@
       }
     }
 
-    .keyword__add-btn {
+    .keyword__add-btn,
+    .keyword__delete-btn {
       color: $clr-font03;
       background-color: white;
       font-size: 1.5rem;
@@ -421,6 +426,83 @@
         margin: 0 auto 20px;
         font-weight: 800;
         font-size: 1.6rem;
+        letter-spacing: 1.8pt;
+        display: block;
+        cursor: pointer;
+        position: relative;
+        border-top: 2px solid rgba(255, 255, 255, 0.2);
+        border-left: 2px solid rgba(255, 255, 255, 0.2);
+        border-right: 2px solid rgba(255, 255, 255, 0.2);
+        border-bottom: 2px solid rgba(0, 0, 0, 0.2);
+    
+        &:active {
+          -webkit-transform: translate(0, 2px);
+          -moz-transform: translate(0, 2px);
+          transform: translate(0, 2px);
+          border-bottom: none;
+        }
+      }
+    }
+
+    .keyword__delete-form {
+      font-size: 1.6rem;
+
+      .keyword__list {
+        width: 100%;
+        margin-left: 0;
+        margin-bottom: 30px;
+        padding: 0;
+      }
+
+      .keyword__item {
+        list-style: none;
+        border-bottom: 1px dashed $clr-bd05;
+
+        &:first-child {
+          font-weight: bold;
+          border-bottom: 2px solid $clr-bd05;
+        }
+      }
+
+      .keyword__item-list {
+        display: flex;
+        align-items: center;
+        position: relative;
+        padding-left: 40px;
+      }
+
+      .keyword__item-item {
+        list-style: none;
+        margin: 0;
+        padding: 5px 10px;
+
+        &.keyword__item-keyword {
+          width: 400px;
+        }
+
+        &.keyword__item-volume {
+          width: 120px;
+        }
+
+        &.keyword__item-date {
+          width: 150px;
+        }
+      }
+
+      .keyword__item-input {
+        display: block;
+        position: absolute;
+        left: 20px;
+      }
+
+      .keyword__delete-submit {
+        padding: 7px 10px;
+        border-radius: 5px;
+        background: $clr-bg09;
+        color: $clr-font02;
+        width: 100px;
+        font-weight: 800;
+        font-size: 1.4rem;
         letter-spacing: 1.8pt;
         display: block;
         cursor: pointer;

@@ -7,4 +7,5 @@ urlpatterns = [
     path('all/', views.ranking_all, name='ranking_all'),
     path('range/', views.ranking_range, name='ranking_range'),
     path('score/', views.ranking_score, name='ranking_score'),
+    path('all/delete/', views.ranking_all_delete, name='ranking_all_delete'),
 ]

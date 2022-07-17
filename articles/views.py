@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from projects.decorators import owner_check
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 
@@ -19,6 +20,7 @@ import datetime
 import re
 
 
+@owner_check
 @login_required
 def top(request, project_id):
     current = Project.objects.get(id=project_id)
@@ -66,7 +68,7 @@ def top(request, project_id):
             date[f"{i + 1}"] = a.date
             session[f"{i + 1}"] = a.session
             cvr[f"{i + 1}"] = a.conversion_rate
-            cv[f"{i + 1}"] = a.conversion
+            cv[f"{i + 1}"] = int(a.conversion)
         klist = []
         keywords = article.keywords.all()
         size = len(keywords)
@@ -102,6 +104,7 @@ def top(request, project_id):
     return render(request, 'articles/top.html', context)
 
 
+@owner_check
 @login_required
 def settings(request, project_id, article_id):
     current = Article.objects.get(id=article_id)
@@ -150,6 +153,7 @@ def settings(request, project_id, article_id):
                         WebsiteKeywordRelation.objects.create(
                             website=c,
                             keyword=k,
+                            project=current.project,
                             registered_by=request.user,
                         ) 
                 else:
@@ -173,6 +177,7 @@ def settings(request, project_id, article_id):
                         WebsiteKeywordRelation.objects.create(
                             website=c,
                             keyword=k,
+                            project=current.project,
                             registered_by=request.user,
                         ) 
             messages.success(request, 'キーワードの登録に成功しました')
@@ -194,6 +199,7 @@ def settings(request, project_id, article_id):
     return render(request, 'articles/detail.html', context)
 
 
+@owner_check
 @login_required
 def remove_keywords(request, project_id, article_id):
     current = Article.objects.get(id=article_id)

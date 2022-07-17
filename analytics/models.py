@@ -6,12 +6,13 @@ from projects.models import Project
 
 class Regex(models.Model):
     regex = models.CharField('正規表現', max_length=100)
-    name = models.CharField('ディレクトリ名', max_length=200, null=True, blank=True)
+    name = models.CharField('正規表現名', max_length=200, null=True, blank=True)
     project = models.ForeignKey(
         Project,
         verbose_name='プロジェクト',
         on_delete=models.CASCADE
     )
+    order = models.PositiveIntegerField('順番', default=0)
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         verbose_name="作成者",
@@ -24,7 +25,7 @@ class Regex(models.Model):
         verbose_name_plural = 'Regex'
     
     def __str__(self):
-        return f'<Regex: {self.regex}, {self.project_id}>'
+        return f'<Regex: {self.regex}, {self.project}>'
 
 
 class WeeklyAll(models.Model):

@@ -1,14 +1,14 @@
 <article class="graph">
-    <h4 class="graph__title">セッション数</h4>
-    <div class="graph__container organic_session">
-        <canvas id="chart_organic_session" class="graph__chart"></canvas>
+    <h4 class="graph__title">- 自然検索CV数 -</h4>
+    <div class="graph__container cv">
+        <canvas id="chart_organic_cv" class="graph__chart"></canvas>
     </div>
 </article>
 {% autoescape off %}
 <script>
-    ctx_organic_session = document.getElementById("chart_organic_session").getContext("2d");
+    ctx_organic_cv = document.getElementById("chart_organic_cv").getContext("2d");
 
-    var data_organic_session = {
+    var data_organic_cv = {
         labels: [
             {% for e in data.labels %}
             {% if forloop.counter > 12 %}
@@ -20,37 +20,37 @@
             {% if type == 'monthly' %}
             {
                 type: 'bar',
-                label: 'セッション（昨年）',
+                label: 'CV数（昨年）',
                 data: [
-                    {% for e in channel.organicData %}
+                    {% for e in data.cvData %}
                     {% if forloop.counter <= 12 %}
                     {{ e }},
                     {% endif %}
                     {% endfor %}
                 ],
-                borderColor: "rgba(0,164,235,0.8)",
-                backgroundColor: "rgba(0,164,235,0.5)",
+                borderColor: "rgba(204,204,204,0.8)",
+                backgroundColor: "rgba(204,204,204,0.8)",
                 yAxisID: "y-axis",
             },
             {% endif %}
             {
                 type: 'bar',
-                label: 'セッション',
+                label: 'CV数',
                 data: [
-                    {% for e in channel.organicData %}
+                    {% for e in data.cvData %}
                     {% if forloop.counter > 12 %}
                     {{ e }},
                     {% endif %}
                     {% endfor %}
                 ],
-                borderColor: "rgba(54,164,235,0.8)",
-                backgroundColor: "rgba(54,164,235,0.5)",
+                borderColor: "rgba(255,153,0,1)",
+                backgroundColor: "rgba(255,153,0,1)",
                 yAxisID: "y-axis",
             },
         ],
     };
 
-    var options_organic_session = {
+    var options_organic_cv = {
         responsive: true,
         maintainAspectRatio: false,
         scales: {
@@ -59,18 +59,18 @@
                 type: "linear",
                 position: "left",
                 ticks: {
-                    max: {{ data.sessionMax }},
+                    max: {{ data.cvMax }},
                     min: 0,
-                    stepSize: {{ data.sessionStepSize }}
+                    stepSize: {{ data.cvStepSize }}
                 },
             }],
         }
     };
 
-    var chart_organic_session = new Chart(ctx_organic_session, {
+    var chart_organic_cv = new Chart(ctx_organic_cv, {
         type: 'bar',
-        data: data_organic_session,
-        options: options_organic_session
+        data: data_organic_cv,
+        options: options_organic_cv
     });
 </script>
 {% endautoescape %}

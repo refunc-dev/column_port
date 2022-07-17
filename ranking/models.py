@@ -3,6 +3,14 @@ from django.db import models
 from projects.models import Website, Keyword
 
 
+class GetOrNoneManager(models.Manager):
+    def get_or_none(self, **kwargs):
+        try:
+            return self.get(**kwargs)
+        except self.model.DoesNotExist:
+            return None
+
+
 class KeywordSerp(models.Model):
     keyword = models.ForeignKey(
         Keyword,
@@ -218,18 +226,19 @@ class KeywordSerp(models.Model):
 class Ranking(models.Model):
     website = models.ForeignKey(
         Website,
-        verbose_name="サイト",
+        verbose_name='サイト',
         on_delete=models.CASCADE
     )
     keyword = models.ForeignKey(
         Keyword,
-        verbose_name="キーワード",
+        verbose_name='キーワード',
         on_delete=models.CASCADE
     )
     date = models.DateField('日付')
     ranking = models.PositiveIntegerField('順位', default=0)
     ranking_page = models.CharField('ランクインページ', max_length=2083, null=True, blank=True)
     title_link = models.TextField('タイトルリンク', null=True, blank=True)
+    objects = GetOrNoneManager()
 
     class Meta:
         verbose_name_plural = 'Ranking'

@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from projects.decorators import owner_check
 from django.shortcuts import render, redirect
 
 from ranking.models import Ranking
@@ -16,11 +17,13 @@ import math
 import re
 
 
+@owner_check
 @login_required
 def ranking_top(request, project_id):
     return redirect(ranking_all, project_id=project_id)
 
 
+@owner_check
 @login_required
 def ranking_all(request, project_id):
     current = Project.objects.get(id=project_id)
@@ -55,11 +58,12 @@ def ranking_all(request, project_id):
                         registered_by=request.user,
                     )
                     for c in current.competitors.all():
-                        WebsiteKeywordRelation.objects.create(
+                        wk = WebsiteKeywordRelation.objects.create(
                             website=c,
                             keyword=k,
                             registered_by=request.user,
                         ) 
+                        wk.competitors.add(current)
                 else:
                     if article:
                         a = Article.objects.get(id=article).keywords.add(k)
@@ -80,47 +84,91 @@ def ranking_all(request, project_id):
                     exists = WebsiteKeywordRelation.objects.filter(keyword=k).values('website')
                     competitors = current.competitors.exclude(competitors_projects__website__in=exists)
                     for c in competitors:
-                        WebsiteKeywordRelation.objects.create(
+                        wk = WebsiteKeywordRelation.objects.create(
                             website=c,
                             keyword=k,
                             registered_by=request.user,
-                        ) 
+                        )
+                        wk.competitors.add(current)
             messages.success(request, 'キーワードの登録に成功しました')
         else:
             messages.add_message(request, messages.ERROR,
                                  "キーワードの登録に失敗しました。")
         return redirect(ranking_all, project_id=project_id)
-    keywords = WebsiteKeywordRelation.objects.filter(project=current)
-    data = []
-    for k in keywords:
-        keyword = k.keyword
-        ranking = Ranking.objects.filter(website=current.website,keyword=keyword).order_by('date').reverse()[:5]
-        kdata = {
-            "keyword": keyword.keyword,
-            "volume": keyword.volume,
-            "ranking": ['-','-','-','-','-'],
-            "date": ['-','-','-','-','-'],
-            "ranking_page": "-",
-            "title_link": "-"
-        }
-        for i, r in enumerate(ranking):
-            if i == 0:
-                kdata["ranking_page"] = r.ranking_page
-                kdata["title_link"] = r.title_link
-            kdata["ranking"][4 - i] = r.ranking
-            kdata["date"][4 - i] = r.date
-        data.append(kdata)
+    keywords = list(WebsiteKeywordRelation.objects.filter(project=current).values_list('keyword', flat=True))
+    keywords = list(Keyword.objects.get(id=k) for k in keywords)
+    date = list(Ranking.objects.filter(website=current.website,keyword__in=keywords).order_by('date').reverse().distinct()[:5].values_list('date', flat=True))
+    pc = ProjectCompetitorRelation.objects.filter(project=current)
+    data = {
+        'date': ['-','-','-','-','-'],
+        'competitors': [],
+        'keywords': []
+    }
+    ranking = Ranking.objects.filter(website=current.website,date__in=date,keyword__in=keywords)
+    for i, d in enumerate(date):
+        data['date'][4 - i] = d.strftime('%-m / %-d') 
+    for c in pc:
+        data['competitors'].append(c.name)
+    for i, k in enumerate(keywords):
+        data['keywords'].append({
+            'keyword': k.keyword,
+            'volume': k.volume,
+            'ranking': [0,0,0,0,0],
+            'ranking_page': '-',
+            'title_link': '-',
+            'competitors': []
+        })
+        for ii, d in enumerate(date):
+            r = ranking.filter(keyword=k,date=d)
+            if len(r) > 0:
+                if ii == 0:
+                    data['keywords'][i]['ranking_page'] = r[0].ranking_page
+                    data['keywords'][i]['title_link'] = r[0].title_link
+                data['keywords'][i]['ranking'][4-ii] = r[0].ranking
+        for c in pc:
+            r = Ranking.objects.filter(website=c.competitor,date__in=date,keyword=k).order_by('date').reverse()[:1]
+            rc = 0
+            if len(r) > 0:
+                rc = r[0].ranking
+            data['keywords'][i]['competitors'].append(rc)
     projects = request.user.members_projects.all()
     articles = Article.objects.filter(project=current)
     context = {
         'current': current,
         'projects': projects,
         'articles': articles,
-        'keywords': data,
+        'data': data,
+        'keywords': keywords,
     }
     return render(request, 'ranking/ranking_all.html', context)
 
 
+@owner_check
+@login_required
+def ranking_all_delete(request, project_id):
+    current = Project.objects.get(id=project_id)
+    form = KeywordForm(request.POST)
+    if request.method == 'POST':
+        keywords = request.POST.getlist('keyword')
+        wk = WebsiteKeywordRelation.objects.filter(competitors=current,keyword__in=keywords)
+        for item in wk:
+            item.competitors.remove(current)
+            if (not item.project) and len(item.competitors.all()) == 0:
+                item.delete()
+        wk = WebsiteKeywordRelation.objects.filter(project=current,keyword__in=keywords)
+        for item in wk:
+            item.project = None
+            item.save()
+            if len(item.competitors.all()) == 0:
+                k = item.keyword
+                item.delete()
+                wk = WebsiteKeywordRelation.objects.get_or_none(keyword=k) 
+                if not wk:
+                    k.delete()
+    return redirect(ranking_all, project_id=project_id)
+
+
+@owner_check
 @login_required
 def ranking_range(request, project_id):
     current = Project.objects.get(id=project_id)
@@ -134,7 +182,8 @@ def ranking_range(request, project_id):
             'eleventh': [0,0,0,0,0,0,0,0,0,0],
             'thirtyfirst': [0,0,0,0,0,0,0,0,0,0],
             'fiftyfirst': [0,0,0,0,0,0,0,0,0,0],
-            'outofrange': [0,0,0,0,0,0,0,0,0,0]
+            'outofrange': [0,0,0,0,0,0,0,0,0,0],
+            'total': [0,0,0,0,0,0,0,0,0,0]
         },
         'data': {
             'first': [0,0,0,0,0,0,0,0,0,0],
@@ -153,20 +202,21 @@ def ranking_range(request, project_id):
             ranking = list(Ranking.objects.filter(website=current.website,keyword__in=keywords,date=d).values_list('ranking',flat=True))
             for r in ranking:
                 if r == 1:
-                    data['count']['first'][9 - i] += 1
+                    data['count']['first'][9-i] += 1
                 elif r > 1 and r <=5:
-                    data['count']['second'][9 - i] += 1
+                    data['count']['second'][9-i] += 1
                 elif r > 5 and r <=10:
-                    data['count']['sixth'][9 - i] += 1
+                    data['count']['sixth'][9-i] += 1
                 elif r > 10 and r <=30:
-                    data['count']['eleventh'][9 - i] += 1
+                    data['count']['eleventh'][9-i] += 1
                 elif r > 30 and r <=50:
-                    data['count']['thirtyfirst'][9 - i] += 1
+                    data['count']['thirtyfirst'][9-i] += 1
                 elif r > 50 and r <=100:
-                    data['count']['fiftyfirst'][9 - i] += 1
+                    data['count']['fiftyfirst'][9-i] += 1
                 elif r > 100:
-                    data['count']['outofrange'][9 - i] += 1
+                    data['count']['outofrange'][9-i] += 1
             total = len(ranking)
+            data['count']['total'][9-i] = total
             if total == 0:
                 data['data']['first'][9-i] = 0
                 data['data']['second'][9-i] = 0
@@ -207,21 +257,23 @@ def hex_to_rgba(value, opacity):
 
 def create_score(current):
     keywords = list(WebsiteKeywordRelation.objects.filter(project=current).values_list('keyword', flat=True))
-    date = []
     score = {
         'date': ['-','-','-','-','-','-','-','-','-','-'],
         'score': [0,0,0,0,0,0,0,0,0,0],
+        'total': [0,0,0,0,0,0,0,0,0,0],
         'rgba': hex_to_rgba(current.color, 0.8),
         'max': 0,
         'stepSize': 0
     }
     scoreMax = 0
+    date = []
     if len(keywords) > 0:
         date = list(Ranking.objects.filter(website=current.website,keyword__in=keywords).order_by('date').reverse().distinct()[:10].values_list('date', flat=True))
         score_tmp = [10,9,8,7,6,5,4,3,2,1]
         for i, d in enumerate(date):
             score['date'][9-i] = d.strftime('%-m / %-d')
             ranking = Ranking.objects.filter(website=current.website,keyword__in=keywords,date=d)
+            score['total'][9-i] = len(ranking)
             for r in ranking:
                 if r.ranking >= 1 and r.ranking <= 10:
                     score['score'][9-i] += score_tmp[r.ranking-1]
@@ -243,6 +295,7 @@ def create_score(current):
     return score
 
 
+@owner_check
 @login_required
 def ranking_score(request, project_id):
     current = Project.objects.get(id=project_id)

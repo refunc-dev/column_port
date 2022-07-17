@@ -242,6 +242,14 @@
 
   .member-add__form {
 
+    .member-add__label {
+      display: block;
+      text-align: center;
+      font-size: 1.6rem;
+      margin: 30px auto;
+      color: $clr-font03;
+    }
+
     .member-add__input {
       padding: 15px 20px;
       border-radius: 5px;
@@ -263,6 +271,12 @@
   
       &:focus {
         outline: 0;
+      }
+
+      &.input-role {
+        display: inline-block;
+        width: 45%;
+        margin: 0 0 0 15px;
       }
     }
 

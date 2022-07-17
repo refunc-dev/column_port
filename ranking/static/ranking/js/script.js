@@ -1,12 +1,19 @@
 $(document).ready(function () {
 	// 変数に要素を入れる
-	var open = $('.keyword__add-btn'),
+	var open_add = $('.keyword__add-btn'),
+		open_delete = $('.keyword__delete-btn'),
 		close = $('.modal-close'),
-		container = $('.modal-container');
+		container = $('.modal-container'),
+		container_add = $('.modal-container.add'),
+		container_delete = $('.modal-container.delete');
 
 	//開くボタンをクリックしたらモーダルを表示する
-	open.on('click',function(){	
-		container.addClass('active');
+	open_add.on('click',function(){	
+		container_add.addClass('active');
+		return false;
+	});
+	open_delete.on('click',function(){	
+		container_delete.addClass('active');
 		return false;
 	});
 

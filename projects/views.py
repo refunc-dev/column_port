@@ -1,8 +1,9 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from projects.decorators import owner_check
 from django.shortcuts import render, redirect
 
-from projects.models import Website, Keyword, Project, WebsiteKeywordRelation, ProjectCompetitorRelation
+from projects.models import Website, Keyword, Project, WebsiteKeywordRelation, ProjectMemberRelation, ProjectCompetitorRelation
 from analytics.models import WeeklyAll, MonthlyAll
 from accounts.models import User
 
@@ -50,7 +51,11 @@ def home(request):
                     website=website,
                     created_by=request.user
                 )
-                project.members.add(request.user)
+                ProjectMemberRelation.objects.create(
+                    project=project,
+                    member=request.user,
+                    role='admin'
+                )
                 data = get_weekly_analytics_data(24)
                 for d in data:
                     WeeklyAll.objects.create(
@@ -104,6 +109,7 @@ def home(request):
     return render(request, 'projects/index.html', context)
 
 
+@owner_check
 @login_required
 def project_top(request, project_id):
     current = Project.objects.get(id=project_id)
@@ -119,6 +125,7 @@ def project_top(request, project_id):
     return render(request, 'projects/top.html', context)
 
 
+@owner_check
 @login_required
 def project_settings(request, project_id):
     current = Project.objects.get(id=project_id)
@@ -130,7 +137,11 @@ def project_settings(request, project_id):
                 if new in current.members.all():
                     messages.error(request, '既にメンバーに追加済みです')
                 else:
-                    current.members.add(new)
+                    ProjectMemberRelation.objects.create(
+                        project=current,
+                        member=new,
+                        role='member'
+                    )
             else:
                 messages.error(request, '存在しないユーザーです')
         elif request.POST.get('domain'):
@@ -149,16 +160,18 @@ def project_settings(request, project_id):
                     ProjectCompetitorRelation.objects.create(
                         project = current,
                         competitor = new,
+                        name=request.POST.get('name'),
                         registered_by = request.user
                     )
                     existed_k = list(WebsiteKeywordRelation.objects.filter(website=new).values_list('keyword', flat=True))
                     for k in current.website.keywords.all():
                         if k not in existed_k:
-                            WebsiteKeywordRelation.objects.create(
+                            wk = WebsiteKeywordRelation.objects.create(
                                 website=new,
                                 keyword=k,
                                 registered_by=request.user
                             ) 
+                            wk.competitors.add(current)
                     messages.success(request, '競合サイトの追加に成功しました') 
             else:
                 new = Website.objects.create(
@@ -168,14 +181,16 @@ def project_settings(request, project_id):
                 ProjectCompetitorRelation.objects.create(
                     project = current,
                     competitor = new,
+                    name=request.POST.get('name'),
                     registered_by = request.user
                 )
                 for k in current.website.keywords.all():
-                    WebsiteKeywordRelation.objects.create(
+                    wk = WebsiteKeywordRelation.objects.create(
                         website=new,
                         keyword=k,
                         registered_by=request.user
-                    ) 
+                    )
+                    wk.competitors.add(current)
                 messages.success(request, '競合サイトの追加に成功しました') 
         elif request.POST.get('member'):
             for k, v in request.POST.items():
@@ -196,15 +211,17 @@ def project_settings(request, project_id):
             messages.success(request, 'プロジェクトを削除しました')
             return redirect(home)
         return redirect(project_settings, project_id=project_id)
-    members = current.members.all()
+    members = ProjectMemberRelation.objects.filter(project=current)
     competitors = ProjectCompetitorRelation.objects.filter(project=current)
     projects = request.user.members_projects.all()
+    role = ProjectMemberRelation.objects.get(project=current,member=request.user).role
     context = {
         'current': current,
         'projects': projects,
         'members': members,
         'competitors': competitors,
         'form': form,
+        'role': role,
     }
     return render(request, 'projects/settings.html', context)
 

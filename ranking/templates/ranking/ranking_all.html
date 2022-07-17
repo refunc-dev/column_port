@@ -47,7 +47,7 @@
                     </li>
                 </ul>
                 <div class="ranking__contents">
-                    {% if keywords %}
+                    {% if data %}
                     <ul class="ranking__table">
                         <li class="ranking__row head">
                             <p class="ranking__item id">ID</p>
@@ -56,40 +56,37 @@
                             <div class="ranking__item multi">
                                 <p class="ranking__item-top">検索順位</p>
                                 <ul class="ranking__item-list">
-                                    {% for keyword in keywords %}
-                                    {% if forloop.first %}
-                                    {% for date in keyword.date %}
-                                    {% if date == '-' %}
-                                    <li class="ranking__item-item rank">-</li>
-                                    {% else %}
-                                    <li class="ranking__item-item rank">{{ date|date:"n/j" }}</li>
-                                    {% endif %}
-                                    {% endfor %}
-                                    {% endif %}
-                                    {% empty %}
-                                    <li class="ranking__item-item rank">-</li>
-                                    <li class="ranking__item-item rank">-</li>
-                                    <li class="ranking__item-item rank">-</li>
-                                    <li class="ranking__item-item rank">-</li>
-                                    <li class="ranking__item-item rank">-</li>
+                                    {% for date in data.date %}
+                                    <li class="ranking__item-item rank">{{ date }}</li>
                                     {% endfor %}
                                 </ul>
                             </div>
                             <p class="ranking__item page">ランクインページ</p>
                             <p class="ranking__item page">タイトルリンク</p>
+                            <div class="ranking__item multi competitor">
+                                <p class="ranking__item-top">競合順位</p>
+                                <ul class="ranking__item-list">
+                                    {% for c in data.competitors %}
+                                    <li class="ranking__item-item rank">{{ c }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
                         </li>
-                        {% for keyword in keywords %}
+                        {% for k in data.keywords %}
                         <li class="ranking__row">
                             <p class="ranking__item id">
                                 {{ forloop.counter }}
                             </p>
-                            <p class="ranking__item keyword">{{ keyword.keyword }}</p>
-                            <p class="ranking__item volume">{{ keyword.volume }}</p>
-                            {% for r in keyword.ranking %}
+                            <p class="ranking__item keyword">{{ k.keyword }}</p>
+                            <p class="ranking__item volume">{{ k.volume }}</p>
+                            {% for r in k.ranking %}
                             <p class="ranking__item rank">{{ r }}</p>
                             {% endfor %}
-                            <p class="ranking__item page">{{ keyword.ranking_page }}</p>
-                            <p class="ranking__item page">{{ keyword.title_link }}</p>
+                            <p class="ranking__item page">{{ k.ranking_page }}</p>
+                            <p class="ranking__item page">{{ k.title_link }}</p>
+                            {% for c in k.competitors %}
+                            <p class="ranking__item rank">{{ c }}</p>
+                            {% endfor %}
                         </li>
                         {% endfor %}
                     </ul>
@@ -97,7 +94,7 @@
                 {% endif %}
             </section>
             <button class="keyword__add-btn" type="button">+ 入力でキーワード登録</button>
-            <div class="modal-container">
+            <div class="modal-container add">
                 <div class="modal-body">
                     <div class="modal-close">×</div>
                     <div class="modal-content">
@@ -116,6 +113,36 @@
                                 </select>
                             </label>
                             <button class="keyword__add-submit" type="submit">登録</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <button class="keyword__delete-btn" type="button">- キーワード削除</button>
+            <div class="modal-container delete">
+                <div class="modal-body delete">
+                    <div class="modal-close">×</div>
+                    <div class="modal-content">
+                        <form method="post" action="/{{ current.id }}/reports/ranking/all/delete/" class="keyword__delete-form">
+                            {% csrf_token %}
+                            <p class="keyword__text">キーワードを削除する場合は、記事管理表からもランキング情報が削除されます。</p>
+                            <ul class="keyword__list">
+                                <li class="keyword__item keyword__item-header">
+                                    <ul class="keyword__item-list">
+                                        <li class="keyword__item-item keyword__item-keyword">キーワード</li>
+                                        <li class="keyword__item-item keyword__item-volume">検索数</li>
+                                    </ul>
+                                </li>
+                                {% for keyword in keywords %}
+                                <li class="keyword__item">
+                                    <ul class="keyword__item-list">
+                                        <input class="keyword__item-input" type="checkbox" name="keyword" value="{{ keyword.id }}">
+                                        <li class="keyword__item-item keyword__item-keyword">{{ keyword.keyword }}</li>
+                                        <li class="keyword__item-item keyword__item-volume">{{ keyword.volume }}</li>
+                                    </ul>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                            <button class="keyword__delete-submit" type="submit">削除</button>
                         </form>
                     </div>
                 </div>

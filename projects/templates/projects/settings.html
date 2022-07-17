@@ -41,20 +41,24 @@
                         {% for member in members %}
                         <li class="member__item">
                             <ul class="member__item-list">
-                                {% if request.user != member %}
-                                <input class="member__item-input" type="checkbox" name="member"
-                                    value="{{ member.email }}">
-                                <li class="member__item-item member__item-role">メンバー</li>
-                                {% else %}
+                                {% if member.role == 'admin' %}
                                 <li class="member__item-item member__item-role">管理者</li>
+                                {% elif member.role == 'member' %}
+                                {% if role == 'admin' %}
+                                <input class="member__item-input" type="checkbox" name="member"
+                                    value="{{ member.member.email }}">
                                 {% endif %}
-                                <li class="member__item-item member__item-username">{{ member.username }}</li>
-                                <li class="member__item-item member__item-email">{{ member.email }}</li>
+                                <li class="member__item-item member__item-role">メンバー</li>
+                                {% endif %}
+                                <li class="member__item-item member__item-username">{{ member.member.username }}</li>
+                                <li class="member__item-item member__item-email">{{ member.member.email }}</li>
                             </ul>
                         </li>
                         {% endfor %}
                     </ul>
+                    {% if role == 'admin' %}
                     <button class="member__submit" type="submit">削除</button>
+                    {% endif %}
                 </form>
             </section>
             <section class="competitor">
@@ -70,19 +74,22 @@
                         {% for competitor in competitors %}
                         <li class="competitor__item">
                             <ul class="competitor__item-list">
+                                {% if role == 'admin' %}
                                 <input class="competitor__item-input" type="checkbox" name="competitor"
                                     value="{{ competitor.competitor.domain }}">
+                                {% endif %}
                                 <li class="competitor__item-item competitor__item-domain">{{ competitor.competitor.domain }}</li>
                             </ul>
                         </li>
                         {% endfor %}
                     </ul>
+                    {% if role == 'admin' %}
                     <button class="competitor__submit" type="submit">削除</button>
+                    {% endif %}
                 </form>
             </section>
+            {% if role == 'admin' %}
             <button id="add-member" class="add__btn" type="button">+ 新規メンバー追加</button>
-            <button id="add-competitor" class="add__btn" type="button">+ 競合サイト追加</button>
-            <button id="delete-project" class="add__btn" type="button">プロジェクト削除</button>
             <div class="modal-container add-member">
                 <div class="modal-body">
                     <div class="modal-close">×</div>
@@ -92,24 +99,33 @@
                             {% csrf_token %}
                             <input class="member-add__input" type="email" name="email" placeholder="メールアドレス"
                                 autocomplete="email" required="" id="id_email">
+                            <label class="member-add__label" for="role">役割
+                                <select class="member-add__input input-role" name="role" required id="role">
+                                    <option value="admin">管理者</option>
+                                    <option value="member" selected>メンバー</option>
+                                </select>
+                            </label>
                             <button class="member-add__submit" type="submit">追加</button>
                         </form>
                     </div>
                 </div>
             </div>
+            <button id="add-competitor" class="add__btn" type="button">+ 競合サイト追加</button>
             <div class="modal-container add-competitor">
                 <div class="modal-body">
                     <div class="modal-close">×</div>
                     <div class="modal-content">
-                        <p class="competitor-add__message">追加する競合サイトのドメイン名を入力してください。</p>
+                        <p class="competitor-add__message">追加する競合サイトのドメイン名/サイト名を入力してください。</p>
                         <form method="post" class="competitor-add__form">
                             {% csrf_token %}
                             <input type="text" class="competitor-add__input" name="domain" maxlength="2083" placeholder="ドメイン名" required id="id_domain">
+                            <input type="text" class="competitor-add__input" name="name" maxlength="100" placeholder="競合サイト名" required id="id_name">
                             <button class="competitor-add__submit" type="submit">追加</button>
                         </form>
                     </div>
                 </div>
             </div>
+            <button id="delete-project" class="add__btn" type="button">プロジェクト削除</button>
             <div class="modal-container delete-project">
                 <div class="modal-body">
                     <div class="modal-close">×</div>
@@ -123,6 +139,7 @@
                     </div>
                 </div>
             </div>
+            {% endif %}
         </div>
     </div>
 </main>

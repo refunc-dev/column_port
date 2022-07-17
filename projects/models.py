@@ -72,16 +72,18 @@ class Project(models.Model):
     members = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
         verbose_name="メンバー",
+        through="ProjectMemberRelation",
+        through_fields=("project", "member"),
         blank=True,
         related_name='members_projects'
     )
     competitors = models.ManyToManyField(
         Website,
-        verbose_name="競合サイト",
-        through="ProjectCompetitorRelation",
-        through_fields=("project", "competitor"),
+        verbose_name='競合サイト',
+        through='ProjectCompetitorRelation',
+        through_fields=('project', 'competitor'),
         blank=True,
-        related_name="competitors_projects"
+        related_name='competitors_projects'
     )
     objects = GetOrNoneManager()
 
@@ -104,7 +106,14 @@ class WebsiteKeywordRelation(models.Model):
         Project,
         verbose_name='プロジェクト',
         on_delete=models.CASCADE,
-        null=True
+        null=True,
+        related_name='project_websitekeyword'
+    )
+    competitors = models.ManyToManyField(
+        Project,
+        verbose_name='プロジェクト（競合）',
+        blank=True,
+        related_name='competitors_websitekeyword'
     )
     registered_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -117,6 +126,34 @@ class WebsiteKeywordRelation(models.Model):
     def __str__(self):
         return f'<{self.website.domain}, {self.keyword.keyword}>'
 
+
+class ProjectMemberRelation(models.Model):
+    role_choices = (
+        ('admin', '管理者'),
+        ('member', 'メンバー'),
+    )
+    project = models.ForeignKey(
+        Project,
+        verbose_name='プロジェクト',
+        on_delete=models.CASCADE
+    ) 
+    member = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        verbose_name='メンバー',
+        on_delete=models.CASCADE
+    )
+    role = models.CharField(
+        verbose_name='役割',
+        max_length=30,
+        choices=role_choices
+    )
+    registered_at = models.DateTimeField('登録日', auto_now_add=True)
+    objects = GetOrNoneManager()
+
+    def __str__(self):
+        return f'<{self.project.name}, {self.member.email}>'
+
+
 class ProjectCompetitorRelation(models.Model):
     project = models.ForeignKey(
         Project,
@@ -128,10 +165,15 @@ class ProjectCompetitorRelation(models.Model):
         verbose_name='競合サイト',
         on_delete=models.CASCADE
     )
+    name = models.CharField(
+        verbose_name='競合サイト名',
+        max_length=100,
+        blank=True
+    )
     color = ColorField(default='#D96738')
     registered_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        verbose_name="登録者",
+        verbose_name='登録者',
         on_delete=models.CASCADE
     )
     registered_at = models.DateTimeField('登録日', auto_now_add=True)
