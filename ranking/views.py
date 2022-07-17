@@ -27,6 +27,58 @@ def ranking_top(request, project_id):
 @login_required
 def ranking_all(request, project_id):
     current = Project.objects.get(id=project_id)
+    keywords = list(WebsiteKeywordRelation.objects.filter(project=current).values_list('keyword', flat=True))
+    keywords = list(Keyword.objects.get(id=k) for k in keywords)
+    date = list(Ranking.objects.filter(website=current.website,keyword__in=keywords).order_by('date').reverse().distinct()[:5].values_list('date', flat=True))
+    pc = ProjectCompetitorRelation.objects.filter(project=current)
+    data = {
+        'date': ['-','-','-','-','-'],
+        'competitors': [],
+        'keywords': []
+    }
+    ranking = Ranking.objects.filter(website=current.website,date__in=date,keyword__in=keywords)
+    for i, d in enumerate(date):
+        data['date'][4 - i] = d.strftime('%-m / %-d')
+    for c in pc:
+        data['competitors'].append(c.name)
+    for i, k in enumerate(keywords):
+        data['keywords'].append({
+            'keyword': k.keyword,
+            'volume': k.volume,
+            'ranking': [0,0,0,0,0],
+            'ranking_page': '-',
+            'title_link': '-',
+            'competitors': []
+        })
+        for ii, d in enumerate(date):
+            r = ranking.filter(keyword=k,date=d)
+            if len(r) > 0:
+                if ii == 0:
+                    data['keywords'][i]['ranking_page'] = r[0].ranking_page
+                    data['keywords'][i]['title_link'] = r[0].title_link
+                data['keywords'][i]['ranking'][4-ii] = r[0].ranking
+        for c in pc:
+            r = Ranking.objects.filter(website=c.competitor,date__in=date,keyword=k).order_by('date').reverse()[:1]
+            rc = 0
+            if len(r) > 0:
+                rc = r[0].ranking
+            data['keywords'][i]['competitors'].append(rc)
+    projects = request.user.members_projects.all()
+    articles = Article.objects.filter(project=current)
+    context = {
+        'current': current,
+        'projects': projects,
+        'articles': articles,
+        'data': data,
+        'keywords': keywords,
+    }
+    return render(request, 'ranking/ranking_all.html', context)
+
+
+@owner_check
+@login_required
+def ranking_all_add(request, project_id):
+    current = Project.objects.get(id=project_id)
     form = KeywordForm(request.POST)
     if request.method == 'POST':
         if form.is_valid():
@@ -66,7 +118,7 @@ def ranking_all(request, project_id):
                         wk.competitors.add(current)
                 else:
                     if article:
-                        a = Article.objects.get(id=article).keywords.add(k)
+                        a = Article.objects.get(id=article)
                         alst = Article.objects.filter(keywords__keyword=k)
                         if not a in alst:
                             a.keywords.add(k)
@@ -94,53 +146,7 @@ def ranking_all(request, project_id):
         else:
             messages.add_message(request, messages.ERROR,
                                  "キーワードの登録に失敗しました。")
-        return redirect(ranking_all, project_id=project_id)
-    keywords = list(WebsiteKeywordRelation.objects.filter(project=current).values_list('keyword', flat=True))
-    keywords = list(Keyword.objects.get(id=k) for k in keywords)
-    date = list(Ranking.objects.filter(website=current.website,keyword__in=keywords).order_by('date').reverse().distinct()[:5].values_list('date', flat=True))
-    pc = ProjectCompetitorRelation.objects.filter(project=current)
-    data = {
-        'date': ['-','-','-','-','-'],
-        'competitors': [],
-        'keywords': []
-    }
-    ranking = Ranking.objects.filter(website=current.website,date__in=date,keyword__in=keywords)
-    for i, d in enumerate(date):
-        data['date'][4 - i] = d.strftime('%-m / %-d') 
-    for c in pc:
-        data['competitors'].append(c.name)
-    for i, k in enumerate(keywords):
-        data['keywords'].append({
-            'keyword': k.keyword,
-            'volume': k.volume,
-            'ranking': [0,0,0,0,0],
-            'ranking_page': '-',
-            'title_link': '-',
-            'competitors': []
-        })
-        for ii, d in enumerate(date):
-            r = ranking.filter(keyword=k,date=d)
-            if len(r) > 0:
-                if ii == 0:
-                    data['keywords'][i]['ranking_page'] = r[0].ranking_page
-                    data['keywords'][i]['title_link'] = r[0].title_link
-                data['keywords'][i]['ranking'][4-ii] = r[0].ranking
-        for c in pc:
-            r = Ranking.objects.filter(website=c.competitor,date__in=date,keyword=k).order_by('date').reverse()[:1]
-            rc = 0
-            if len(r) > 0:
-                rc = r[0].ranking
-            data['keywords'][i]['competitors'].append(rc)
-    projects = request.user.members_projects.all()
-    articles = Article.objects.filter(project=current)
-    context = {
-        'current': current,
-        'projects': projects,
-        'articles': articles,
-        'data': data,
-        'keywords': keywords,
-    }
-    return render(request, 'ranking/ranking_all.html', context)
+    return redirect(ranking_all, project_id=project_id)
 
 
 @owner_check

@@ -98,7 +98,7 @@
                 <div class="modal-body">
                     <div class="modal-close">×</div>
                     <div class="modal-content">
-                        <form method="post" class="keyword__add-form">
+                        <form method="post" class="keyword__add-form" action="/{{ current.id }}/reports/ranking/all/add/">
                             {% csrf_token %}
                             <textarea class="keyword__add-input" name="keyword" cols="40" rows="10" required
                                 id="id_keyword" placeholder="キーワード（複数可）"></textarea>
@@ -122,7 +122,7 @@
                 <div class="modal-body delete">
                     <div class="modal-close">×</div>
                     <div class="modal-content">
-                        <form method="post" action="/{{ current.id }}/reports/ranking/all/delete/" class="keyword__delete-form">
+                        <form method="post"  class="keyword__delete-form" action="/{{ current.id }}/reports/ranking/all/delete/">
                             {% csrf_token %}
                             <p class="keyword__text">キーワードを削除する場合は、記事管理表からもランキング情報が削除されます。</p>
                             <ul class="keyword__list">

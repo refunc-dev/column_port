@@ -150,12 +150,12 @@ def settings(request, project_id, article_id):
                         registered_by=request.user,
                     )
                     for c in current.project.competitors.all():
-                        WebsiteKeywordRelation.objects.create(
+                        wk = WebsiteKeywordRelation.objects.create(
                             website=c,
                             keyword=k,
-                            project=current.project,
                             registered_by=request.user,
                         ) 
+                        wk.competitors.add(current.project)
                 else:
                     alst = Article.objects.filter(keywords__keyword=k)
                     if not current in alst:
@@ -174,12 +174,12 @@ def settings(request, project_id, article_id):
                     exists = WebsiteKeywordRelation.objects.filter(keyword=k).values('website')
                     competitors = current.project.competitors.exclude(competitors_projects__website__in=exists)
                     for c in competitors:
-                        WebsiteKeywordRelation.objects.create(
+                        wk = WebsiteKeywordRelation.objects.create(
                             website=c,
                             keyword=k,
-                            project=current.project,
                             registered_by=request.user,
                         ) 
+                        wk.competitors.add(current.project)
             messages.success(request, 'キーワードの登録に成功しました')
         elif request.POST.get('delete'):
             current.delete()
