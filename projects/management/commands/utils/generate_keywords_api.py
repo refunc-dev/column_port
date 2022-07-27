@@ -22,9 +22,6 @@ import re
 from google.ads.googleads.client import GoogleAdsClient
 from google.ads.googleads.errors import GoogleAdsException
 
-os.environ['http_proxy'] = 'http://127.0.0.1:8000'
-os.environ['https_proxy'] = 'http://127.0.0.1:8000'
-
 # Location IDs are listed here:
 # https://developers.google.com/google-ads/api/reference/data/geotargets
 # and they can also be retrieved using the GeoTargetConstantService as shown
