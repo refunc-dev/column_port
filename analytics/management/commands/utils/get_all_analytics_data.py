@@ -6,8 +6,8 @@ from dateutil.relativedelta import relativedelta
 import calendar
 import os
 
-os.environ['http_proxy'] = '127.0.0.1:8000'
-os.environ['https_proxy'] = '127.0.0.1:8000'
+os.environ['http_proxy'] = 'http://127.0.0.1:8000'
+os.environ['https_proxy'] = 'http://127.0.0.1:8000'
 
 def get_service(api_name, api_version, scopes, key_file_location):
     """Get a service that communicates to a Google API.
