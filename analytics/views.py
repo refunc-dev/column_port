@@ -6,8 +6,7 @@ from django.shortcuts import render, redirect
 from analytics.models import Regex, WeeklyAll, MonthlyAll, WeeklyDir, MonthlyDir
 from analytics.forms import RegexForm
 
-from analytics.management.commands.utils.get_all_analytics_data import get_weekly_analytics_data, get_monthly_analytics_data
-from analytics.management.commands.utils.get_specific_analytics_data import get_weekly_analytics_data_regex, get_monthly_analytics_data_regex
+from analytics.management.commands.utils.get_specific_analytics_data import validate_account_info, get_weekly_analytics_data_regex, get_monthly_analytics_data_regex
 
 from projects.models import Project
 from accounts.models import User
@@ -195,6 +194,11 @@ def analytics_monthly(request, project_id):
 @login_required
 def regex_add(request, project_id):
     current = Project.objects.get(id=project_id)
+    account_info = [current.account_id, current.property_id, current.view_id]
+    status_code = validate_account_info(account_info)
+    if not status_code == 0:
+        messages.error(request, 'GAアカウント情報の不備があります')
+        return redirect(analytics_top, project_id=project_id)
     if request.method == 'POST':
         form = RegexForm(request.POST)
         if form.is_valid():
@@ -207,7 +211,7 @@ def regex_add(request, project_id):
                 project=current,
                 created_by=request.user
             )
-            data = get_weekly_analytics_data_regex(regex, 12)
+            data = get_weekly_analytics_data_regex(regex, 12, account_info)
             for d in data:
                 WeeklyDir.objects.create(
                     regex=r,
@@ -220,7 +224,7 @@ def regex_add(request, project_id):
                     page_view_per_session=d['pvr'],
                     project=current
                 )
-            data = get_monthly_analytics_data_regex(regex, 12)
+            data = get_monthly_analytics_data_regex(regex, 12, account_info)
             for d in data:
                 MonthlyDir.objects.create(
                     regex=r,

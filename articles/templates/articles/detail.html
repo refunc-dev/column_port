@@ -28,7 +28,7 @@
             </ul>
             <section class="detail">
                 <h2 class="detail__title">詳細設定</h2>
-                <form method="post" class="detail__form">
+                <form method="post" class="detail__form" action="/{{ current.project.id }}/articles/{{ current.id }}/update/">
                     {% csrf_token %}
                     <p class="detail__item">
                         <label class="detail__label" for="id_project">プロジェクト</label>
@@ -80,7 +80,7 @@
             </section>
             <section class="keyword">
                 <h2 class="keyword__title">キーワード一覧</h2>
-                <form method="post" class="keyword__form" action="/{{ current.project.id }}/articles/{{ current.id }}/remove_keywords/">
+                <form method="post" class="keyword__form" action="/{{ current.project.id }}/articles/{{ current.id }}/keywords/delete/">
                     {% csrf_token %}
                     <ul class="keyword__list">
                         <li class="keyword__item keyword__item-header">
@@ -114,7 +114,7 @@
                     <div class="modal-content">
                         <p class="keyword-add__message">キーワードを追加しますか？</p>
                         <p class="keyword-add__message">複数のキーワードを追加する場合は、改行区切りで入力してください。</p>
-                        <form method="post" class="keyword-add__form">
+                        <form method="post" class="keyword-add__form" action="/{{ current.project.id }}/articles/{{ current.id }}/keywords/add/">
                             {% csrf_token %}
                             <textarea class="keyword-add__input" name="keyword" cols="40" rows="10" required=""
                                 id="id_keyword"></textarea>
@@ -128,7 +128,7 @@
                     <div class="modal-close">×</div>
                     <div class="modal-content">
                         <p class="delete__message">記事を削除しますか？</p>
-                        <form method="post" class="delete__form">
+                        <form method="post" class="delete__form" action="/{{ current.project.id }}/articles/{{ current.id }}/delete/">
                             {% csrf_token %}
                             <input class="delete__input" type="hidden" name="delete" id="project_delete" value="true">
                             <button class="delete__submit" type="submit">削除</button>

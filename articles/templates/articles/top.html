@@ -133,7 +133,7 @@
                                 <li class="articles__item-item keyword">{{ keyword.keyword }}</li>
                                 <li class="articles__item-item volume">{{ keyword.volume }}</li>
                                 {% for r in keyword.ranking %}
-                                <li class="articles__item-item ranking">{{ r }}</li>
+                                <li class="articles__item-item ranking">{% if r == 0 %}*{% else %}{{ r }}{% endif %}</li>
                                 {% endfor %}
                                 <li class="articles__item-item rw">{{ keyword.right_wrong }}</li>
                                 <li class="articles__item-item page">{{ keyword.ranking_page }}</li>
@@ -153,7 +153,7 @@
                 <div class="modal-body">
                     <div class="modal-close">×</div>
                     <div class="modal-content">
-                        <form method="post" class="articles__add-form">
+                        <form method="post" class="articles__add-form" action="/{{ current.id }}/articles/add/">
                             {% csrf_token %}
                             <input class="articles__add-input" type="text" name="path" maxlength="2083" required
                                 id="id_path" placeholder="記事URL">

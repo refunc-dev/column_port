@@ -26,9 +26,37 @@
                     <a class="breadcrumb__link">プロジェクト設定</a>
                 </li>
             </ul>
+            <section class="analytics">
+                <h2 class="analytics__title">Google Analytics アカウント情報</h2>
+                <form method="post" class="analytics__form" action="/{{ current.id }}/settings/analytics/">
+                    {% csrf_token %}
+                    <p class="analytics__item">
+                        <label class="analytics__label" for="id_accountId">アカウントID</label>
+                        <input class="analytics__input" type="text" name="account_id" maxlength="20" required
+                            id="id_accountId" placeholder="123456789" {% if not role == 'admin' %}readonly{% endif %}
+                            value="{% if current.account_id %}{{ current.account_id }}{% endif %}">
+                    </p>
+                    <p class="analytics__item">
+                        <label class="analytics__label" for="id_propertyId">プロパティID</label>
+                        <input class="analytics__input" type="text" name="property_id" maxlength="30" required
+                            id="id_propertyId" placeholder="UA-123456789-1"
+                            {% if not role == 'admin' %}readonly{% endif %}
+                            value="{% if current.property_id %}{{ current.property_id }}{% endif %}">
+                    </p>
+                    <p class="analytics__item">
+                        <label class="analytics__label" for="id_viewId">ビューID</label>
+                        <input class="analytics__input" type="text" name="view_id" maxlength="30" required id="id_viewId"
+                            {% if not role == 'admin' %}readonly{% endif %} placeholder="234567891"
+                            value="{% if current.view_id %}{{ current.view_id }}{% endif %}">
+                    </p>
+                    {% if role == 'admin' %}
+                    <button class="analytics__submit" type="submit">保存</button>
+                    {% endif %}
+                </form>
+            </section>
             <section class="member">
                 <h2 class="member__title">メンバーリスト</h2>
-                <form method="post" class="member__form">
+                <form method="post" class="member__form" action="/{{ current.id }}/settings/members/delete/">
                     {% csrf_token %}
                     <ul class="member__list">
                         <li class="member__item member__item-header">
@@ -63,11 +91,12 @@
             </section>
             <section class="competitor">
                 <h2 class="competitor__title">競合サイト一覧</h2>
-                <form method="post" class="competitor__form">
+                <form method="post" class="competitor__form" action="/{{ current.id }}/settings/competitors/delete/">
                     {% csrf_token %}
                     <ul class="competitor__list">
                         <li class="competitor__item member__item-header">
                             <ul class="competitor__item-list">
+                                <li class="competitor__item-item competitor__item-domain">競合サイト名</li>
                                 <li class="competitor__item-item competitor__item-domain">ドメイン名</li>
                             </ul>
                         </li>
@@ -78,7 +107,9 @@
                                 <input class="competitor__item-input" type="checkbox" name="competitor"
                                     value="{{ competitor.competitor.domain }}">
                                 {% endif %}
-                                <li class="competitor__item-item competitor__item-domain">{{ competitor.competitor.domain }}</li>
+                                <li class="competitor__item-item competitor__item-domain">{{ competitor.name }}</li>
+                                <li class="competitor__item-item competitor__item-domain">
+                                    {{ competitor.competitor.domain }}</li>
                             </ul>
                         </li>
                         {% endfor %}
@@ -95,7 +126,7 @@
                     <div class="modal-close">×</div>
                     <div class="modal-content">
                         <p class="member-add__message">追加するメンバーのメールアドレスを入力してください。</p>
-                        <form method="post" class="member-add__form">
+                        <form method="post" class="member-add__form" action="/{{ current.id }}/settings/members/">
                             {% csrf_token %}
                             <input class="member-add__input" type="email" name="email" placeholder="メールアドレス"
                                 autocomplete="email" required="" id="id_email">
@@ -116,10 +147,12 @@
                     <div class="modal-close">×</div>
                     <div class="modal-content">
                         <p class="competitor-add__message">追加する競合サイトのドメイン名/サイト名を入力してください。</p>
-                        <form method="post" class="competitor-add__form">
+                        <form method="post" class="competitor-add__form" action="/{{ current.id }}/settings/competitors/">
                             {% csrf_token %}
-                            <input type="text" class="competitor-add__input" name="domain" maxlength="2083" placeholder="ドメイン名" required id="id_domain">
-                            <input type="text" class="competitor-add__input" name="name" maxlength="100" placeholder="競合サイト名" required id="id_name">
+                            <input type="text" class="competitor-add__input" name="domain" maxlength="2083"
+                                placeholder="ドメイン名" required id="id_domain">
+                            <input type="text" class="competitor-add__input" name="name" maxlength="100"
+                                placeholder="競合サイト名" required id="id_name">
                             <button class="competitor-add__submit" type="submit">追加</button>
                         </form>
                     </div>
@@ -131,7 +164,7 @@
                     <div class="modal-close">×</div>
                     <div class="modal-content">
                         <p class="delete__message">プロジェクトを削除しますか？</p>
-                        <form method="post" class="delete__form">
+                        <form method="post" class="delete__form" action="/{{ current.id }}/settings/delete/">
                             {% csrf_token %}
                             <input class="delete__input" type="hidden" name="delete" id="project_delete" value="true">
                             <button class="delete__submit" type="submit">削除</button>

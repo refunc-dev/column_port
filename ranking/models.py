@@ -2,6 +2,10 @@ from django.db import models
 
 from projects.models import Website, Keyword
 
+from datetime import datetime
+from dateutil import tz
+JST = tz.gettz('Asia/Tokyo')
+
 
 class GetOrNoneManager(models.Manager):
     def get_or_none(self, **kwargs):
@@ -218,9 +222,13 @@ class KeywordSerp(models.Model):
     title_99 = models.TextField('タイトル99位', blank=True, null=True)
     title_100 = models.TextField('タイトル100位', blank=True, null=True)
     created_at = models.DateTimeField('登録日', auto_now_add=True)
+
+    @property
+    def created_at_jst(self):
+        return self.created_at.astimezone(JST).strftime('%Y-%m-%d %H:%M:%S')
  
     def __str__(self):
-        return f'<Keyword: {self.keyword.keyword} | {self.created_at}>'
+        return f'<Keyword: {self.keyword.keyword} | {self.created_at_jst}>'
 
 
 class Ranking(models.Model):

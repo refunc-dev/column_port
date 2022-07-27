@@ -28,34 +28,52 @@ def get_service(api_name, api_version, scopes, key_file_location):
 
     return service
 
-def get_first_profile_id(service):
-    # Use the Analytics service object to get the first profile id.
+def validate_account_info(account_info):
+    # Define the auth scopes to request.
+    scope = 'https://www.googleapis.com/auth/analytics.readonly'
+    key_file_location = f'{os.environ["CP_CONFIG_PATH"]}column-port-service.json'
+
+    # Authenticate and construct service.
+    service = get_service(
+            api_name='analytics',
+            api_version='v3',
+            scopes=[scope],
+            key_file_location=key_file_location)
+    # Use the Analytics service object to validate account info.
 
     # Get a list of all Google Analytics accounts for this user
     accounts = service.management().accounts().list().execute()
 
-    if accounts.get('items'):
-        # Get the first Google Analytics account.
-        account = accounts.get('items')[0].get('id')
+    exist_account = False
+    exist_property = False
+    for a in accounts.get('items'):
+        if a.get('id') == account_info[0]:
+            exist_account = True
+            break
+    if exist_account == False:
+        return 1
 
-        # Get a list of all the properties for the first account.
-        properties = service.management().webproperties().list(
-                accountId=account).execute()
+    # Get a list of all the properties for the first account.
+    properties = service.management().webproperties().list(
+            accountId=account_info[0]).execute()
 
-        if properties.get('items'):
-            # Get the first property id.
-            property = properties.get('items')[0].get('id')
+    for prop in properties.get('items'):
+        if prop.get('id') == account_info[1]:
+            exist_property = True
+            break
+    if exist_property == False:
+        return 2
 
-            # Get a list of all views (profiles) for the first property.
-            profiles = service.management().profiles().list(
-                    accountId=account,
-                    webPropertyId=property).execute()
+    # Get a list of all views (profiles) for the first property.
+    profiles = service.management().profiles().list(
+            accountId=account_info[0],
+            webPropertyId=account_info[1]).execute()
 
-            if profiles.get('items'):
-                # return the first view (profile) id.
-                return profiles.get('items')[0].get('id')
-
-    return None
+    for prof in profiles.get('items'):
+        if prof.get('id') == account_info[2]:
+            exist_profile = True
+            return 0
+    return 3
 
 def get_results(service, profile_id, path, start, end):
     # Use the Analytics Service Object to query the Core Reporting API
@@ -77,7 +95,7 @@ def percentage(part, whole):
     percentage = 100 * float(part)/float(whole)
     return round(percentage, 1)
 
-def get_analytics_data(path, week):
+def get_analytics_data(path, week, account_info):
     week = week - 1
     day = datetime.now() - timedelta(days=7)
     yr = day.strftime('%Y')
@@ -99,8 +117,8 @@ def get_analytics_data(path, week):
             scopes=[scope],
             key_file_location=key_file_location)
 
-    profile_id = get_first_profile_id(service)
-    results = get_results(service, profile_id, path, start, end)
+    #profile_id = get_first_profile_id(service)
+    results = get_results(service, account_info[2], path, start, end)
     rows = results.get('rows')
     response = []
     for data in rows:
@@ -114,14 +132,14 @@ def get_analytics_data(path, week):
         })
     return response
 
-def get_analytics_data_eq(path, week):
-    return get_analytics_data(f'={path}', week - 1)
+def get_analytics_data_eq(path, week, account_info):
+    return get_analytics_data(f'={path}', week - 1, account_info)
 
-if __name__ == '__main__':
-    args = sys.argv
-    if len(args) == 1:
-        path = "/"
-    else:
-        path = args[1]
-
-    print(get_analytics_data_eq(path, 6))
+#if __name__ == '__main__':
+#    args = sys.argv
+#    if len(args) == 1:
+#        path = "/"
+#    else:
+#        path = args[1]
+#
+#    print(get_analytics_data_eq(path, 6))

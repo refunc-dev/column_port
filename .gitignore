@@ -142,3 +142,5 @@ analytics/migrations/*
 !analytics/migrations/__init__.py
 ranking/migrations/*
 !ranking/migrations/__init__.py
+api/migrations/*
+!api/migrations/__init__.py

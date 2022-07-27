@@ -584,9 +584,7 @@ html {
   top: 70px;
   right: 20px;
   color: #ffffff;
-  padding: 5px;
   font-size: 1.6rem;
-  border-radius: 10px;
   z-index: 99999;
   opacity: 0;
   -webkit-transform: translateY(-5px);
@@ -595,19 +593,27 @@ html {
   transition: 2s ease;
 }
 
-.message.error {
+.message .message__item {
+  padding: 5px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+}
+
+.message .message__item.error {
   background-color: #D96738;
 }
 
-.message.success {
+.message .message__item.success {
   background-color: #48B0C7;
 }
 
-.message .message__text {
+.message .message__item .message__text {
   display: inline-block;
   padding: 5px 15px;
   border: 1px solid white;
   border-radius: 10px;
+  width: 100%;
+  text-align: center;
 }
 
 .header {
@@ -898,6 +904,108 @@ html {
   text-decoration: none;
 }
 
+.main .contents .analytics {
+  font-size: 1.5rem;
+  padding: 40px;
+  margin-bottom: 15px;
+  -webkit-box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.3);
+          box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.3);
+  background-color: white;
+  position: relative;
+}
+
+.main .contents .analytics .analytics__title {
+  color: #144a6e;
+  font-size: 2.25rem;
+  line-height: 2.25rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-bottom: 30px;
+}
+
+.main .contents .analytics .analytics__item {
+  color: #555555;
+  font-size: 1.6rem;
+  width: 70%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-bottom: 15px;
+}
+
+.main .contents .analytics .analytics__label {
+  display: block;
+  width: 120px;
+  font-weight: bold;
+}
+
+.main .contents .analytics .analytics__input {
+  padding: 15px 20px;
+  border-radius: 5px;
+  -webkit-transition: 0.3s ease;
+  transition: 0.3s ease;
+  color: #555555;
+  display: block;
+  width: 70%;
+  border: 2px solid #144a6e;
+  font-size: 1.6rem;
+}
+
+.main .contents .analytics .analytics__input:placeholder-shown {
+  border: 2px solid #d5e2eb;
+}
+
+.main .contents .analytics .analytics__input::-webkit-input-placeholder {
+  color: #555555;
+}
+
+.main .contents .analytics .analytics__input:-ms-input-placeholder {
+  color: #555555;
+}
+
+.main .contents .analytics .analytics__input::-ms-input-placeholder {
+  color: #555555;
+}
+
+.main .contents .analytics .analytics__input::placeholder {
+  color: #555555;
+}
+
+.main .contents .analytics .analytics__input:focus {
+  outline: 0;
+}
+
+.main .contents .analytics .analytics__submit {
+  padding: 7px 10px;
+  border-radius: 5px;
+  background: #144a6e;
+  color: #ffffff;
+  width: 100px;
+  font-weight: 800;
+  font-size: 1.4rem;
+  letter-spacing: 1.8pt;
+  display: block;
+  cursor: pointer;
+  position: relative;
+  border-top: 2px solid rgba(255, 255, 255, 0.2);
+  border-left: 2px solid rgba(255, 255, 255, 0.2);
+  border-right: 2px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 2px solid rgba(0, 0, 0, 0.2);
+}
+
+.main .contents .analytics .analytics__submit:active {
+  -webkit-transform: translate(0, 2px);
+  transform: translate(0, 2px);
+  border-bottom: none;
+}
+
 .main .contents .member {
   font-size: 1.5rem;
   padding: 20px 40px;
@@ -972,6 +1080,30 @@ html {
   left: 20px;
 }
 
+.main .contents .member .member__submit {
+  padding: 7px 10px;
+  border-radius: 5px;
+  background: #144a6e;
+  color: #ffffff;
+  width: 100px;
+  font-weight: 800;
+  font-size: 1.4rem;
+  letter-spacing: 1.8pt;
+  display: block;
+  cursor: pointer;
+  position: relative;
+  border-top: 2px solid rgba(255, 255, 255, 0.2);
+  border-left: 2px solid rgba(255, 255, 255, 0.2);
+  border-right: 2px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 2px solid rgba(0, 0, 0, 0.2);
+}
+
+.main .contents .member .member__submit:active {
+  -webkit-transform: translate(0, 2px);
+  transform: translate(0, 2px);
+  border-bottom: none;
+}
+
 .main .contents .competitor {
   font-size: 1.5rem;
   padding: 20px 40px;
@@ -1036,6 +1168,30 @@ html {
   display: block;
   position: absolute;
   left: 20px;
+}
+
+.main .contents .competitor .competitor__submit {
+  padding: 7px 10px;
+  border-radius: 5px;
+  background: #144a6e;
+  color: #ffffff;
+  width: 100px;
+  font-weight: 800;
+  font-size: 1.4rem;
+  letter-spacing: 1.8pt;
+  display: block;
+  cursor: pointer;
+  position: relative;
+  border-top: 2px solid rgba(255, 255, 255, 0.2);
+  border-left: 2px solid rgba(255, 255, 255, 0.2);
+  border-right: 2px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 2px solid rgba(0, 0, 0, 0.2);
+}
+
+.main .contents .competitor .competitor__submit:active {
+  -webkit-transform: translate(0, 2px);
+  transform: translate(0, 2px);
+  border-bottom: none;
 }
 
 .main .add__btn {

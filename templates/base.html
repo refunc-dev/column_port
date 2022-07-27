@@ -63,9 +63,15 @@
     </footer>
     {% endblock %}
     {% for message in messages %}
-    <div {% if message.tags %}class="message {{ message.tags }}"{% endif %}>
-        <span class="message__text">{{ message }}</span>
+    {% if forloop.first %}
+    <div class="message">
+    {% endif %}
+        <p {% if message.tags %}class="message__item {{ message.tags }}" {% endif %}>
+            <span class="message__text">{{ message }}</span>
+        </p>
+    {% if forloop.last %}
     </div>
+    {% endif %}
     {% endfor %}
 </body>
 

@@ -63,14 +63,18 @@
                             </div>
                             <p class="ranking__item page">ランクインページ</p>
                             <p class="ranking__item page">タイトルリンク</p>
+                            {% for c in data.competitors %}
+                            {% if forloop.first %}
                             <div class="ranking__item multi competitor">
                                 <p class="ranking__item-top">競合順位</p>
                                 <ul class="ranking__item-list">
-                                    {% for c in data.competitors %}
+                            {% endif %}
                                     <li class="ranking__item-item rank">{{ c }}</li>
-                                    {% endfor %}
+                            {% if forloop.last %}
                                 </ul>
                             </div>
+                            {% endif %}
+                            {% endfor %}
                         </li>
                         {% for k in data.keywords %}
                         <li class="ranking__row">
@@ -80,7 +84,7 @@
                             <p class="ranking__item keyword">{{ k.keyword }}</p>
                             <p class="ranking__item volume">{{ k.volume }}</p>
                             {% for r in k.ranking %}
-                            <p class="ranking__item rank">{{ r }}</p>
+                            <p class="ranking__item rank">{% if r == 0 %}*{% else %}{{ r }}{% endif %}</p>
                             {% endfor %}
                             <p class="ranking__item page">{{ k.ranking_page }}</p>
                             <p class="ranking__item page">{{ k.title_link }}</p>

@@ -4,6 +4,14 @@ from django.db import models
 from projects.models import Project
 
 
+class GetOrNoneManager(models.Manager):
+    def get_or_none(self, **kwargs):
+        try:
+            return self.get(**kwargs)
+        except self.model.DoesNotExist:
+            return None
+
+
 class Regex(models.Model):
     regex = models.CharField('正規表現', max_length=100)
     name = models.CharField('正規表現名', max_length=200, null=True, blank=True)
@@ -51,6 +59,7 @@ class WeeklyAll(models.Model):
     social = models.PositiveIntegerField('SNS', default=0)
     email = models.PositiveIntegerField('メール', default=0)
     others = models.PositiveIntegerField('その他', default=0)
+    objects = GetOrNoneManager()
     
     class Meta:
         verbose_name_plural = 'WeeklyAll'
@@ -82,6 +91,7 @@ class MonthlyAll(models.Model):
     social = models.PositiveIntegerField('SNS', default=0)
     email = models.PositiveIntegerField('メール', default=0)
     others = models.PositiveIntegerField('その他', default=0)
+    objects = GetOrNoneManager()
     
     class Meta:
         verbose_name_plural = 'MonthlyAll'
@@ -108,6 +118,7 @@ class WeeklyDir(models.Model):
     conversion_rate = models.FloatField('CVR', default=0.0)
     page_view = models.FloatField('PV', default=0)
     page_view_per_session = models.FloatField('PV/流入数', default=0)
+    objects = GetOrNoneManager()
 
     class Meta:
         verbose_name_plural = 'WeeklyDir'
@@ -134,6 +145,7 @@ class MonthlyDir(models.Model):
     conversion_rate = models.FloatField('CVR', default=0.0)
     page_view = models.FloatField('PV', default=0)
     page_view_per_session = models.FloatField('PV/流入数', default=0)
+    objects = GetOrNoneManager()
     
     class Meta:
         verbose_name_plural = 'MonthlyDir'

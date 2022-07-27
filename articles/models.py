@@ -63,6 +63,7 @@ class ArticleAnalytics(models.Model):
     session = models.PositiveIntegerField('流入数', default=0)
     conversion = models.FloatField('CV数', default=0)
     conversion_rate = models.FloatField('CVR', default=0.0)
+    objects = GetOrNoneManager()
 
     class Meta:
         verbose_name_plural = 'ArticleAnalytics'

@@ -27,34 +27,52 @@ def get_service(api_name, api_version, scopes, key_file_location):
 
     return service
 
-def get_first_profile_id(service):
-    # Use the Analytics service object to get the first profile id.
+def validate_account_info(account_info):
+    # Define the auth scopes to request.
+    scope = 'https://www.googleapis.com/auth/analytics.readonly'
+    key_file_location = f'{os.environ["CP_CONFIG_PATH"]}column-port-service.json'
+
+    # Authenticate and construct service.
+    service = get_service(
+            api_name='analytics',
+            api_version='v3',
+            scopes=[scope],
+            key_file_location=key_file_location)
+    # Use the Analytics service object to validate account info.
 
     # Get a list of all Google Analytics accounts for this user
     accounts = service.management().accounts().list().execute()
 
-    if accounts.get('items'):
-        # Get the first Google Analytics account.
-        account = accounts.get('items')[0].get('id')
+    exist_account = False
+    exist_property = False
+    for a in accounts.get('items'):
+        if a.get('id') == account_info[0]:
+            exist_account = True
+            break
+    if exist_account == False:
+        return 1
 
-        # Get a list of all the properties for the first account.
-        properties = service.management().webproperties().list(
-                accountId=account).execute()
+    # Get a list of all the properties for the first account.
+    properties = service.management().webproperties().list(
+            accountId=account_info[0]).execute()
 
-        if properties.get('items'):
-            # Get the first property id.
-            property = properties.get('items')[0].get('id')
+    for prop in properties.get('items'):
+        if prop.get('id') == account_info[1]:
+            exist_property = True
+            break
+    if exist_property == False:
+        return 2
 
-            # Get a list of all views (profiles) for the first property.
-            profiles = service.management().profiles().list(
-                    accountId=account,
-                    webPropertyId=property).execute()
+    # Get a list of all views (profiles) for the first property.
+    profiles = service.management().profiles().list(
+            accountId=account_info[0],
+            webPropertyId=account_info[1]).execute()
 
-            if profiles.get('items'):
-                # return the first view (profile) id.
-                return profiles.get('items')[0].get('id')
-
-    return None
+    for prof in profiles.get('items'):
+        if prof.get('id') == account_info[2]:
+            exist_profile = True
+            return 0
+    return 3
 
 class ChannelData:
     direct = 0
@@ -178,7 +196,7 @@ def percentage(part, whole):
     percentage = 100 * float(part)/float(whole)
     return round(percentage, 1)
 
-def get_all_analytics_data(start, end, term):
+def get_all_analytics_data(start, end, term, account_info):
     # Define the auth scopes to request.
     scope = 'https://www.googleapis.com/auth/analytics.readonly'
     key_file_location = f'{os.environ["CP_CONFIG_PATH"]}column-port-service.json'
@@ -190,10 +208,12 @@ def get_all_analytics_data(start, end, term):
             scopes=[scope],
             key_file_location=key_file_location)
 
-    profile_id = get_first_profile_id(service)
-    return get_results(service, profile_id, start, end, term)
+    #status_code = validate_account_info(service, account_info)
+    #if not status_code == 0:
+    #    return status_code
+    return get_results(service, account_info[2], start, end, term)
 
-def get_weekly_analytics_data(week):
+def get_weekly_analytics_data(week, account_info):
     week = week - 1
     day = date.today() - timedelta(days=7)
     yr = day.strftime('%Y')
@@ -204,9 +224,9 @@ def get_weekly_analytics_data(week):
     end = end_day.strftime('%Y-%m-%d')
     start = start_day.strftime('%Y-%m-%d')
 
-    return get_all_analytics_data(start, end, "yearWeek")
+    return get_all_analytics_data(start, end, "yearWeek", account_info)
 
-def get_monthly_analytics_data(month):
+def get_monthly_analytics_data(month, account_info):
     day = date.today() - relativedelta(months=1)
     past = day.today() - relativedelta(months=month)
 
@@ -215,7 +235,6 @@ def get_monthly_analytics_data(month):
     end = end_day.strftime('%Y-%m-%d')
     start = start_day.strftime('%Y-%m-%d')
 
-    return get_all_analytics_data(start, end, "yearMonth")
+    return get_all_analytics_data(start, end, "yearMonth", account_info)
 
-if __name__ == '__main__':
-    print(get_monthly_analytics_data(24))
+#if __name__ == '__main__':

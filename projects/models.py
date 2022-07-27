@@ -24,6 +24,7 @@ class Keyword(models.Model):
     )
     registered_at = models.DateTimeField('登録日', auto_now_add=True)
     updated_at = models.DateField('更新日', blank=True, null=True)
+    lock_flag = models.BooleanField('使用中フラグ', default=False)
     objects = GetOrNoneManager()
 
     def __str__(self):
@@ -85,6 +86,9 @@ class Project(models.Model):
         blank=True,
         related_name='competitors_projects'
     )
+    account_id = models.CharField('アカウントID', max_length=20, null=True)
+    property_id = models.CharField('プロパティID', max_length=30, null=True)
+    view_id = models.CharField('ビューID', max_length=30, null=True)
     objects = GetOrNoneManager()
 
     def __str__(self):

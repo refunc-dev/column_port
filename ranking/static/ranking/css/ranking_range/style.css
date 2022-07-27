@@ -584,9 +584,7 @@ html {
   top: 70px;
   right: 20px;
   color: #ffffff;
-  padding: 5px;
   font-size: 1.6rem;
-  border-radius: 10px;
   z-index: 99999;
   opacity: 0;
   -webkit-transform: translateY(-5px);
@@ -595,19 +593,27 @@ html {
   transition: 2s ease;
 }
 
-.message.error {
+.message .message__item {
+  padding: 5px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+}
+
+.message .message__item.error {
   background-color: #D96738;
 }
 
-.message.success {
+.message .message__item.success {
   background-color: #48B0C7;
 }
 
-.message .message__text {
+.message .message__item .message__text {
   display: inline-block;
   padding: 5px 15px;
   border: 1px solid white;
   border-radius: 10px;
+  width: 100%;
+  text-align: center;
 }
 
 .header {
