@@ -4,31 +4,26 @@ from rest_framework.response import Response
 
 from projects.models import Keyword
 from ranking.models import KeywordSerp, Ranking
-from api.serializers import KeywordSerpSerializer
+from api.serializers import KeywordListSerializer, KeywordUpdateSerializer, KeywordSerpSerializer
 
 from urllib.parse import urlparse
 import datetime
 import re
 
 
-class KeywordAPI(APIView):
-#    authentication_classes = (authentication.TokenAuthentication,)
-#    permission_classes = (permissions.IsAdminUser,)
+class KeywordListAPIView(generics.ListAPIView):
+    queryset = Keyword.objects.all()
+    serializer_class = KeywordListSerializer
+    permission_classes = [permissions.AllowAny]
 
-    def get(self, request, format=None):
-        keywords = [k for k in Keyword.objects.filter(updated_at__lt=datetime.date.today(), lock_flag=False).values('id','keyword','updated_at')][:5]
-        return Response(keywords)
+    def get_queryset(self, *args, **kwargs):
+        qs = super().get_queryset(*args, **kwargs)
+        return Keyword.objects.filter(updated_at__lt=datetime.date.today(), lock_flag=False).values('id','keyword','updated_at')
 
-    def post(self, request):
-        d = request.data
-        dt = datetime.datetime.strptime(d['updated_at'], '%Y-%m-%d')
-        try:
-            for k in Keyword.objects.filter(id__in=d['id']):
-                k.updated_at = dt.date()
-                k.save()
-            return Response({'succeeded': True})
-        except Exception as e:
-            return Response({'succeeded': False, 'error': e})
+
+class KeywordUpdateAPIView(generics.RetrieveUpdateAPIView):
+    queryset = Keyword.objects.all()
+    serializer_class = KeywordUpdateSerializer
 
 
 class KeywordSerpCreateAPIView(generics.CreateAPIView):

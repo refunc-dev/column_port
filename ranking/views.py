@@ -52,7 +52,7 @@ def ranking_all(request, project_id):
         })
         for ii, d in enumerate(date):
             r = ranking.filter(keyword=k,date=d)
-            if len(r) > 0:
+            if r.exists():
                 if ii == 0:
                     data['keywords'][i]['ranking_page'] = r[0].ranking_page
                     data['keywords'][i]['title_link'] = r[0].title_link
@@ -60,7 +60,7 @@ def ranking_all(request, project_id):
         for c in pc:
             r = Ranking.objects.filter(website=c.competitor,date__in=date,keyword=k).order_by('date').reverse()[:1]
             rc = 0
-            if len(r) > 0:
+            if r.exists():
                 rc = r[0].ranking
             data['keywords'][i]['competitors'].append(rc)
     projects = request.user.members_projects.all()
@@ -159,13 +159,13 @@ def ranking_all_delete(request, project_id):
         wk = WebsiteKeywordRelation.objects.filter(competitors=current,keyword__in=keywords)
         for item in wk:
             item.competitors.remove(current)
-            if (not item.project) and len(item.competitors.all()) == 0:
+            if not item.project and not item.competitors.all().exists():
                 item.delete()
         wk = WebsiteKeywordRelation.objects.filter(project=current,keyword__in=keywords)
         for item in wk:
             item.project = None
             item.save()
-            if len(item.competitors.all()) == 0:
+            if not item.competitors.all().exists():
                 k = item.keyword
                 item.delete()
                 wk = WebsiteKeywordRelation.objects.get_or_none(keyword=k) 

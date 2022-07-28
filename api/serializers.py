@@ -12,7 +12,7 @@ class KeywordListSerializer(serializers.ModelSerializer):
 class KeywordUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Keyword
-        fields = ('id',)
+        fields = ('updated_at',)
 
 
 class KeywordSerpSerializer(serializers.ModelSerializer):

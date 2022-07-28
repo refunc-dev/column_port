@@ -1,5 +1,5 @@
-from apiclient.discovery import build
-from oauth2client.service_account import ServiceAccountCredentials
+from googleapiclient.discovery import build
+from google.oauth2 import service_account
 
 from datetime import datetime, date, timedelta
 from dateutil.relativedelta import relativedelta
@@ -19,7 +19,7 @@ def get_service(api_name, api_version, scopes, key_file_location):
         A service that is connected to the specified API.
     """
 
-    credentials = ServiceAccountCredentials.from_json_keyfile_name(
+    credentials = service_account.Credentials.from_service_account_file(
             key_file_location, scopes=scopes)
 
     # Build the service object.
