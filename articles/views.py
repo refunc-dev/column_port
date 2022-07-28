@@ -168,9 +168,10 @@ def add_keywords(request, project_id, article_id):
                 k = Keyword.objects.get_or_none(keyword=e)
                 if not k:
                     v = generate_keywords_api(e),
+                    v = v[0] if v else 0
                     k = Keyword.objects.create(
                         keyword=e,
-                        volume=v[0] if v else v,
+                        volume=v,
                         registered_by=request.user,
                         updated_at=datetime.date.today() - datetime.timedelta(days=1),
                     )

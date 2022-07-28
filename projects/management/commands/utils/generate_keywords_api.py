@@ -100,7 +100,7 @@ def main(
         if flag == True:
             return idea.keyword_idea_metrics.avg_monthly_searches
     # [END generate_keyword_ideas]
-    return (0,)
+    return None
 
 
 def map_keywords_to_string_values(client, keyword_texts):

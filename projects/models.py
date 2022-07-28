@@ -16,7 +16,7 @@ class GetOrNoneManager(models.Manager):
 
 class Keyword(models.Model):
     keyword = models.CharField("キーワード", max_length=1000)
-    volume = models.PositiveIntegerField('検索数', null=True)
+    volume = models.PositiveIntegerField('検索数', default=0)
     registered_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         verbose_name="登録者",
