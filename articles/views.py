@@ -167,7 +167,7 @@ def add_keywords(request, project_id, article_id):
             for e in keyword:
                 k = Keyword.objects.get_or_none(keyword=e)
                 if not k:
-                    v = generate_keywords_api(e),
+                    v = generate_keywords_api(e)
                     v = v[0] if v else 0
                     k = Keyword.objects.create(
                         keyword=e,
