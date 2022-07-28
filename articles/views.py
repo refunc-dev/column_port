@@ -170,7 +170,7 @@ def add_keywords(request, project_id, article_id):
                     v = generate_keywords_api(e),
                     k = Keyword.objects.create(
                         keyword=e,
-                        volume=v,
+                        volume=v[0] if v else v,
                         registered_by=request.user,
                         updated_at=datetime.date.today() - datetime.timedelta(days=1),
                     )

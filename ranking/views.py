@@ -95,9 +95,10 @@ def ranking_all_add(request, project_id):
             for e in keyword:
                 k = Keyword.objects.get_or_none(keyword=e)
                 if not k:
+                    v = generate_keywords_api(e),
                     k = Keyword.objects.create(
                         keyword=e,
-                        volume=generate_keywords_api(e),
+                        volume=v[0] if v else v,
                         registered_by=request.user,
                         updated_at=datetime.date.today() - datetime.timedelta(days=1),
                     )

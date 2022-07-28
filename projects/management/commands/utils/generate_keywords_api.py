@@ -100,6 +100,7 @@ def main(
         if flag == True:
             return idea.keyword_idea_metrics.avg_monthly_searches
     # [END generate_keyword_ideas]
+    return (0,)
 
 
 def map_keywords_to_string_values(client, keyword_texts):
@@ -153,3 +154,6 @@ def generate_keywords_api(keyword):
                 for field_path_element in error.location.field_path_elements:
                     print(f"\t\tOn field: {field_path_element.field_name}")
         sys.exit(1)
+
+#if __name__ == '__main__':
+#    print(generate_keywords_api(''))
