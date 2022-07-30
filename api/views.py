@@ -14,7 +14,11 @@ import re
 class KeywordListAPIView(generics.ListAPIView):
     queryset = Keyword.objects.all()
     serializer_class = KeywordListSerializer
-    permission_classes = [permissions.AllowAny]
+    authentication_classes = [
+        authentication.SessionAuthentication,
+        authentication.TokenAuthentication
+    ]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self, *args, **kwargs):
         qs = super().get_queryset(*args, **kwargs)
@@ -24,11 +28,21 @@ class KeywordListAPIView(generics.ListAPIView):
 class KeywordUpdateAPIView(generics.RetrieveUpdateAPIView):
     queryset = Keyword.objects.all()
     serializer_class = KeywordUpdateSerializer
+    authentication_classes = [
+        authentication.SessionAuthentication,
+        authentication.TokenAuthentication
+    ]
+    permission_classes = [permissions.IsAuthenticated]
 
 
 class KeywordSerpCreateAPIView(generics.CreateAPIView):
     queryset = KeywordSerp.objects.all()
     serializer_class = KeywordSerpSerializer
+    authentication_classes = [
+        authentication.SessionAuthentication,
+        authentication.TokenAuthentication
+    ]
+    permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
         serps = serializer.save()
