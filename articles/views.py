@@ -20,8 +20,8 @@ import datetime
 import re
 
 
-@owner_check
 @login_required
+@owner_check
 def top(request, project_id):
     current = Project.objects.get(id=project_id)
     contents = []
@@ -72,8 +72,8 @@ def top(request, project_id):
     return render(request, 'articles/top.html', context)
 
 
-@owner_check
 @login_required
+@owner_check
 def add(request, project_id):
     current = Project.objects.get(id=project_id)
     is_error = False
@@ -113,8 +113,8 @@ def add(request, project_id):
     return redirect(top, project_id=project_id)
 
 
-@owner_check
 @login_required
+@owner_check
 def settings(request, project_id, article_id):
     current = Article.objects.get(id=article_id)
     projects = request.user.members_projects.all()
@@ -128,8 +128,8 @@ def settings(request, project_id, article_id):
     return render(request, 'articles/detail.html', context)
 
 
-@owner_check
 @login_required
+@owner_check
 def update(request, project_id, article_id):
     current = Article.objects.get(id=article_id)
     if request.method == 'POST':
@@ -150,8 +150,8 @@ def update(request, project_id, article_id):
     return redirect(settings, project_id=project_id, article_id=article_id)
 
 
-@owner_check
 @login_required
+@owner_check
 def add_keywords(request, project_id, article_id):
     current = Article.objects.get(id=article_id)
     if request.method == 'POST':
@@ -217,8 +217,8 @@ def add_keywords(request, project_id, article_id):
     return redirect(settings, project_id=project_id, article_id=article_id)
 
 
-@owner_check
 @login_required
+@owner_check
 def delete_keywords(request, project_id, article_id):
     current = Article.objects.get(id=article_id)
     if request.method == 'POST' and request.POST.get('keyword'):
@@ -228,8 +228,8 @@ def delete_keywords(request, project_id, article_id):
     return redirect(settings, project_id=project_id, article_id=article_id)
 
 
-@owner_check
 @login_required
+@owner_check
 def delete(request, project_id, article_id):
     current = Article.objects.get(id=article_id)
     if request.method == 'POST' and request.POST.get('delete'):

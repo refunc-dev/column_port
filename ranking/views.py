@@ -17,14 +17,14 @@ import math
 import re
 
 
-@owner_check
 @login_required
+@owner_check
 def ranking_top(request, project_id):
     return redirect(ranking_all, project_id=project_id)
 
 
-@owner_check
 @login_required
+@owner_check
 def ranking_all(request, project_id):
     current = Project.objects.get(id=project_id)
     keywords = list(WebsiteKeywordRelation.objects.filter(project=current).values_list('keyword', flat=True))
@@ -75,8 +75,8 @@ def ranking_all(request, project_id):
     return render(request, 'ranking/ranking_all.html', context)
 
 
-@owner_check
 @login_required
+@owner_check
 def ranking_all_add(request, project_id):
     current = Project.objects.get(id=project_id)
     form = KeywordForm(request.POST)
@@ -151,8 +151,8 @@ def ranking_all_add(request, project_id):
     return redirect(ranking_all, project_id=project_id)
 
 
-@owner_check
 @login_required
+@owner_check
 def ranking_all_delete(request, project_id):
     current = Project.objects.get(id=project_id)
     form = KeywordForm(request.POST)
@@ -176,8 +176,8 @@ def ranking_all_delete(request, project_id):
     return redirect(ranking_all, project_id=project_id)
 
 
-@owner_check
 @login_required
+@owner_check
 def ranking_range(request, project_id):
     current = Project.objects.get(id=project_id)
     keywords = list(WebsiteKeywordRelation.objects.filter(project=current).values_list('keyword', flat=True))
@@ -303,8 +303,8 @@ def create_score(current):
     return score
 
 
-@owner_check
 @login_required
+@owner_check
 def ranking_score(request, project_id):
     current = Project.objects.get(id=project_id)
     if request.method == 'POST':

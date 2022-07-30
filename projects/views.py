@@ -175,8 +175,8 @@ def home(request):
     return render(request, 'projects/index.html', context)
 
 
-@owner_check
 @login_required
+@owner_check
 def project_top(request, project_id):
     current = Project.objects.get(id=project_id)
     projects = request.user.members_projects.all()
@@ -191,8 +191,8 @@ def project_top(request, project_id):
     return render(request, 'projects/top.html', context)
 
 
-@owner_check
 @login_required
+@owner_check
 def project_settings(request, project_id):
     current = Project.objects.get(id=project_id)
     members = ProjectMemberRelation.objects.filter(project=current)
@@ -209,8 +209,8 @@ def project_settings(request, project_id):
     return render(request, 'projects/settings.html', context)
 
 
-@owner_check
 @login_required
+@owner_check
 def project_settings_delete(request, project_id):
     current = Project.objects.get(id=project_id)
     if request.method == 'POST' and request.POST.get('delete'):
@@ -220,8 +220,8 @@ def project_settings_delete(request, project_id):
     return redirect(project_settings, project_id=project_id)
 
 
-@owner_check
 @login_required
+@owner_check
 def project_settings_analytics(request, project_id):
     current = Project.objects.get(id=project_id)
     if request.method == 'POST':
@@ -245,8 +245,8 @@ def project_settings_analytics(request, project_id):
     return redirect(project_settings, project_id=project_id)
 
 
-@owner_check
 @login_required
+@owner_check
 def project_settings_members(request, project_id):
     current = Project.objects.get(id=project_id)
     if request.method == 'POST' and request.POST.get('email'):
@@ -265,8 +265,8 @@ def project_settings_members(request, project_id):
     return redirect(project_settings, project_id=project_id)
 
 
-@owner_check
 @login_required
+@owner_check
 def project_settings_members_delete(request, project_id):
     current = Project.objects.get(id=project_id)
     if request.method == 'POST' and request.POST.get('member'):
@@ -278,8 +278,8 @@ def project_settings_members_delete(request, project_id):
     return redirect(project_settings, project_id=project_id)
 
 
-@owner_check
 @login_required
+@owner_check
 def project_settings_competitors(request, project_id):
     current = Project.objects.get(id=project_id)
     if request.method == 'POST':
@@ -335,8 +335,8 @@ def project_settings_competitors(request, project_id):
     return redirect(project_settings, project_id=project_id)
 
 
-@owner_check
 @login_required
+@owner_check
 def project_settings_competitors_delete(request, project_id):
     current = Project.objects.get(id=project_id)
     if request.method == 'POST' and request.POST.get('competitor'):

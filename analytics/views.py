@@ -172,26 +172,26 @@ def common_process(request, project_id, report_type):
     return render(request, 'analytics/reports.html', context)
 
 
-@owner_check
 @login_required
+@owner_check
 def analytics_top(request, project_id):
     return redirect(analytics_weekly, project_id=project_id)
 
 
-@owner_check
 @login_required
+@owner_check
 def analytics_weekly(request, project_id):
     return common_process(request, project_id=project_id, report_type='weekly')
 
 
-@owner_check
 @login_required
+@owner_check
 def analytics_monthly(request, project_id):
     return common_process(request, project_id=project_id, report_type='monthly')
 
 
-@owner_check
 @login_required
+@owner_check
 def regex_add(request, project_id):
     current = Project.objects.get(id=project_id)
     account_info = [current.account_id, current.property_id, current.view_id]
@@ -247,8 +247,8 @@ def regex_add(request, project_id):
     return redirect(analytics_top, project_id=project_id)
 
 
-@owner_check
 @login_required
+@owner_check
 def regex_settings(request, project_id):
     current = Project.objects.get(id=project_id)
     if request.method == 'POST':
